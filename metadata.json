@@ -1,0 +1,6 @@
+{
+  "name": "TEFA ProjectHub – From Idea to Impact",
+  "description": "Centralized project lifecycle management platform for TechEnergy For Africa e.V. (TEFA) supporting projects in Germany, Cameroon, and Africa from idea to impact reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

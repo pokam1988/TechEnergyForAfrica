@@ -1,0 +1,509 @@
+import { GeneratedCampaign, CampaignFormatConfig } from '../types';
+
+export const CAMPAIGN_FORMAT_CONFIGS: CampaignFormatConfig[] = [
+  {
+    id: 'billboard_poster',
+    name: 'Billboard / Großflächenplakat',
+    category: 'print',
+    aspectRatio: '16:9',
+    aspectRatioLabel: '16:9 Querformat',
+    width: 1920,
+    height: 1080,
+    description: 'Großformatige Außenwerbung, Konferenz-Banner und Event-Bühnenhintergründe.',
+  },
+  {
+    id: 'magazine_ad',
+    name: 'Zeitschriften- & Print-Anzeige',
+    category: 'print',
+    aspectRatio: '3:4',
+    aspectRatioLabel: '3:4 Hochformat',
+    width: 1200,
+    height: 1600,
+    description: 'Hochwertiges Print-Layout für Fachmagazine, Stifter-Journale und Zeitungsbeilagen.',
+  },
+  {
+    id: 'instagram_square',
+    name: 'Instagram Post (Quadratisch)',
+    category: 'social',
+    aspectRatio: '1:1',
+    aspectRatioLabel: '1:1 Quadrat',
+    width: 1080,
+    height: 1080,
+    description: 'Optimal für Social-Media-Feeds auf Instagram, Facebook und WhatsApp-Kanälen.',
+  },
+  {
+    id: 'instagram_story',
+    name: 'Instagram & Mobile Story',
+    category: 'social',
+    aspectRatio: '9:16',
+    aspectRatioLabel: '9:16 Vollbild Mobil',
+    width: 1080,
+    height: 1920,
+    description: 'Vollbild-Story für Smartphones, TikTok-Grafiken und WhatsApp-Statusmeldungen.',
+  },
+  {
+    id: 'linkedin_graphic',
+    name: 'LinkedIn Kampagnengrafik',
+    category: 'social',
+    aspectRatio: '16:9',
+    aspectRatioLabel: '16:9 Querformat',
+    width: 1200,
+    height: 675,
+    description: 'Professionelles Beitragsbild für LinkedIn-Unternehmensposts und B2B-Outreach.',
+  },
+  {
+    id: 'website_hero',
+    name: 'Website Hero Banner',
+    category: 'digital',
+    aspectRatio: '16:9',
+    aspectRatioLabel: '16:9 Breitbild',
+    width: 1920,
+    height: 800,
+    description: 'Titelbanner für TEFA-Webseiten, Projekt-Landingpages und Blog-Leitartikel.',
+  },
+  {
+    id: 'project_flyer',
+    name: 'Projektflyer / Infoblatt (A4)',
+    category: 'print',
+    aspectRatio: '3:4',
+    aspectRatioLabel: '3:4 Portrait',
+    width: 1240,
+    height: 1754,
+    description: 'Zweiseitiges Informationsblatt für lokale Schulen, Gemeinden und Bildungsmessen.',
+  },
+  {
+    id: 'donor_presentation_cover',
+    name: 'Stifter-Präsentationsdeck Cover',
+    category: 'donor_reporting',
+    aspectRatio: '16:9',
+    aspectRatioLabel: '16:9 Folienformat',
+    width: 1920,
+    height: 1080,
+    description: 'Titelseite für PowerPoint- und PDF-Präsentationen vor institutionellen Gebern.',
+  },
+  {
+    id: 'project_report_cover',
+    name: 'Projekt- & Wirkungsbericht Deckblatt',
+    category: 'donor_reporting',
+    aspectRatio: '3:4',
+    aspectRatioLabel: '3:4 Berichtsbuch',
+    width: 1240,
+    height: 1754,
+    description: 'Offizielles Deckblatt für den jährlichen TEFA-Jahres- und Evaluierungsbericht.',
+  },
+];
+
+// Helper to generate consistent high-fidelity vector artwork for realistic preview & testing
+export function generateConsistentSvgArtwork(
+  formatId: string,
+  subject: string,
+  primaryColor: string = '#0f2b48',
+  secondaryColor: string = '#10b981',
+  accentColor: string = '#f97316'
+): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+    <defs>
+      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${primaryColor}"/>
+        <stop offset="50%" stop-color="#1e3a5f"/>
+        <stop offset="100%" stop-color="#0a192f"/>
+      </linearGradient>
+      <linearGradient id="solarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${accentColor}"/>
+        <stop offset="100%" stop-color="#fbbf24"/>
+      </linearGradient>
+      <linearGradient id="ecoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${secondaryColor}"/>
+        <stop offset="100%" stop-color="#059669"/>
+      </linearGradient>
+      <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      </pattern>
+    </defs>
+
+    <!-- Background Layer -->
+    <rect width="1200" height="800" fill="url(#bgGrad)"/>
+    <rect width="1200" height="800" fill="url(#gridPattern)"/>
+
+    <!-- Abstract Horizon & Clean Renewable Energy Motif (Strict No People Compliance) -->
+    <path d="M 0 520 Q 300 480 600 530 T 1200 500 L 1200 800 L 0 800 Z" fill="rgba(16, 185, 129, 0.15)"/>
+    <path d="M 0 580 Q 400 530 800 590 T 1200 560 L 1200 800 L 0 800 Z" fill="rgba(15, 43, 72, 0.4)"/>
+
+    <!-- Solar Panel Array Graphic -->
+    <g transform="translate(420, 360)">
+      <!-- Base structure -->
+      <polygon points="50,160 270,160 220,240 0,240" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+      <!-- Solar photovoltaic cells -->
+      <polygon points="60,170 260,170 215,230 15,230" fill="#0f172a" stroke="url(#ecoGrad)" stroke-width="2"/>
+      <line x1="110" y1="170" x2="65" y2="230" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="160" y1="170" x2="115" y2="230" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="210" y1="170" x2="165" y2="230" stroke="#38bdf8" stroke-width="1.5"/>
+      <line x1="38" y1="200" x2="238" y2="200" stroke="#38bdf8" stroke-width="1.5"/>
+      <!-- Sun rays / Clean Energy Icon -->
+      <circle cx="280" cy="80" r="36" fill="url(#solarGrad)" opacity="0.9"/>
+      <path d="M 280 28 L 280 16 M 280 144 L 280 132 M 228 80 L 216 80 M 344 80 L 332 80 M 243 43 L 234 34 M 326 126 L 317 117 M 243 117 L 234 126 M 326 34 L 317 43" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+    </g>
+
+    <!-- Modern Educational Workstation & IT Hardware (No Humans) -->
+    <g transform="translate(140, 420)">
+      <!-- Clean Minimalist Tech Desk -->
+      <rect x="0" y="80" width="260" height="12" rx="4" fill="#334155"/>
+      <rect x="20" y="92" width="10" height="90" fill="#1e293b"/>
+      <rect x="230" y="92" width="10" height="90" fill="#1e293b"/>
+      <!-- Laptop Open with Code & Green Battery Indicator -->
+      <polygon points="70,75 190,75 180,20 80,20" fill="#0f172a" stroke="#64748b" stroke-width="2"/>
+      <rect x="85" y="25" width="90" height="45" fill="#0284c7" opacity="0.85"/>
+      <!-- Battery / Solar Power line -->
+      <rect x="95" y="40" width="30" height="15" rx="3" fill="#10b981"/>
+      <polygon points="60,80 200,80 215,86 45,86" fill="#475569"/>
+    </g>
+
+    <!-- Seedling & Sustainable Growth Motif -->
+    <g transform="translate(860, 460)">
+      <path d="M 60 120 Q 60 70 90 50 Q 80 90 60 120 Z" fill="url(#ecoGrad)"/>
+      <path d="M 60 100 Q 60 60 30 45 Q 40 85 60 100 Z" fill="#34d399"/>
+      <rect x="58" y="95" width="4" height="45" fill="#065f46" rx="2"/>
+      <!-- Smart sensor node -->
+      <circle cx="60" cy="40" r="8" fill="${accentColor}"/>
+      <path d="M 60 32 A 16 16 0 0 1 76 48" stroke="rgba(255,255,255,0.7)" fill="none" stroke-width="2"/>
+    </g>
+
+    <!-- Subtle Tech / Network Nodes -->
+    <g stroke="rgba(255,255,255,0.2)" stroke-width="1.5">
+      <circle cx="200" cy="180" r="4" fill="#38bdf8"/>
+      <circle cx="360" cy="140" r="5" fill="#10b981"/>
+      <circle cx="580" cy="190" r="4" fill="${accentColor}"/>
+      <circle cx="820" cy="150" r="6" fill="#38bdf8"/>
+      <circle cx="980" cy="220" r="5" fill="#10b981"/>
+      <line x1="200" y1="180" x2="360" y2="140"/>
+      <line x1="360" y1="140" x2="580" y2="190"/>
+      <line x1="580" y1="190" x2="820" y2="150"/>
+      <line x1="820" y1="150" x2="980" y2="220"/>
+    </g>
+
+    <!-- Watermark / Format Identity Tag -->
+    <rect x="40" y="720" width="360" height="36" rx="8" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(255,255,255,0.1)"/>
+    <text x="55" y="744" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12" font-weight="600">
+      TEFA CREATIVE STUDIO | NO-PEOPLE ARTWORK [${formatId.toUpperCase()}]
+    </text>
+  </svg>`;
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+export const SEED_CAMPAIGNS: GeneratedCampaign[] = [
+  {
+    id: 'camp_dfg_launch_001',
+    brief: {
+      id: 'brief_dfg_001',
+      projectId: 'proj_dfg_003',
+      projectTitle: 'Digital Future Girls – Solar-Powered IT Hub',
+      title: 'Digital Future Girls: Solar-Inklusion & Bildungschancen',
+      lifecyclePhase: 'fundraising_outreach',
+      objective: 'Mobilisierung von Partnerschaften und Fördergeldern für 10 solarbetriebene Schulungsarbeitsplätze in Kamerun.',
+      targetAudience: 'Gemeinnützige Stiftungen, bilaterale Entwicklungspartner, CSR-Förderer in Deutschland & Kamerun',
+      mainMessage: 'Digitale Zukunft braucht verlässliche Energie: Solarbetriebene IT-Bildung für junge Frauen in Kamerun.',
+      callToAction: 'Werden Sie Bildungspartner von TechEnergy For Africa e.V.',
+      language: 'de',
+      channels: ['linkedin_graphic', 'donor_presentation_cover', 'website_hero', 'billboard_poster'],
+      visualStyle: 'modern_flat_vector',
+      preferredColors: ['#0f2b48', '#10b981', '#f97316'],
+      imageDescription: 'Moderne solarbetriebene IT-Lernstation mit Laptops, Solarmodulen und grünem Technologie-Umfeld ohne sichtbare Personen.',
+      textToDisplay: {
+        headline: 'Solar-Bildung für die nächste Generation',
+        subtitle: '10 verlässliche Lernstationen mit sauberer Solarenergie in Yaoundé',
+        callToAction: 'Jetzt TEFA-Projektpartner werden',
+      },
+      startDate: '2026-11-01',
+      endDate: '2027-03-15',
+      requiredApprovals: ['Projektleitung (Frederic Pokam)', 'Vorstand TEFA e.V.'],
+      supportingDocuments: ['TEFA-2026-CMR-003_Antragsdossier.pdf', 'Machbarkeitsstudie_Solar_2026.pdf'],
+      noPeopleMode: true,
+      status: 'under_review',
+      createdAt: '2026-10-22T08:30:00Z',
+      updatedAt: '2026-10-22T09:15:00Z',
+      version: 1,
+    },
+    brandIdentity: {
+      projectName: 'Digital Future Girls',
+      campaignName: 'Solar-Inklusion & Bildungschancen',
+      approvedLogo: {
+        useOfficialTefaLogo: true,
+        logoSource: 'official_approved_asset',
+        disclaimer: 'Offizielles TEFA e.V. Verbands-Brandmark (genehmigt nach Satzung).',
+      },
+      colorPalette: {
+        primary: '#0f2b48',
+        secondary: '#10b981',
+        accent: '#f97316',
+        neutralLight: '#ffffff',
+        neutralDark: '#0f172a',
+      },
+      typographyGuidance: {
+        headingFont: 'Plus Jakarta Sans, Inter, system-ui',
+        bodyFont: 'Inter, system-ui, sans-serif',
+        styleTone: 'Professionell, gemeinnützig, zukunftsorientiert und transparent',
+      },
+      visualComposition: 'Klarer Fokus auf saubere Solartechnologie, geöffnete Laptops, Schulungs-Equipment und grüne Entwicklung. Keine Personen.',
+      visualStyle: 'modern_flat_vector',
+      coreVisualSubject: 'Solarenergiesystem und IT-Lernarbeitsplatz',
+      keyCampaignMessage: 'Digitale Zukunft braucht verlässliche Energie.',
+      noPeopleMode: true,
+      disallowedVisualElements: ['human figures', 'faces', 'silhouettes', 'crowds', 'hands'],
+      allowedVisualElements: ['solar panels', 'laptops', 'books', 'seedlings', 'circuit boards', 'modern clean desks'],
+    },
+    masterVisual: {
+      imageUrl: generateConsistentSvgArtwork('master_visual', 'Solar IT Hub', '#0f2b48', '#10b981', '#f97316'),
+      promptUsed: 'High-tech solar-powered digital education hub in Cameroon. Photovoltaic panels, clean educational computer desks with open laptops, books, green energy accumulator, vibrant sun rays, modern eco-classroom setup. Professional architectural concept art. STRICT CONSTRAINT: NO humans, NO faces, NO human silhouettes, NO hands, NO crowds.',
+      negativePrompt: 'people, person, human, face, silhouette, hand, crowd, messy, distorted logos, unrealistic technology',
+      generatedAt: '2026-10-22T09:00:00Z',
+      model: 'gemini-3.1-flash-lite-image',
+      isApprovedAsMaster: true,
+    },
+    selectedFormats: ['billboard_poster', 'instagram_square', 'linkedin_graphic', 'website_hero', 'donor_presentation_cover'],
+    assets: [
+      {
+        id: 'asset_dfg_billboard_001',
+        campaignId: 'camp_dfg_launch_001',
+        format: 'billboard_poster',
+        version: 1,
+        imageUrl: generateConsistentSvgArtwork('billboard_poster', 'Solar IT Hub Billboard', '#0f2b48', '#10b981', '#f97316'),
+        headline: 'Solar-Bildung für die nächste Generation',
+        subtitle: '10 verlässliche Lernstationen mit Solarenergie in Yaoundé',
+        callToAction: 'Jetzt Bildungspartner von TEFA e.V. werden',
+        overlayConfig: {
+          headline: 'Solar-Bildung für die nächste Generation',
+          subtitle: '10 verlässliche Lernstationen mit Solarenergie in Yaoundé',
+          callToAction: 'Jetzt Bildungspartner von TEFA e.V. werden',
+          organizationBadge: 'TechEnergy For Africa e.V.',
+          logoPosition: 'top-left',
+          textAlignment: 'left',
+          fontSize: 'prominent',
+          textColor: 'light',
+          overlayOpacity: 0.35,
+          badgeText: 'TEFA BILDUNGSINITIATIVE 2026/2027',
+        },
+        status: 'under_review',
+        createdAt: '2026-10-22T09:10:00Z',
+        updatedAt: '2026-10-22T09:10:00Z',
+        isAiGenerated: true,
+        modelUsed: 'gemini-3.1-flash-lite-image',
+      },
+      {
+        id: 'asset_dfg_insta_002',
+        campaignId: 'camp_dfg_launch_001',
+        format: 'instagram_square',
+        version: 1,
+        imageUrl: generateConsistentSvgArtwork('instagram_square', 'Solar IT Hub Square', '#0f2b48', '#10b981', '#f97316'),
+        headline: 'Digital Future Girls',
+        subtitle: 'Bildungschancen durch saubere Solarenergie',
+        callToAction: 'Erfahre mehr auf techenergyforafrica.com',
+        overlayConfig: {
+          headline: 'Digital Future Girls',
+          subtitle: 'Bildungschancen durch saubere Solarenergie',
+          callToAction: 'Erfahre mehr auf techenergyforafrica.com',
+          organizationBadge: 'TechEnergy For Africa e.V.',
+          logoPosition: 'top-left',
+          textAlignment: 'center',
+          fontSize: 'medium',
+          textColor: 'light',
+          overlayOpacity: 0.4,
+          badgeText: 'INNOVATION & SOLAR',
+        },
+        status: 'under_review',
+        createdAt: '2026-10-22T09:11:00Z',
+        updatedAt: '2026-10-22T09:11:00Z',
+        isAiGenerated: true,
+        modelUsed: 'gemini-3.1-flash-lite-image',
+      },
+      {
+        id: 'asset_dfg_linkedin_003',
+        campaignId: 'camp_dfg_launch_001',
+        format: 'linkedin_graphic',
+        version: 1,
+        imageUrl: generateConsistentSvgArtwork('linkedin_graphic', 'Solar IT Hub LinkedIn', '#0f2b48', '#10b981', '#f97316'),
+        headline: 'Zukunftsfähige IT-Infrastruktur in Kamerun',
+        subtitle: 'Wie TechEnergy For Africa e.V. erneuerbare Energien mit digitaler Bildung verknüpft',
+        callToAction: 'Partnerschaft anfragen',
+        overlayConfig: {
+          headline: 'Zukunftsfähige IT-Infrastruktur in Kamerun',
+          subtitle: 'Wie TechEnergy For Africa e.V. erneuerbare Energien mit digitaler Bildung verknüpft',
+          callToAction: 'Partnerschaft anfragen',
+          organizationBadge: 'TechEnergy For Africa e.V.',
+          logoPosition: 'top-right',
+          textAlignment: 'left',
+          fontSize: 'medium',
+          textColor: 'light',
+          overlayOpacity: 0.35,
+          badgeText: 'PARTNERSCHAFT & CSR',
+        },
+        status: 'under_review',
+        createdAt: '2026-10-22T09:12:00Z',
+        updatedAt: '2026-10-22T09:12:00Z',
+        isAiGenerated: true,
+        modelUsed: 'gemini-3.1-flash-lite-image',
+      },
+      {
+        id: 'asset_dfg_donor_004',
+        campaignId: 'camp_dfg_launch_001',
+        format: 'donor_presentation_cover',
+        version: 1,
+        imageUrl: generateConsistentSvgArtwork('donor_presentation_cover', 'Solar IT Hub Donor Deck', '#0f2b48', '#10b981', '#f97316'),
+        headline: 'Projekt-Dossier: Digital Future Girls',
+        subtitle: 'Investition in nachhaltige Bildungsinfrastruktur in Kamerun',
+        callToAction: 'TechEnergy For Africa e.V. – Förderübersicht 2026/2027',
+        overlayConfig: {
+          headline: 'Projekt-Dossier: Digital Future Girls',
+          subtitle: 'Investition in nachhaltige Bildungsinfrastruktur in Kamerun',
+          callToAction: 'TechEnergy For Africa e.V. – Förderübersicht 2026/2027',
+          organizationBadge: 'TechEnergy For Africa e.V.',
+          logoPosition: 'top-left',
+          textAlignment: 'left',
+          fontSize: 'prominent',
+          textColor: 'light',
+          overlayOpacity: 0.45,
+          badgeText: 'STIFTER-PRÄSENTATION',
+        },
+        status: 'under_review',
+        createdAt: '2026-10-22T09:13:00Z',
+        updatedAt: '2026-10-22T09:13:00Z',
+        isAiGenerated: true,
+        modelUsed: 'gemini-3.1-flash-lite-image',
+      },
+    ],
+    approvalHistory: [
+      {
+        id: 'app_hist_001',
+        status: 'draft',
+        changedBy: 'Frederic Pokam',
+        changedByRole: 'project_manager',
+        timestamp: '2026-10-22T08:30:00Z',
+        comment: 'Kampagnen-Briefing und Master-Visual für Digital Future Girls erstellt.',
+      },
+      {
+        id: 'app_hist_002',
+        status: 'under_review',
+        changedBy: 'Frederic Pokam',
+        changedByRole: 'project_manager',
+        timestamp: '2026-10-22T09:15:00Z',
+        comment: 'Zur Prüfung an den Vorstand vorgelegt. Externe Veröffentlichung steht aus.',
+      },
+    ],
+    isSavedToProject: true,
+    savedToProjectId: 'proj_dfg_003',
+  },
+  {
+    id: 'camp_ifopsim_impact_002',
+    brief: {
+      id: 'brief_ifopsim_002',
+      projectId: 'proj_ifopsim_001',
+      projectTitle: 'IFOPSIM – Solar PV & Agricultural Irrigation',
+      title: 'IFOPSIM: Saubere Solarenergie für nachhaltige Landwirtschaft',
+      lifecyclePhase: 'impact_communication',
+      objective: 'Wirkungskommunikation über ressourcenschonende Solarpumpen und Nahrungssicherheit.',
+      targetAudience: 'Gemeindevertreter, Geberorganisationen, Kooperationspartner in Deutschland und Kamerun',
+      mainMessage: 'Nachhaltige Solarpumpensysteme steigern Ernteerträge und sichern Wasserzugang ohne CO2-Emissionen.',
+      callToAction: 'Informieren Sie sich über die TEFA-Wirkungsberichte',
+      language: 'de',
+      channels: ['website_hero', 'project_report_cover', 'linkedin_graphic'],
+      visualStyle: 'photo_documentary',
+      preferredColors: ['#0f2b48', '#10b981', '#f97316'],
+      imageDescription: 'Solarbetriebene Wasserpumpe und Tröpfchenbewässerung auf ertragreichen landwirtschaftlichen Feldern, klare Natur, keine Menschen sichtbar.',
+      textToDisplay: {
+        headline: 'Erneuerbare Energie für Ernährungssicherheit',
+        subtitle: 'Solare Bewässerungssysteme im IFOPSIM-Vorhaben',
+        callToAction: 'Wirkungsbericht 2026 anfordern',
+      },
+      startDate: '2026-06-01',
+      endDate: '2026-12-31',
+      requiredApprovals: ['Vorstand TEFA e.V.'],
+      supportingDocuments: ['IFOPSIM_Wirkungsanalyse_2026.pdf'],
+      noPeopleMode: true,
+      status: 'approved',
+      createdAt: '2026-08-15T10:00:00Z',
+      updatedAt: '2026-08-20T14:00:00Z',
+      version: 2,
+    },
+    brandIdentity: {
+      projectName: 'IFOPSIM',
+      campaignName: 'Saubere Solarenergie für Landwirtschaft',
+      approvedLogo: {
+        useOfficialTefaLogo: true,
+        logoSource: 'official_approved_asset',
+        disclaimer: 'Offizielles TEFA e.V. Verbands-Brandmark.',
+      },
+      colorPalette: {
+        primary: '#0f2b48',
+        secondary: '#10b981',
+        accent: '#f97316',
+        neutralLight: '#ffffff',
+        neutralDark: '#0f172a',
+      },
+      typographyGuidance: {
+        headingFont: 'Plus Jakarta Sans, Inter',
+        bodyFont: 'Inter, sans-serif',
+        styleTone: 'Wissenschaftlich fundiert, gemeinnützig und lösungsorientiert',
+      },
+      visualComposition: 'Solarbetriebene Wassertanks, Solarmodule auf Ständern, Bewässerungsleitungen und fruchtbare Felder. Keine Personen.',
+      visualStyle: 'photo_documentary',
+      coreVisualSubject: 'Solar-Wasserpumpe & Agrartechnik',
+      keyCampaignMessage: 'Wasser und Energie für nachhaltiges Wachstum.',
+      noPeopleMode: true,
+      disallowedVisualElements: ['human figures', 'faces', 'silhouettes', 'crowds', 'hands'],
+      allowedVisualElements: ['solar panels', 'irrigation pipes', 'crops', 'water storage', 'sunlight', 'landscape'],
+    },
+    masterVisual: {
+      imageUrl: generateConsistentSvgArtwork('master_ifopsim', 'IFOPSIM Solar Irrigation', '#0f2b48', '#10b981', '#f97316'),
+      promptUsed: 'Documentary style solar water irrigation installation in rural Cameroon. Photovoltaic panel array powering a clean stainless steel water pump system, gentle mist over lush green crops and rich fertile soil. STRICT CONSTRAINT: NO humans, NO faces, NO human silhouettes, NO hands, NO crowds.',
+      negativePrompt: 'people, person, human, face, silhouette, hand, crowd',
+      generatedAt: '2026-08-15T11:00:00Z',
+      model: 'gemini-3.1-flash-lite-image',
+      isApprovedAsMaster: true,
+    },
+    selectedFormats: ['website_hero', 'project_report_cover', 'linkedin_graphic'],
+    assets: [
+      {
+        id: 'asset_ifopsim_hero_001',
+        campaignId: 'camp_ifopsim_impact_002',
+        format: 'website_hero',
+        version: 1,
+        imageUrl: generateConsistentSvgArtwork('website_hero', 'IFOPSIM Hero Banner', '#0f2b48', '#10b981', '#f97316'),
+        headline: 'Erneuerbare Energie für Ernährungssicherheit',
+        subtitle: 'Solare Bewässerungssysteme im IFOPSIM-Vorhaben',
+        callToAction: 'Wirkungsbericht 2026 ansehen',
+        overlayConfig: {
+          headline: 'Erneuerbare Energie für Ernährungssicherheit',
+          subtitle: 'Solare Bewässerungssysteme im IFOPSIM-Vorhaben',
+          callToAction: 'Wirkungsbericht 2026 ansehen',
+          organizationBadge: 'TechEnergy For Africa e.V.',
+          logoPosition: 'top-left',
+          textAlignment: 'left',
+          fontSize: 'prominent',
+          textColor: 'light',
+          overlayOpacity: 0.35,
+          badgeText: 'WIRKUNGSBERICHT IFOPSIM',
+        },
+        status: 'approved',
+        createdAt: '2026-08-16T12:00:00Z',
+        updatedAt: '2026-08-20T14:00:00Z',
+        reviewedBy: 'Dr. Sophie Becker',
+        reviewedAt: '2026-08-20T14:00:00Z',
+        notes: 'Freigabe für Jahresbericht und Online-Veröffentlichung erteilt.',
+        isAiGenerated: true,
+        modelUsed: 'gemini-3.1-flash-lite-image',
+      },
+    ],
+    approvalHistory: [
+      {
+        id: 'app_hist_ifop_001',
+        status: 'approved',
+        changedBy: 'Dr. Sophie Becker',
+        changedByRole: 'board_member',
+        timestamp: '2026-08-20T14:00:00Z',
+        comment: 'Kampagnengrafik offiziell durch den Vorstand für Veröffentlichungen freigegeben.',
+      },
+    ],
+    isSavedToProject: true,
+    savedToProjectId: 'proj_ifopsim_001',
+  },
+];
