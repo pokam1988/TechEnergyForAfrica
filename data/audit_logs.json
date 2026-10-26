@@ -1,0 +1,24 @@
+[
+  {
+    "id": "log_1793043433292_hcqo",
+    "timestamp": "2026-10-26T19:37:13.292Z",
+    "userId": "user_tefa_member",
+    "userName": "Amina Diallo (TEFA Member)",
+    "userRole": "tefa_member",
+    "action": "PROJECT_CREATED",
+    "projectId": "proj_1793043432469",
+    "projectTitle": "test",
+    "details": "Created new project test"
+  },
+  {
+    "id": "log_1793043433272",
+    "timestamp": "2026-10-26T19:37:13.272Z",
+    "userId": "user_tefa_member",
+    "userName": "Authorized User",
+    "userRole": "tefa_member",
+    "action": "PROJECT_CREATED",
+    "projectId": "proj_1793043432469",
+    "projectTitle": "test",
+    "details": "Created new project proposal [TEFA-2026-PRJ-004]: test"
+  }
+]

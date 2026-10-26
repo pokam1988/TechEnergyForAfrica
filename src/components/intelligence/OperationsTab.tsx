@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Project } from '../../types';
-import { Settings, Monitor, Users, Truck, BatteryCharging, AlertCircle } from 'lucide-react';
+import { Settings, Monitor, Users, Truck, BatteryCharging, AlertCircle, Box, Zap, Eye, ChevronRight } from 'lucide-react';
+import { SolarLabDigitalTwin } from '../facility/SolarLabDigitalTwin';
 
 interface OperationsTabProps {
   filteredProjects: Project[];
@@ -11,6 +12,9 @@ export const OperationsTab: React.FC<OperationsTabProps> = ({
   filteredProjects,
   onSelectProject,
 }) => {
+  const [showDigitalTwinModal, setShowDigitalTwinModal] = useState(false);
+  const [showInlineTwin, setShowInlineTwin] = useState(false);
+
   // Aggregate operational simulation figures
   const totalWorkstations = filteredProjects.reduce(
     (sum, p) => sum + (p.simulationParams?.usableWorkstations || 0),
@@ -27,6 +31,55 @@ export const OperationsTab: React.FC<OperationsTabProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* 3D Digital Twin Interactive Feature Card */}
+      <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-5 rounded-2xl border border-blue-900/60 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div className="p-3 bg-blue-500/20 text-blue-400 rounded-xl border border-blue-500/30 shrink-0">
+            <Box className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-sm text-white">3D Digital Twin: IFOPSIM Solar Lab</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                Live Three.js PBR
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 mt-1 max-w-xl">
+              Interaktive 3D-Simulation des Schulungsraums mit Photovoltaik-Array (4.8 kWp), LiFePO4-Batteriespeicher, Tag/Nacht-Einspeisungsfluss und 12 vernetzten IT-Lernplätzen in Kamerun.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <button
+            onClick={() => setShowInlineTwin(!showInlineTwin)}
+            className="flex-1 md:flex-none px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            {showInlineTwin ? '3D-Ansicht minimieren' : '3D Inline öffnen'}
+          </button>
+          <button
+            onClick={() => setShowDigitalTwinModal(true)}
+            className="flex-1 md:flex-none px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-md"
+          >
+            <Zap className="w-3.5 h-3.5" />
+            Vollbild-Inspektion
+          </button>
+        </div>
+      </div>
+
+      {/* Inline 3D Twin if toggled */}
+      {showInlineTwin && (
+        <div className="border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+          <SolarLabDigitalTwin isInline={true} />
+        </div>
+      )}
+
+      {/* Modal 3D Twin if toggled */}
+      {showDigitalTwinModal && (
+        <SolarLabDigitalTwin isInline={false} onClose={() => setShowDigitalTwinModal(false)} />
+      )}
+
       {/* Operational Capacity KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200">

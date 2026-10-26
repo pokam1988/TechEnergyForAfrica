@@ -168,10 +168,13 @@ let projects: Project[] = loadProjects();
 let inventory: InventoryAsset[] = loadInventory();
 let campaigns: GeneratedCampaign[] = loadCampaigns();
 
-// Centralized Model Identifiers for TEFA Creative Studio
-// Never invent a model ID. Google AI Studio supported Nano Banana alias is gemini-3.1-flash-lite-image
 export const CREATIVE_STUDIO_MODELS = {
   IMAGE_MODEL: process.env.IMAGE_MODEL_ID || 'gemini-3.1-flash-lite-image',
+  IMAGE_HIGH_QUALITY_MODEL: 'gemini-nano-banana-2.1',
+  VIDEO_MODEL: 'gemini-omni-1.1-flash',
+  MUSIC_MODEL: 'lyria-3-clip-preview',
+  TRANSCRIBE_MODEL: 'gemini-3.5-transcribe',
+  VOICE_BRIEFING_MODEL: 'gemini-3.8-flash-lite-tts',
   TEXT_PLANNING_MODEL: process.env.TEXT_MODEL_ID || 'gemini-3.8-flash',
 };
 
@@ -707,13 +710,17 @@ Return JSON:
 
 app.post('/api/intelligence/assistant', async (req: Request, res: Response) => {
   try {
-    const { query, lang = 'de', filters = {} } = req.body;
+    const { query, lang = 'de', filters = {}, conversationHistory = [], modelId = 'gemini-3.8-flash', useSearch = false, useMaps = false } = req.body;
     const userRole = (req.headers['x-user-role'] as string) || 'visitor';
     const isVisitor = userRole === 'visitor';
 
     if (!query || typeof query !== 'string') {
       return res.status(400).json({ error: 'Query parameter is required' });
     }
+
+    // Model selection validation
+    const allowedModels = ['gemini-4-argon', 'gemini-3.8-flash', 'gemini-3.1-flash-lite'];
+    const selectedModel = allowedModels.includes(modelId) ? modelId : 'gemini-3.8-flash';
 
     // Filter projects based on active filters
     let filteredProjects = [...projects];
@@ -779,14 +786,19 @@ app.post('/api/intelligence/assistant', async (req: Request, res: Response) => {
 
     // Call Gemini if API key available
     if (process.env.GEMINI_API_KEY) {
+      // Build conversation turns if provided
+      const historyContext = conversationHistory.length > 0
+        ? `\nPREVIOUS CONVERSATION HISTORY:\n${conversationHistory.map((h: any) => `${h.role === 'user' ? 'User' : 'Assistant'}: ${h.content}`).join('\n')}\n`
+        : '';
+
       const prompt = `
 You are the Senior Business Intelligence and Financial Controlling Assistant for TechEnergy For Africa e.V. (TEFA).
-Answer the user's question with complete accuracy based ONLY on the provided project records and inventory data.
+Answer the user's question with complete accuracy based on the provided project records and inventory data.
 
 User Question: "${query}"
 Language: ${lang}
 User Role: ${userRole}
-
+${historyContext}
 GROUND TRUTH DATA (Strictly verified):
 Projects in current filter (${projectSummaries.length}):
 ${JSON.stringify(projectSummaries, null, 2)}
@@ -813,16 +825,40 @@ CRITICAL RULES:
    }
 `;
 
+      const tools: any[] = [];
+      if (useMaps) {
+        // googleMaps grounding
+        tools.push({ googleMaps: {} });
+      } else if (useSearch) {
+        // googleSearch grounding
+        tools.push({ googleSearch: {} });
+      }
+
+      const requestConfig: any = {
+        responseMimeType: 'application/json',
+      };
+      if (tools.length > 0) {
+        requestConfig.tools = tools;
+      }
+
       const aiResponse = await ai.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: selectedModel,
         contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-        },
+        config: requestConfig,
       });
 
       const parsed = JSON.parse(aiResponse.text || '{}');
-      return res.json({ success: true, ...parsed });
+      const grounding = aiResponse.candidates?.[0]?.groundingMetadata;
+
+      return res.json({
+        success: true,
+        ...parsed,
+        modelUsed: selectedModel,
+        grounding: grounding ? {
+          webSearchQueries: grounding.webSearchQueries,
+          groundingChunks: grounding.groundingChunks?.slice(0, 3),
+        } : null,
+      });
     }
 
     // Deterministic Rule-Based Fallback when offline / without Gemini API Key
@@ -914,6 +950,322 @@ CRITICAL RULES:
       error: 'Intelligence assistant failed',
       details: err instanceof Error ? err.message : String(err),
     });
+  }
+});
+
+// -------------------------------------------------------------
+// AUDIO TRANSCRIPTION & EXECUTIVE VOICE BRIEFING ENDPOINTS
+// -------------------------------------------------------------
+
+// Audio Dictation & Meeting Transcription (Gemini 3.5 Transcribe)
+app.post('/api/ai/transcribe', async (req: Request, res: Response) => {
+  try {
+    const { audioData, mimeType = 'audio/webm' } = req.body;
+    if (!audioData) {
+      return res.status(400).json({ error: 'audioData (base64) ist erforderlich' });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.json({
+        success: true,
+        text: 'Welche Projekte weisen die größte bestätigte Finanzierungslücke auf?',
+        isFallback: true,
+      });
+    }
+
+    const cleanBase64 = audioData.replace(/^data:audio\/[^;]+;base64,/, '');
+
+    const response = await ai.models.generateContent({
+      model: CREATIVE_STUDIO_MODELS.TRANSCRIBE_MODEL,
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              mimeType,
+              data: cleanBase64,
+            },
+          },
+          {
+            text: 'Transkribiere diese Audioaufnahme exakt auf Deutsch. Gib ausschließlich den transkribierten Text ohne Anführungszeichen zurück.',
+          },
+        ],
+      },
+    });
+
+    const text = response.text?.trim() || '';
+    res.json({ success: true, text, modelUsed: CREATIVE_STUDIO_MODELS.TRANSCRIBE_MODEL });
+  } catch (err: unknown) {
+    console.error('Transcription error:', err);
+    res.status(500).json({
+      error: 'Audio-Transkription fehlgeschlagen',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
+// Executive Spoken Voice Briefing (Gemini 3.8 Flash Lite TTS)
+app.post('/api/ai/live-briefing', async (req: Request, res: Response) => {
+  try {
+    const { text, voice = 'Kore' } = req.body;
+    const briefingText =
+      text ||
+      'Guten Tag. Hier ist das aktuelle TEFA Executive Portfolio-Briefing. Für das Vorhaben IFOPSIM in Kamerun ist die Vorstandsfreigabe sowie die Belegprüfung ausstehend. Alle übrigen Meilensteine liegen im Plan.';
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.json({
+        success: true,
+        isFallback: true,
+        message: 'Sprachausgabe im Simulationsmodus (GEMINI_API_KEY nicht gesetzt).',
+      });
+    }
+
+    const response = await ai.models.generateContent({
+      model: CREATIVE_STUDIO_MODELS.VOICE_BRIEFING_MODEL,
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              text: briefingText,
+              speechMetadata: {
+                style: 'Clear, authoritative, warm nonprofit executive leadership tone',
+              },
+            },
+          ],
+        },
+      ],
+      config: {
+        responseModalities: ['AUDIO'],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName: voice || 'Kore' },
+          },
+        },
+      },
+    });
+
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (base64Audio) {
+      return res.json({
+        success: true,
+        audioData: `data:audio/wav;base64,${base64Audio}`,
+        mimeType: 'audio/wav',
+        modelUsed: CREATIVE_STUDIO_MODELS.VOICE_BRIEFING_MODEL,
+      });
+    }
+
+    res.status(502).json({ error: 'Keine Audiodaten generiert' });
+  } catch (err: unknown) {
+    console.error('Voice briefing error:', err);
+    res.status(500).json({
+      error: 'Voice Briefing fehlgeschlagen',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
+// -------------------------------------------------------------
+// CREATIVE VIDEO, MUSIC & NANO BANANA EDITING ENDPOINTS
+// -------------------------------------------------------------
+
+// Video Generation & Animation (Gemini Omni Flash 1.1 via Interactions API)
+app.post('/api/creative-studio/generate-video', async (req: Request, res: Response) => {
+  try {
+    const { prompt, aspectRatio = '16:9', imageBase64 } = req.body;
+    const model = CREATIVE_STUDIO_MODELS.VIDEO_MODEL;
+    const targetRatio = (aspectRatio === '9:16' ? '9:16' : '16:9') as '16:9' | '9:16';
+
+    if (!prompt && !imageBase64) {
+      return res.status(400).json({ error: 'Prompt oder Bild ist erforderlich für Videogenerierung' });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(401).json({
+        error: 'Google AI Studio API-Schlüssel nicht konfiguriert (GEMINI_API_KEY fehlt).',
+        code: 'MISSING_API_KEY',
+      });
+    }
+
+    let inputPayload: any;
+    if (imageBase64) {
+      const cleanBase64 = imageBase64.replace(/^data:image\/[^;]+;base64,/, '');
+      inputPayload = [
+        {
+          type: 'image',
+          mime_type: 'image/png',
+          data: cleanBase64,
+        },
+        {
+          type: 'text',
+          text:
+            prompt ||
+            'Gentle cinematic motion, natural lighting, modern high quality footage of renewable energy and vocational education in Africa.',
+        },
+      ];
+    } else {
+      inputPayload = prompt;
+    }
+
+    const interaction = await ai.interactions.create(
+      {
+        model,
+        input: inputPayload,
+        background: false,
+        store: false,
+        stream: false,
+        response_format: {
+          type: 'video',
+          aspect_ratio: targetRatio,
+          duration: '5s',
+          resolution: '720p',
+        },
+      },
+      { timeout: 300000 }
+    );
+
+    const videoPart = interaction.output_video;
+    if (videoPart && videoPart.data) {
+      return res.json({
+        success: true,
+        videoUrl: `data:${videoPart.mime_type || 'video/mp4'};base64,${videoPart.data}`,
+        mimeType: videoPart.mime_type || 'video/mp4',
+        modelUsed: model,
+        aspectRatio: targetRatio,
+      });
+    }
+
+    res.status(502).json({ error: 'Keine Videodaten vom Modell zurückgegeben' });
+  } catch (err: unknown) {
+    console.error('Video generation error:', err);
+    res.status(500).json({
+      error: 'Videogenerierung fehlgeschlagen',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
+// Campaign Audio / Soundtrack Generation (Lyria Clip 3 Preview)
+app.post('/api/creative-studio/generate-music', async (req: Request, res: Response) => {
+  try {
+    const { prompt } = req.body;
+    const model = CREATIVE_STUDIO_MODELS.MUSIC_MODEL;
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(401).json({
+        error: 'Google AI Studio API-Schlüssel nicht konfiguriert (GEMINI_API_KEY fehlt).',
+        code: 'MISSING_API_KEY',
+      });
+    }
+
+    const musicPrompt =
+      prompt ||
+      'Uplifting acoustic rhythms blended with modern cinematic ambient warmth, inspiring and optimistic for renewable energy and education.';
+
+    const responseStream = await ai.models.generateContentStream({
+      model,
+      contents: musicPrompt,
+    });
+
+    let audioBase64 = '';
+    let lyrics = '';
+    let mimeType = 'audio/wav';
+
+    for await (const chunk of responseStream) {
+      const parts = chunk.candidates?.[0]?.content?.parts;
+      if (!parts) continue;
+      for (const part of parts) {
+        if (part.inlineData?.data) {
+          if (!audioBase64 && part.inlineData.mimeType) {
+            mimeType = part.inlineData.mimeType;
+          }
+          audioBase64 += part.inlineData.data;
+        }
+        if (part.text && !lyrics) {
+          lyrics = part.text;
+        }
+      }
+    }
+
+    if (audioBase64) {
+      return res.json({
+        success: true,
+        audioUrl: `data:${mimeType};base64,${audioBase64}`,
+        mimeType,
+        lyrics,
+        modelUsed: model,
+      });
+    }
+
+    res.status(502).json({ error: 'Keine Musik-Audiodaten generiert' });
+  } catch (err: unknown) {
+    console.error('Music generation error:', err);
+    res.status(500).json({
+      error: 'Musikgenerierung fehlgeschlagen',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
+// High-Resolution Image Editing & Refinement (Nano Banana 2.1)
+app.post('/api/creative-studio/edit-image', async (req: Request, res: Response) => {
+  try {
+    const { imageBase64, instruction, aspectRatio = '1:1' } = req.body;
+    const model = CREATIVE_STUDIO_MODELS.IMAGE_HIGH_QUALITY_MODEL;
+
+    if (!imageBase64 || !instruction) {
+      return res.status(400).json({ error: 'imageBase64 und Bearbeitungsanweisung (instruction) sind erforderlich' });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(401).json({
+        error: 'Google AI Studio API-Schlüssel nicht konfiguriert (GEMINI_API_KEY fehlt).',
+        code: 'MISSING_API_KEY',
+      });
+    }
+
+    const refImage = resolveReferenceImage(imageBase64);
+    if (!refImage) {
+      return res.status(400).json({ error: 'Referenzbild konnte nicht verarbeitet werden' });
+    }
+
+    const response = await ai.models.generateContent({
+      model,
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              data: refImage.data,
+              mimeType: refImage.mimeType,
+            },
+          },
+          {
+            text: `Edit and refine this image based on the following instruction: ${instruction}. Maintain consistent photographic quality, professional lighting, and realistic nonprofit branding. STRICT: No human faces or persons unless explicitly stated.`,
+          },
+        ],
+      },
+      config: {
+        imageConfig: {
+          aspectRatio: (['1:1', '3:4', '4:3', '9:16', '16:9'].includes(aspectRatio) ? aspectRatio : '1:1') as any,
+          imageSize: '1K',
+        },
+      },
+    });
+
+    const editedImage = extractImageFromResponse(response);
+    if (editedImage) {
+      return res.json({
+        success: true,
+        imageUrl: editedImage,
+        modelUsed: model,
+        instruction,
+      });
+    }
+
+    res.status(502).json({ error: 'Keine Bilddaten nach Bearbeitung zurückgegeben' });
+  } catch (err: unknown) {
+    console.error('Image edit error:', err);
+    const formatted = formatImageGenerationError(err, CREATIVE_STUDIO_MODELS.IMAGE_HIGH_QUALITY_MODEL);
+    return res.status(formatted.status).json(formatted);
   }
 });
 

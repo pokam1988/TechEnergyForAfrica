@@ -19,6 +19,13 @@ import {
   Maximize2,
   Cpu,
   Info,
+  Video,
+  Music,
+  Play,
+  Volume2,
+  Edit3,
+  Sliders,
+  Film,
 } from 'lucide-react';
 
 interface GenerationStudioProps {
@@ -39,6 +46,22 @@ export const GenerationStudio: React.FC<GenerationStudioProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showCostModal, setShowCostModal] = useState(false);
   const [previewModalImage, setPreviewModalImage] = useState<string | null>(null);
+
+  // Video Generation State (Gemini Omni Flash 1.1)
+  const [videoPrompt, setVideoPrompt] = useState('');
+  const [videoAspectRatio, setVideoAspectRatio] = useState<'16:9' | '9:16'>('16:9');
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
+
+  // Music Soundtrack State (Lyria Clip 3 Preview)
+  const [musicPrompt, setMusicPrompt] = useState('');
+  const [isGeneratingMusic, setIsGeneratingMusic] = useState(false);
+  const [generatedAudioUrl, setGeneratedAudioUrl] = useState<string | null>(null);
+  const [generatedLyrics, setGeneratedLyrics] = useState<string | null>(null);
+
+  // Nano Banana 2.1 Refinement & Editing State
+  const [editInstruction, setEditInstruction] = useState('');
+  const [isEditingImage, setIsEditingImage] = useState(false);
 
   // Available formats
   const selectedFormats = campaign.brief.channels as CampaignFormatType[];
@@ -88,6 +111,108 @@ export const GenerationStudio: React.FC<GenerationStudioProps> = ({
       setErrorMessage(message);
     } finally {
       setIsGeneratingMaster(false);
+    }
+  };
+
+  // Nano Banana 2.1 Prompt-Based Image Editing
+  const handleEditMasterImage = async () => {
+    if (!editInstruction.trim() || !campaign.masterVisual?.imageUrl) return;
+    setIsEditingImage(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    try {
+      const res = await fetch('/api/creative-studio/edit-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageBase64: campaign.masterVisual.imageUrl,
+          instruction: editInstruction,
+          aspectRatio: '1:1',
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Fehler bei der Bildbearbeitung');
+      }
+      const data = await res.json();
+      if (data.imageUrl) {
+        onUpdateCampaign({
+          ...campaign,
+          masterVisual: {
+            ...campaign.masterVisual,
+            imageUrl: data.imageUrl,
+            model: data.modelUsed,
+            promptUsed: `${campaign.masterVisual.promptUsed} | Retusche: ${editInstruction}`,
+          },
+        });
+        setSuccessMessage('Master-Visual erfolgreich mit Gemini Nano Banana 2.1 verfeinert.');
+        setEditInstruction('');
+      }
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Bildbearbeitung fehlgeschlagen');
+    } finally {
+      setIsEditingImage(false);
+    }
+  };
+
+  // Gemini Omni Flash 1.1 Video Generation & Animation
+  const handleGenerateCampaignVideo = async () => {
+    setIsGeneratingVideo(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    try {
+      const res = await fetch('/api/creative-studio/generate-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt:
+            videoPrompt ||
+            `Cinematic short video of ${campaign.brief.title}, renewable solar panels in Africa, clean vocational training space, smooth natural camera motion.`,
+          aspectRatio: videoAspectRatio,
+          imageBase64: campaign.masterVisual?.imageUrl,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Videogenerierung fehlgeschlagen');
+      }
+      const data = await res.json();
+      setGeneratedVideoUrl(data.videoUrl);
+      setSuccessMessage(`Kampagnenvideo (${data.aspectRatio}) erfolgreich mit Gemini Omni Flash 1.1 generiert!`);
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Videogenerierung fehlgeschlagen');
+    } finally {
+      setIsGeneratingVideo(false);
+    }
+  };
+
+  // Lyria 3 Clip Soundtrack Generation
+  const handleGenerateCampaignMusic = async () => {
+    setIsGeneratingMusic(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    try {
+      const res = await fetch('/api/creative-studio/generate-music', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt:
+            musicPrompt ||
+            `Uplifting acoustic guitar and African percussion blended with modern ambient synth for ${campaign.brief.title}. Inspiring and professional.`,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Musikgenerierung fehlgeschlagen');
+      }
+      const data = await res.json();
+      setGeneratedAudioUrl(data.audioUrl);
+      setGeneratedLyrics(data.lyrics || null);
+      setSuccessMessage('Kampagnen-Soundtrack (30s) erfolgreich mit Lyria Clip generiert!');
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Musikgenerierung fehlgeschlagen');
+    } finally {
+      setIsGeneratingMusic(false);
     }
   };
 
@@ -360,6 +485,166 @@ export const GenerationStudio: React.FC<GenerationStudioProps> = ({
                 {campaign.masterVisual?.negativePrompt || 'people, person, human, face, silhouette, hand, crowd, deformed equipment'}
               </p>
             </div>
+
+            {/* Nano Banana 2.1 Image Editing & Refinement */}
+            {campaign.masterVisual?.imageUrl && (
+              <div className="p-3 bg-indigo-50/70 rounded-lg border border-indigo-200 space-y-2">
+                <span className="font-bold text-indigo-900 block flex items-center gap-1.5 text-xs">
+                  <Edit3 className="w-3.5 h-3.5 text-indigo-600" />
+                  Gemini Nano Banana 2.1 Feinschliff & Retusche
+                </span>
+                <p className="text-[11px] text-indigo-700">
+                  Präzisieren Sie das Master-Visual per natürlicher Sprachanweisung (z.B. Beleuchtung, Kontrast, Reflexion).
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={editInstruction}
+                    onChange={(e) => setEditInstruction(e.target.value)}
+                    placeholder="z.B. Mehr warmes Tageslicht auf den Solarmodulen..."
+                    className="flex-1 text-xs px-2.5 py-1.5 rounded bg-white border border-indigo-300 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    disabled={isEditingImage}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleEditMasterImage}
+                    disabled={isEditingImage || !editInstruction.trim()}
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded text-xs font-semibold flex items-center gap-1 shrink-0"
+                  >
+                    {isEditingImage ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                    <span>{isEditingImage ? 'Bearbeite...' : 'Verfeinern'}</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Multimedia AI Suite: Video Animation & Soundtrack */}
+      <div className="bg-slate-900 text-white rounded-2xl p-5 shadow-xl border border-slate-800 space-y-5">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-500/30">
+              <Film className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                Multimedia AI Studio (Video & Audio)
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  Omni Flash & Lyria
+                </span>
+              </h3>
+              <p className="text-[11px] text-slate-300">
+                Generieren Sie filmische Videoclips und inspirierende Soundtracks abgestimmt auf Ihre Kampagne.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* 1. Gemini Omni Flash 1.1 Video Studio */}
+          <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-100 flex items-center gap-1.5">
+                <Video className="w-4 h-4 text-purple-400" />
+                Video-Animation (Gemini Omni Flash 1.1)
+              </span>
+              <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded border border-slate-700 text-[10px]">
+                <button
+                  type="button"
+                  onClick={() => setVideoAspectRatio('16:9')}
+                  className={`px-2 py-0.5 rounded font-mono ${videoAspectRatio === '16:9' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                >
+                  16:9
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setVideoAspectRatio('9:16')}
+                  className={`px-2 py-0.5 rounded font-mono ${videoAspectRatio === '9:16' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                >
+                  9:16
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-slate-300">
+              Erstellt einen flüssigen 5s-Videoclip basierend auf dem Master-Visual oder einem Bewegungsprompt.
+            </p>
+
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={videoPrompt}
+                onChange={(e) => setVideoPrompt(e.target.value)}
+                placeholder="z.B. Sanfte Sonnenstrahlen über Solardach, dynamischer Zoom..."
+                className="w-full text-xs px-3 py-2 rounded bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:ring-1 focus:ring-purple-500 placeholder:text-slate-500"
+                disabled={isGeneratingVideo}
+              />
+              <button
+                type="button"
+                onClick={handleGenerateCampaignVideo}
+                disabled={isGeneratingVideo}
+                className="w-full py-2 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs"
+              >
+                {isGeneratingVideo ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                <span>{isGeneratingVideo ? 'Omni Flash animiert Video...' : `Video generieren (${videoAspectRatio})`}</span>
+              </button>
+            </div>
+
+            {/* Video preview player */}
+            {generatedVideoUrl && (
+              <div className="mt-2 rounded-lg overflow-hidden border border-slate-700 bg-black">
+                <video src={generatedVideoUrl} controls autoPlay loop className="w-full max-h-48 object-contain" />
+              </div>
+            )}
+          </div>
+
+          {/* 2. Lyria 3 Clip Soundtrack Studio */}
+          <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-100 flex items-center gap-1.5">
+                <Music className="w-4 h-4 text-emerald-400" />
+                Kampagnen-Soundtrack (Lyria Clip 3)
+              </span>
+              <span className="text-[10px] font-mono text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                30s Audio
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-300">
+              Generiert einen 30-sekündigen Soundtrack zur Untermalung von Social-Media-Videos und Präsentationen.
+            </p>
+
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={musicPrompt}
+                onChange={(e) => setMusicPrompt(e.target.value)}
+                placeholder="z.B. Hoffnungsvolle afrikanische Akustik-Percussion mit warmem Streicher-Arrangement..."
+                className="w-full text-xs px-3 py-2 rounded bg-slate-900 border border-slate-700 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 placeholder:text-slate-500"
+                disabled={isGeneratingMusic}
+              />
+              <button
+                type="button"
+                onClick={handleGenerateCampaignMusic}
+                disabled={isGeneratingMusic}
+                className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-xs rounded-lg transition-colors flex items-center justify-center gap-2 shadow-xs"
+              >
+                {isGeneratingMusic ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Volume2 className="w-3.5 h-3.5" />}
+                <span>{isGeneratingMusic ? 'Lyria komponiert Soundtrack...' : 'Soundtrack generieren (30s)'}</span>
+              </button>
+            </div>
+
+            {/* Audio player */}
+            {generatedAudioUrl && (
+              <div className="mt-2 p-2 bg-slate-900 rounded-lg border border-slate-700 space-y-1">
+                <audio src={generatedAudioUrl} controls className="w-full h-8" />
+                {generatedLyrics && (
+                  <p className="text-[10px] text-slate-400 italic px-1 truncate">Thema: {generatedLyrics}</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
