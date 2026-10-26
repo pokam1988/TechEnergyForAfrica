@@ -63,6 +63,7 @@ export const translations = {
       impact: 'Wirkung & KPI-Monitoring',
       closure: 'Projektabschluss-Workflow',
       creativeStudio: 'Creative Studio',
+      projectIntelligence: 'Project Intelligence',
       audit: 'Revisions- & Audit-Trail',
     },
     categories: {
@@ -237,6 +238,7 @@ export const translations = {
       impact: 'Impact & KPI Monitoring',
       closure: 'Project Closure Workflow',
       creativeStudio: 'Creative Studio',
+      projectIntelligence: 'Project Intelligence',
       audit: 'Compliance & Audit Trail',
     },
     categories: {
@@ -411,6 +413,7 @@ export const translations = {
       impact: "Impact & Suivi des KPI",
       closure: 'Workflow de clôture de projet',
       creativeStudio: 'Creative Studio',
+      projectIntelligence: 'Project Intelligence',
       audit: "Piste d'audit & Conformité",
     },
     categories: {

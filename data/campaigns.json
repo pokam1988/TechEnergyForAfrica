@@ -1,0 +1,630 @@
+[
+  {
+    "id": "camp_dfg_launch_001",
+    "brief": {
+      "id": "brief_dfg_001",
+      "projectId": "proj_dfg_003",
+      "projectTitle": "Digital Future Girls – Solar-Powered IT Hub",
+      "title": "Digital Future Girls: Solar-Inklusion & Bildungschancen",
+      "lifecyclePhase": "fundraising_outreach",
+      "objective": "Mobilisierung von Partnerschaften und Fördergeldern für 10 solarbetriebene Schulungsarbeitsplätze in Kamerun.",
+      "targetAudience": "Gemeinnützige Stiftungen, bilaterale Entwicklungspartner, CSR-Förderer in Deutschland & Kamerun",
+      "mainMessage": "Digitale Zukunft braucht verlässliche Energie: Solarbetriebene IT-Bildung für junge Frauen in Kamerun.",
+      "callToAction": "Werden Sie Bildungspartner von TechEnergy For Africa e.V.",
+      "language": "de",
+      "channels": [
+        "linkedin_graphic",
+        "donor_presentation_cover",
+        "website_hero",
+        "billboard_poster"
+      ],
+      "visualStyle": "modern_flat_vector",
+      "preferredColors": [
+        "#0f2b48",
+        "#10b981",
+        "#f97316"
+      ],
+      "imageDescription": "Moderne solarbetriebene IT-Lernstation mit Laptops, Solarmodulen und grünem Technologie-Umfeld ohne sichtbare Personen.",
+      "textToDisplay": {
+        "headline": "Solar-Bildung für die nächste Generation",
+        "subtitle": "10 verlässliche Lernstationen mit sauberer Solarenergie in Yaoundé",
+        "callToAction": "Jetzt TEFA-Projektpartner werden"
+      },
+      "startDate": "2026-11-01",
+      "endDate": "2027-03-15",
+      "requiredApprovals": [
+        "Projektleitung (Frederic Pokam)",
+        "Vorstand TEFA e.V."
+      ],
+      "supportingDocuments": [
+        "TEFA-2026-CMR-003_Antragsdossier.pdf",
+        "Machbarkeitsstudie_Solar_2026.pdf"
+      ],
+      "noPeopleMode": true,
+      "status": "under_review",
+      "createdAt": "2026-10-22T08:30:00Z",
+      "updatedAt": "2026-10-22T09:15:00Z",
+      "version": 1
+    },
+    "brandIdentity": {
+      "projectName": "Digital Future Girls",
+      "campaignName": "Solar-Inklusion & Bildungschancen",
+      "approvedLogo": {
+        "useOfficialTefaLogo": true,
+        "logoSource": "official_approved_asset",
+        "disclaimer": "Offizielles TEFA e.V. Verbands-Brandmark (genehmigt nach Satzung)."
+      },
+      "colorPalette": {
+        "primary": "#0f2b48",
+        "secondary": "#10b981",
+        "accent": "#f97316",
+        "neutralLight": "#ffffff",
+        "neutralDark": "#0f172a"
+      },
+      "typographyGuidance": {
+        "headingFont": "Plus Jakarta Sans, Inter, system-ui",
+        "bodyFont": "Inter, system-ui, sans-serif",
+        "styleTone": "Professionell, gemeinnützig, zukunftsorientiert und transparent"
+      },
+      "visualComposition": "Klarer Fokus auf saubere Solartechnologie, geöffnete Laptops, Schulungs-Equipment und grüne Entwicklung. Keine Personen.",
+      "visualStyle": "modern_flat_vector",
+      "coreVisualSubject": "Solarenergiesystem und IT-Lernarbeitsplatz",
+      "keyCampaignMessage": "Digitale Zukunft braucht verlässliche Energie.",
+      "noPeopleMode": true,
+      "disallowedVisualElements": [
+        "human figures",
+        "faces",
+        "silhouettes",
+        "crowds",
+        "hands"
+      ],
+      "allowedVisualElements": [
+        "solar panels",
+        "laptops",
+        "books",
+        "seedlings",
+        "circuit boards",
+        "modern clean desks"
+      ]
+    },
+    "masterVisual": {
+      "imageUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%0A%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f2b48%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%231e3a5f%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230a192f%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22solarGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbbf24%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22ecoGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23059669%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3Cpattern%20id%3D%22gridPattern%22%20width%3D%2240%22%20height%3D%2240%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M%2040%200%20L%200%200%200%2040%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fpattern%3E%0A%20%20%20%20%3C%2Fdefs%3E%0A%0A%20%20%20%20%3C!--%20Background%20Layer%20--%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23bgGrad)%22%2F%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23gridPattern)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Abstract%20Horizon%20%26%20Clean%20Renewable%20Energy%20Motif%20(Strict%20No%20People%20Compliance)%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20520%20Q%20300%20480%20600%20530%20T%201200%20500%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(16%2C%20185%2C%20129%2C%200.15)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20580%20Q%20400%20530%20800%20590%20T%201200%20560%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(15%2C%2043%2C%2072%2C%200.4)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Solar%20Panel%20Array%20Graphic%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(420%2C%20360)%22%3E%0A%20%20%20%20%20%20%3C!--%20Base%20structure%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2250%2C160%20270%2C160%20220%2C240%200%2C240%22%20fill%3D%22%231e293b%22%20stroke%3D%22%23334155%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Solar%20photovoltaic%20cells%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C170%20260%2C170%20215%2C230%2015%2C230%22%20fill%3D%22%230f172a%22%20stroke%3D%22url(%23ecoGrad)%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22170%22%20x2%3D%2265%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22160%22%20y1%3D%22170%22%20x2%3D%22115%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22210%22%20y1%3D%22170%22%20x2%3D%22165%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%22200%22%20x2%3D%22238%22%20y2%3D%22200%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Sun%20rays%20%2F%20Clean%20Energy%20Icon%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22280%22%20cy%3D%2280%22%20r%3D%2236%22%20fill%3D%22url(%23solarGrad)%22%20opacity%3D%220.9%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%20280%2028%20L%20280%2016%20M%20280%20144%20L%20280%20132%20M%20228%2080%20L%20216%2080%20M%20344%2080%20L%20332%2080%20M%20243%2043%20L%20234%2034%20M%20326%20126%20L%20317%20117%20M%20243%20117%20L%20234%20126%20M%20326%2034%20L%20317%2043%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Modern%20Educational%20Workstation%20%26%20IT%20Hardware%20(No%20Humans)%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(140%2C%20420)%22%3E%0A%20%20%20%20%20%20%3C!--%20Clean%20Minimalist%20Tech%20Desk%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2280%22%20width%3D%22260%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2220%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%22230%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Laptop%20Open%20with%20Code%20%26%20Green%20Battery%20Indicator%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2270%2C75%20190%2C75%20180%2C20%2080%2C20%22%20fill%3D%22%230f172a%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2285%22%20y%3D%2225%22%20width%3D%2290%22%20height%3D%2245%22%20fill%3D%22%230284c7%22%20opacity%3D%220.85%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Battery%20%2F%20Solar%20Power%20line%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2295%22%20y%3D%2240%22%20width%3D%2230%22%20height%3D%2215%22%20rx%3D%223%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C80%20200%2C80%20215%2C86%2045%2C86%22%20fill%3D%22%23475569%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Seedling%20%26%20Sustainable%20Growth%20Motif%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(860%2C%20460)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20120%20Q%2060%2070%2090%2050%20Q%2080%2090%2060%20120%20Z%22%20fill%3D%22url(%23ecoGrad)%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20100%20Q%2060%2060%2030%2045%20Q%2040%2085%2060%20100%20Z%22%20fill%3D%22%2334d399%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2295%22%20width%3D%224%22%20height%3D%2245%22%20fill%3D%22%23065f46%22%20rx%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Smart%20sensor%20node%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2240%22%20r%3D%228%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%2032%20A%2016%2016%200%200%201%2076%2048%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.7)%22%20fill%3D%22none%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Subtle%20Tech%20%2F%20Network%20Nodes%20--%3E%0A%20%20%20%20%3Cg%20stroke%3D%22rgba(255%2C255%2C255%2C0.2)%22%20stroke-width%3D%221.5%22%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%224%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22360%22%20cy%3D%22140%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22580%22%20cy%3D%22190%22%20r%3D%224%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22150%22%20r%3D%226%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22220%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22360%22%20y2%3D%22140%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22360%22%20y1%3D%22140%22%20x2%3D%22580%22%20y2%3D%22190%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22580%22%20y1%3D%22190%22%20x2%3D%22820%22%20y2%3D%22150%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22150%22%20x2%3D%22980%22%20y2%3D%22220%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Watermark%20%2F%20Format%20Identity%20Tag%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%22720%22%20width%3D%22360%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22rgba(15%2C%2023%2C%2042%2C%200.75)%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.1)%22%2F%3E%0A%20%20%20%20%3Ctext%20x%3D%2255%22%20y%3D%22744%22%20fill%3D%22%2394a3b8%22%20font-family%3D%22system-ui%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%3E%0A%20%20%20%20%20%20TEFA%20CREATIVE%20STUDIO%20%7C%20NO-PEOPLE%20ARTWORK%20%5BMASTER_VISUAL%5D%0A%20%20%20%20%3C%2Ftext%3E%0A%20%20%3C%2Fsvg%3E",
+      "promptUsed": "High-tech solar-powered digital education hub in Cameroon. Photovoltaic panels, clean educational computer desks with open laptops, books, green energy accumulator, vibrant sun rays, modern eco-classroom setup. Professional architectural concept art. STRICT CONSTRAINT: NO humans, NO faces, NO human silhouettes, NO hands, NO crowds.",
+      "negativePrompt": "people, person, human, face, silhouette, hand, crowd, messy, distorted logos, unrealistic technology",
+      "generatedAt": "2026-10-22T09:00:00Z",
+      "model": "gemini-3.1-flash-lite-image",
+      "isApprovedAsMaster": true
+    },
+    "selectedFormats": [
+      "billboard_poster",
+      "instagram_square",
+      "linkedin_graphic",
+      "website_hero",
+      "donor_presentation_cover"
+    ],
+    "assets": [
+      {
+        "id": "asset_dfg_billboard_001",
+        "campaignId": "camp_dfg_launch_001",
+        "format": "billboard_poster",
+        "version": 1,
+        "imageUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%0A%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f2b48%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%231e3a5f%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230a192f%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22solarGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbbf24%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22ecoGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23059669%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3Cpattern%20id%3D%22gridPattern%22%20width%3D%2240%22%20height%3D%2240%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M%2040%200%20L%200%200%200%2040%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fpattern%3E%0A%20%20%20%20%3C%2Fdefs%3E%0A%0A%20%20%20%20%3C!--%20Background%20Layer%20--%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23bgGrad)%22%2F%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23gridPattern)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Abstract%20Horizon%20%26%20Clean%20Renewable%20Energy%20Motif%20(Strict%20No%20People%20Compliance)%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20520%20Q%20300%20480%20600%20530%20T%201200%20500%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(16%2C%20185%2C%20129%2C%200.15)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20580%20Q%20400%20530%20800%20590%20T%201200%20560%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(15%2C%2043%2C%2072%2C%200.4)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Solar%20Panel%20Array%20Graphic%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(420%2C%20360)%22%3E%0A%20%20%20%20%20%20%3C!--%20Base%20structure%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2250%2C160%20270%2C160%20220%2C240%200%2C240%22%20fill%3D%22%231e293b%22%20stroke%3D%22%23334155%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Solar%20photovoltaic%20cells%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C170%20260%2C170%20215%2C230%2015%2C230%22%20fill%3D%22%230f172a%22%20stroke%3D%22url(%23ecoGrad)%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22170%22%20x2%3D%2265%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22160%22%20y1%3D%22170%22%20x2%3D%22115%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22210%22%20y1%3D%22170%22%20x2%3D%22165%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%22200%22%20x2%3D%22238%22%20y2%3D%22200%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Sun%20rays%20%2F%20Clean%20Energy%20Icon%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22280%22%20cy%3D%2280%22%20r%3D%2236%22%20fill%3D%22url(%23solarGrad)%22%20opacity%3D%220.9%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%20280%2028%20L%20280%2016%20M%20280%20144%20L%20280%20132%20M%20228%2080%20L%20216%2080%20M%20344%2080%20L%20332%2080%20M%20243%2043%20L%20234%2034%20M%20326%20126%20L%20317%20117%20M%20243%20117%20L%20234%20126%20M%20326%2034%20L%20317%2043%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Modern%20Educational%20Workstation%20%26%20IT%20Hardware%20(No%20Humans)%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(140%2C%20420)%22%3E%0A%20%20%20%20%20%20%3C!--%20Clean%20Minimalist%20Tech%20Desk%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2280%22%20width%3D%22260%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2220%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%22230%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Laptop%20Open%20with%20Code%20%26%20Green%20Battery%20Indicator%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2270%2C75%20190%2C75%20180%2C20%2080%2C20%22%20fill%3D%22%230f172a%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2285%22%20y%3D%2225%22%20width%3D%2290%22%20height%3D%2245%22%20fill%3D%22%230284c7%22%20opacity%3D%220.85%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Battery%20%2F%20Solar%20Power%20line%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2295%22%20y%3D%2240%22%20width%3D%2230%22%20height%3D%2215%22%20rx%3D%223%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C80%20200%2C80%20215%2C86%2045%2C86%22%20fill%3D%22%23475569%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Seedling%20%26%20Sustainable%20Growth%20Motif%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(860%2C%20460)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20120%20Q%2060%2070%2090%2050%20Q%2080%2090%2060%20120%20Z%22%20fill%3D%22url(%23ecoGrad)%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20100%20Q%2060%2060%2030%2045%20Q%2040%2085%2060%20100%20Z%22%20fill%3D%22%2334d399%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2295%22%20width%3D%224%22%20height%3D%2245%22%20fill%3D%22%23065f46%22%20rx%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Smart%20sensor%20node%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2240%22%20r%3D%228%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%2032%20A%2016%2016%200%200%201%2076%2048%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.7)%22%20fill%3D%22none%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Subtle%20Tech%20%2F%20Network%20Nodes%20--%3E%0A%20%20%20%20%3Cg%20stroke%3D%22rgba(255%2C255%2C255%2C0.2)%22%20stroke-width%3D%221.5%22%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%224%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22360%22%20cy%3D%22140%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22580%22%20cy%3D%22190%22%20r%3D%224%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22150%22%20r%3D%226%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22220%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22360%22%20y2%3D%22140%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22360%22%20y1%3D%22140%22%20x2%3D%22580%22%20y2%3D%22190%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22580%22%20y1%3D%22190%22%20x2%3D%22820%22%20y2%3D%22150%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22150%22%20x2%3D%22980%22%20y2%3D%22220%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Watermark%20%2F%20Format%20Identity%20Tag%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%22720%22%20width%3D%22360%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22rgba(15%2C%2023%2C%2042%2C%200.75)%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.1)%22%2F%3E%0A%20%20%20%20%3Ctext%20x%3D%2255%22%20y%3D%22744%22%20fill%3D%22%2394a3b8%22%20font-family%3D%22system-ui%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%3E%0A%20%20%20%20%20%20TEFA%20CREATIVE%20STUDIO%20%7C%20NO-PEOPLE%20ARTWORK%20%5BBILLBOARD_POSTER%5D%0A%20%20%20%20%3C%2Ftext%3E%0A%20%20%3C%2Fsvg%3E",
+        "headline": "Solar-Bildung für die nächste Generation",
+        "subtitle": "10 verlässliche Lernstationen mit Solarenergie in Yaoundé",
+        "callToAction": "Jetzt Bildungspartner von TEFA e.V. werden",
+        "overlayConfig": {
+          "headline": "Solar-Bildung für die nächste Generation",
+          "subtitle": "10 verlässliche Lernstationen mit Solarenergie in Yaoundé",
+          "callToAction": "Jetzt Bildungspartner von TEFA e.V. werden",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "left",
+          "fontSize": "prominent",
+          "textColor": "light",
+          "overlayOpacity": 0.35,
+          "badgeText": "TEFA BILDUNGSINITIATIVE 2026/2027"
+        },
+        "status": "under_review",
+        "createdAt": "2026-10-22T09:10:00Z",
+        "updatedAt": "2026-10-22T09:10:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_dfg_insta_002",
+        "campaignId": "camp_dfg_launch_001",
+        "format": "instagram_square",
+        "version": 1,
+        "imageUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%0A%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f2b48%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%231e3a5f%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230a192f%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22solarGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbbf24%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22ecoGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23059669%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3Cpattern%20id%3D%22gridPattern%22%20width%3D%2240%22%20height%3D%2240%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M%2040%200%20L%200%200%200%2040%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fpattern%3E%0A%20%20%20%20%3C%2Fdefs%3E%0A%0A%20%20%20%20%3C!--%20Background%20Layer%20--%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23bgGrad)%22%2F%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23gridPattern)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Abstract%20Horizon%20%26%20Clean%20Renewable%20Energy%20Motif%20(Strict%20No%20People%20Compliance)%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20520%20Q%20300%20480%20600%20530%20T%201200%20500%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(16%2C%20185%2C%20129%2C%200.15)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20580%20Q%20400%20530%20800%20590%20T%201200%20560%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(15%2C%2043%2C%2072%2C%200.4)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Solar%20Panel%20Array%20Graphic%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(420%2C%20360)%22%3E%0A%20%20%20%20%20%20%3C!--%20Base%20structure%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2250%2C160%20270%2C160%20220%2C240%200%2C240%22%20fill%3D%22%231e293b%22%20stroke%3D%22%23334155%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Solar%20photovoltaic%20cells%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C170%20260%2C170%20215%2C230%2015%2C230%22%20fill%3D%22%230f172a%22%20stroke%3D%22url(%23ecoGrad)%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22170%22%20x2%3D%2265%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22160%22%20y1%3D%22170%22%20x2%3D%22115%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22210%22%20y1%3D%22170%22%20x2%3D%22165%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%22200%22%20x2%3D%22238%22%20y2%3D%22200%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Sun%20rays%20%2F%20Clean%20Energy%20Icon%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22280%22%20cy%3D%2280%22%20r%3D%2236%22%20fill%3D%22url(%23solarGrad)%22%20opacity%3D%220.9%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%20280%2028%20L%20280%2016%20M%20280%20144%20L%20280%20132%20M%20228%2080%20L%20216%2080%20M%20344%2080%20L%20332%2080%20M%20243%2043%20L%20234%2034%20M%20326%20126%20L%20317%20117%20M%20243%20117%20L%20234%20126%20M%20326%2034%20L%20317%2043%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Modern%20Educational%20Workstation%20%26%20IT%20Hardware%20(No%20Humans)%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(140%2C%20420)%22%3E%0A%20%20%20%20%20%20%3C!--%20Clean%20Minimalist%20Tech%20Desk%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2280%22%20width%3D%22260%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2220%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%22230%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Laptop%20Open%20with%20Code%20%26%20Green%20Battery%20Indicator%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2270%2C75%20190%2C75%20180%2C20%2080%2C20%22%20fill%3D%22%230f172a%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2285%22%20y%3D%2225%22%20width%3D%2290%22%20height%3D%2245%22%20fill%3D%22%230284c7%22%20opacity%3D%220.85%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Battery%20%2F%20Solar%20Power%20line%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2295%22%20y%3D%2240%22%20width%3D%2230%22%20height%3D%2215%22%20rx%3D%223%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C80%20200%2C80%20215%2C86%2045%2C86%22%20fill%3D%22%23475569%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Seedling%20%26%20Sustainable%20Growth%20Motif%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(860%2C%20460)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20120%20Q%2060%2070%2090%2050%20Q%2080%2090%2060%20120%20Z%22%20fill%3D%22url(%23ecoGrad)%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20100%20Q%2060%2060%2030%2045%20Q%2040%2085%2060%20100%20Z%22%20fill%3D%22%2334d399%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2295%22%20width%3D%224%22%20height%3D%2245%22%20fill%3D%22%23065f46%22%20rx%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Smart%20sensor%20node%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2240%22%20r%3D%228%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%2032%20A%2016%2016%200%200%201%2076%2048%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.7)%22%20fill%3D%22none%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Subtle%20Tech%20%2F%20Network%20Nodes%20--%3E%0A%20%20%20%20%3Cg%20stroke%3D%22rgba(255%2C255%2C255%2C0.2)%22%20stroke-width%3D%221.5%22%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%224%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22360%22%20cy%3D%22140%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22580%22%20cy%3D%22190%22%20r%3D%224%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22150%22%20r%3D%226%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22220%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22360%22%20y2%3D%22140%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22360%22%20y1%3D%22140%22%20x2%3D%22580%22%20y2%3D%22190%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22580%22%20y1%3D%22190%22%20x2%3D%22820%22%20y2%3D%22150%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22150%22%20x2%3D%22980%22%20y2%3D%22220%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Watermark%20%2F%20Format%20Identity%20Tag%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%22720%22%20width%3D%22360%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22rgba(15%2C%2023%2C%2042%2C%200.75)%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.1)%22%2F%3E%0A%20%20%20%20%3Ctext%20x%3D%2255%22%20y%3D%22744%22%20fill%3D%22%2394a3b8%22%20font-family%3D%22system-ui%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%3E%0A%20%20%20%20%20%20TEFA%20CREATIVE%20STUDIO%20%7C%20NO-PEOPLE%20ARTWORK%20%5BINSTAGRAM_SQUARE%5D%0A%20%20%20%20%3C%2Ftext%3E%0A%20%20%3C%2Fsvg%3E",
+        "headline": "Digital Future Girls",
+        "subtitle": "Bildungschancen durch saubere Solarenergie",
+        "callToAction": "Erfahre mehr auf techenergyforafrica.com",
+        "overlayConfig": {
+          "headline": "Digital Future Girls",
+          "subtitle": "Bildungschancen durch saubere Solarenergie",
+          "callToAction": "Erfahre mehr auf techenergyforafrica.com",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "center",
+          "fontSize": "medium",
+          "textColor": "light",
+          "overlayOpacity": 0.4,
+          "badgeText": "INNOVATION & SOLAR"
+        },
+        "status": "under_review",
+        "createdAt": "2026-10-22T09:11:00Z",
+        "updatedAt": "2026-10-22T09:11:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_dfg_linkedin_003",
+        "campaignId": "camp_dfg_launch_001",
+        "format": "linkedin_graphic",
+        "version": 1,
+        "imageUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%0A%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f2b48%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%231e3a5f%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230a192f%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22solarGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbbf24%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22ecoGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23059669%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3Cpattern%20id%3D%22gridPattern%22%20width%3D%2240%22%20height%3D%2240%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M%2040%200%20L%200%200%200%2040%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fpattern%3E%0A%20%20%20%20%3C%2Fdefs%3E%0A%0A%20%20%20%20%3C!--%20Background%20Layer%20--%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23bgGrad)%22%2F%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23gridPattern)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Abstract%20Horizon%20%26%20Clean%20Renewable%20Energy%20Motif%20(Strict%20No%20People%20Compliance)%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20520%20Q%20300%20480%20600%20530%20T%201200%20500%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(16%2C%20185%2C%20129%2C%200.15)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20580%20Q%20400%20530%20800%20590%20T%201200%20560%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(15%2C%2043%2C%2072%2C%200.4)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Solar%20Panel%20Array%20Graphic%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(420%2C%20360)%22%3E%0A%20%20%20%20%20%20%3C!--%20Base%20structure%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2250%2C160%20270%2C160%20220%2C240%200%2C240%22%20fill%3D%22%231e293b%22%20stroke%3D%22%23334155%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Solar%20photovoltaic%20cells%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C170%20260%2C170%20215%2C230%2015%2C230%22%20fill%3D%22%230f172a%22%20stroke%3D%22url(%23ecoGrad)%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22170%22%20x2%3D%2265%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22160%22%20y1%3D%22170%22%20x2%3D%22115%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22210%22%20y1%3D%22170%22%20x2%3D%22165%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%22200%22%20x2%3D%22238%22%20y2%3D%22200%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Sun%20rays%20%2F%20Clean%20Energy%20Icon%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22280%22%20cy%3D%2280%22%20r%3D%2236%22%20fill%3D%22url(%23solarGrad)%22%20opacity%3D%220.9%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%20280%2028%20L%20280%2016%20M%20280%20144%20L%20280%20132%20M%20228%2080%20L%20216%2080%20M%20344%2080%20L%20332%2080%20M%20243%2043%20L%20234%2034%20M%20326%20126%20L%20317%20117%20M%20243%20117%20L%20234%20126%20M%20326%2034%20L%20317%2043%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Modern%20Educational%20Workstation%20%26%20IT%20Hardware%20(No%20Humans)%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(140%2C%20420)%22%3E%0A%20%20%20%20%20%20%3C!--%20Clean%20Minimalist%20Tech%20Desk%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2280%22%20width%3D%22260%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2220%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%22230%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Laptop%20Open%20with%20Code%20%26%20Green%20Battery%20Indicator%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2270%2C75%20190%2C75%20180%2C20%2080%2C20%22%20fill%3D%22%230f172a%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2285%22%20y%3D%2225%22%20width%3D%2290%22%20height%3D%2245%22%20fill%3D%22%230284c7%22%20opacity%3D%220.85%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Battery%20%2F%20Solar%20Power%20line%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2295%22%20y%3D%2240%22%20width%3D%2230%22%20height%3D%2215%22%20rx%3D%223%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C80%20200%2C80%20215%2C86%2045%2C86%22%20fill%3D%22%23475569%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Seedling%20%26%20Sustainable%20Growth%20Motif%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(860%2C%20460)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20120%20Q%2060%2070%2090%2050%20Q%2080%2090%2060%20120%20Z%22%20fill%3D%22url(%23ecoGrad)%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20100%20Q%2060%2060%2030%2045%20Q%2040%2085%2060%20100%20Z%22%20fill%3D%22%2334d399%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2295%22%20width%3D%224%22%20height%3D%2245%22%20fill%3D%22%23065f46%22%20rx%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Smart%20sensor%20node%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2240%22%20r%3D%228%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%2032%20A%2016%2016%200%200%201%2076%2048%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.7)%22%20fill%3D%22none%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Subtle%20Tech%20%2F%20Network%20Nodes%20--%3E%0A%20%20%20%20%3Cg%20stroke%3D%22rgba(255%2C255%2C255%2C0.2)%22%20stroke-width%3D%221.5%22%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%224%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22360%22%20cy%3D%22140%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22580%22%20cy%3D%22190%22%20r%3D%224%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22150%22%20r%3D%226%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22220%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22360%22%20y2%3D%22140%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22360%22%20y1%3D%22140%22%20x2%3D%22580%22%20y2%3D%22190%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22580%22%20y1%3D%22190%22%20x2%3D%22820%22%20y2%3D%22150%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22150%22%20x2%3D%22980%22%20y2%3D%22220%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Watermark%20%2F%20Format%20Identity%20Tag%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%22720%22%20width%3D%22360%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22rgba(15%2C%2023%2C%2042%2C%200.75)%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.1)%22%2F%3E%0A%20%20%20%20%3Ctext%20x%3D%2255%22%20y%3D%22744%22%20fill%3D%22%2394a3b8%22%20font-family%3D%22system-ui%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%3E%0A%20%20%20%20%20%20TEFA%20CREATIVE%20STUDIO%20%7C%20NO-PEOPLE%20ARTWORK%20%5BLINKEDIN_GRAPHIC%5D%0A%20%20%20%20%3C%2Ftext%3E%0A%20%20%3C%2Fsvg%3E",
+        "headline": "Zukunftsfähige IT-Infrastruktur in Kamerun",
+        "subtitle": "Wie TechEnergy For Africa e.V. erneuerbare Energien mit digitaler Bildung verknüpft",
+        "callToAction": "Partnerschaft anfragen",
+        "overlayConfig": {
+          "headline": "Zukunftsfähige IT-Infrastruktur in Kamerun",
+          "subtitle": "Wie TechEnergy For Africa e.V. erneuerbare Energien mit digitaler Bildung verknüpft",
+          "callToAction": "Partnerschaft anfragen",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-right",
+          "textAlignment": "left",
+          "fontSize": "medium",
+          "textColor": "light",
+          "overlayOpacity": 0.35,
+          "badgeText": "PARTNERSCHAFT & CSR"
+        },
+        "status": "under_review",
+        "createdAt": "2026-10-22T09:12:00Z",
+        "updatedAt": "2026-10-22T09:12:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_dfg_donor_004",
+        "campaignId": "camp_dfg_launch_001",
+        "format": "donor_presentation_cover",
+        "version": 1,
+        "imageUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201200%20800%22%20width%3D%22100%25%22%20height%3D%22100%25%22%3E%0A%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bgGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230f2b48%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%231e3a5f%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230a192f%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22solarGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fbbf24%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3ClinearGradient%20id%3D%22ecoGrad%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23059669%22%2F%3E%0A%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3Cpattern%20id%3D%22gridPattern%22%20width%3D%2240%22%20height%3D%2240%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M%2040%200%20L%200%200%200%2040%22%20fill%3D%22none%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.05)%22%20stroke-width%3D%221%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fpattern%3E%0A%20%20%20%20%3C%2Fdefs%3E%0A%0A%20%20%20%20%3C!--%20Background%20Layer%20--%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23bgGrad)%22%2F%3E%0A%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22800%22%20fill%3D%22url(%23gridPattern)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Abstract%20Horizon%20%26%20Clean%20Renewable%20Energy%20Motif%20(Strict%20No%20People%20Compliance)%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20520%20Q%20300%20480%20600%20530%20T%201200%20500%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(16%2C%20185%2C%20129%2C%200.15)%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%20580%20Q%20400%20530%20800%20590%20T%201200%20560%20L%201200%20800%20L%200%20800%20Z%22%20fill%3D%22rgba(15%2C%2043%2C%2072%2C%200.4)%22%2F%3E%0A%0A%20%20%20%20%3C!--%20Solar%20Panel%20Array%20Graphic%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(420%2C%20360)%22%3E%0A%20%20%20%20%20%20%3C!--%20Base%20structure%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2250%2C160%20270%2C160%20220%2C240%200%2C240%22%20fill%3D%22%231e293b%22%20stroke%3D%22%23334155%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Solar%20photovoltaic%20cells%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C170%20260%2C170%20215%2C230%2015%2C230%22%20fill%3D%22%230f172a%22%20stroke%3D%22url(%23ecoGrad)%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22110%22%20y1%3D%22170%22%20x2%3D%2265%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22160%22%20y1%3D%22170%22%20x2%3D%22115%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22210%22%20y1%3D%22170%22%20x2%3D%22165%22%20y2%3D%22230%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%2238%22%20y1%3D%22200%22%20x2%3D%22238%22%20y2%3D%22200%22%20stroke%3D%22%2338bdf8%22%20stroke-width%3D%221.5%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Sun%20rays%20%2F%20Clean%20Energy%20Icon%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22280%22%20cy%3D%2280%22%20r%3D%2236%22%20fill%3D%22url(%23solarGrad)%22%20opacity%3D%220.9%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%20280%2028%20L%20280%2016%20M%20280%20144%20L%20280%20132%20M%20228%2080%20L%20216%2080%20M%20344%2080%20L%20332%2080%20M%20243%2043%20L%20234%2034%20M%20326%20126%20L%20317%20117%20M%20243%20117%20L%20234%20126%20M%20326%2034%20L%20317%2043%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Modern%20Educational%20Workstation%20%26%20IT%20Hardware%20(No%20Humans)%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(140%2C%20420)%22%3E%0A%20%20%20%20%20%20%3C!--%20Clean%20Minimalist%20Tech%20Desk%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2280%22%20width%3D%22260%22%20height%3D%2212%22%20rx%3D%224%22%20fill%3D%22%23334155%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2220%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%22230%22%20y%3D%2292%22%20width%3D%2210%22%20height%3D%2290%22%20fill%3D%22%231e293b%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Laptop%20Open%20with%20Code%20%26%20Green%20Battery%20Indicator%20--%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2270%2C75%20190%2C75%20180%2C20%2080%2C20%22%20fill%3D%22%230f172a%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2285%22%20y%3D%2225%22%20width%3D%2290%22%20height%3D%2245%22%20fill%3D%22%230284c7%22%20opacity%3D%220.85%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Battery%20%2F%20Solar%20Power%20line%20--%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2295%22%20y%3D%2240%22%20width%3D%2230%22%20height%3D%2215%22%20rx%3D%223%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cpolygon%20points%3D%2260%2C80%20200%2C80%20215%2C86%2045%2C86%22%20fill%3D%22%23475569%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Seedling%20%26%20Sustainable%20Growth%20Motif%20--%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(860%2C%20460)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20120%20Q%2060%2070%2090%2050%20Q%2080%2090%2060%20120%20Z%22%20fill%3D%22url(%23ecoGrad)%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%20100%20Q%2060%2060%2030%2045%20Q%2040%2085%2060%20100%20Z%22%20fill%3D%22%2334d399%22%2F%3E%0A%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%2295%22%20width%3D%224%22%20height%3D%2245%22%20fill%3D%22%23065f46%22%20rx%3D%222%22%2F%3E%0A%20%20%20%20%20%20%3C!--%20Smart%20sensor%20node%20--%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%2240%22%20r%3D%228%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M%2060%2032%20A%2016%2016%200%200%201%2076%2048%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.7)%22%20fill%3D%22none%22%20stroke-width%3D%222%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Subtle%20Tech%20%2F%20Network%20Nodes%20--%3E%0A%20%20%20%20%3Cg%20stroke%3D%22rgba(255%2C255%2C255%2C0.2)%22%20stroke-width%3D%221.5%22%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22200%22%20cy%3D%22180%22%20r%3D%224%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22360%22%20cy%3D%22140%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22580%22%20cy%3D%22190%22%20r%3D%224%22%20fill%3D%22%23f97316%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22820%22%20cy%3D%22150%22%20r%3D%226%22%20fill%3D%22%2338bdf8%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22220%22%20r%3D%225%22%20fill%3D%22%2310b981%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22200%22%20y1%3D%22180%22%20x2%3D%22360%22%20y2%3D%22140%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22360%22%20y1%3D%22140%22%20x2%3D%22580%22%20y2%3D%22190%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22580%22%20y1%3D%22190%22%20x2%3D%22820%22%20y2%3D%22150%22%2F%3E%0A%20%20%20%20%20%20%3Cline%20x1%3D%22820%22%20y1%3D%22150%22%20x2%3D%22980%22%20y2%3D%22220%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%0A%20%20%20%20%3C!--%20Watermark%20%2F%20Format%20Identity%20Tag%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%22720%22%20width%3D%22360%22%20height%3D%2236%22%20rx%3D%228%22%20fill%3D%22rgba(15%2C%2023%2C%2042%2C%200.75)%22%20stroke%3D%22rgba(255%2C255%2C255%2C0.1)%22%2F%3E%0A%20%20%20%20%3Ctext%20x%3D%2255%22%20y%3D%22744%22%20fill%3D%22%2394a3b8%22%20font-family%3D%22system-ui%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22600%22%3E%0A%20%20%20%20%20%20TEFA%20CREATIVE%20STUDIO%20%7C%20NO-PEOPLE%20ARTWORK%20%5BDONOR_PRESENTATION_COVER%5D%0A%20%20%20%20%3C%2Ftext%3E%0A%20%20%3C%2Fsvg%3E",
+        "headline": "Projekt-Dossier: Digital Future Girls",
+        "subtitle": "Investition in nachhaltige Bildungsinfrastruktur in Kamerun",
+        "callToAction": "TechEnergy For Africa e.V. – Förderübersicht 2026/2027",
+        "overlayConfig": {
+          "headline": "Projekt-Dossier: Digital Future Girls",
+          "subtitle": "Investition in nachhaltige Bildungsinfrastruktur in Kamerun",
+          "callToAction": "TechEnergy For Africa e.V. – Förderübersicht 2026/2027",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "left",
+          "fontSize": "prominent",
+          "textColor": "light",
+          "overlayOpacity": 0.45,
+          "badgeText": "STIFTER-PRÄSENTATION"
+        },
+        "status": "under_review",
+        "createdAt": "2026-10-22T09:13:00Z",
+        "updatedAt": "2026-10-22T09:13:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      }
+    ],
+    "approvalHistory": [
+      {
+        "id": "app_hist_001",
+        "status": "draft",
+        "changedBy": "Frederic Pokam",
+        "changedByRole": "project_manager",
+        "timestamp": "2026-10-22T08:30:00Z",
+        "comment": "Kampagnen-Briefing und Master-Visual für Digital Future Girls erstellt."
+      },
+      {
+        "id": "app_hist_002",
+        "status": "under_review",
+        "changedBy": "Frederic Pokam",
+        "changedByRole": "project_manager",
+        "timestamp": "2026-10-22T09:15:00Z",
+        "comment": "Zur Prüfung an den Vorstand vorgelegt. Externe Veröffentlichung steht aus."
+      }
+    ],
+    "isSavedToProject": true,
+    "savedToProjectId": "proj_dfg_003"
+  },
+  {
+    "id": "camp_ifopsim_inclusive_002",
+    "brief": {
+      "id": "brief_ifopsim_002",
+      "projectId": "proj_ifopsim_001",
+      "projectTitle": "IFOPSIM – Inclusive Digital Vocational Training, Cameroon",
+      "title": "Digital Skills. Inclusive Futures.",
+      "lifecyclePhase": "idea_proposal",
+      "objective": "Present the concept of an inclusive digital vocational training initiative for deaf and hard-of-hearing young people in Cameroon.",
+      "targetAudience": "Young deaf people, educational institutions, potential project partners, and donors.",
+      "mainMessage": "IFOPSIM – Digital Skills. Inclusive Futures.: Presenting the concept of an inclusive, barrier-free digital vocational training lab for deaf and hard-of-hearing young people in Cameroon.",
+      "callToAction": "Discover the initiative",
+      "language": "en",
+      "channels": [
+        "donor_presentation_cover",
+        "linkedin_graphic",
+        "billboard_poster"
+      ],
+      "visualStyle": "photo_documentary",
+      "preferredColors": [
+        "#0f2b48",
+        "#10b981",
+        "#ffffff",
+        "#f97316"
+      ],
+      "imageDescription": "A modern, welcoming digital learning environment featuring computers, educational technology, accessible visual learning materials, and a subtle connection to Cameroon. Strictly no people, faces, hands, or silhouettes.",
+      "textToDisplay": {
+        "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+        "subtitle": "An inclusive vocational education initiative in development.",
+        "callToAction": "Discover the initiative"
+      },
+      "startDate": "2026-11-01",
+      "endDate": "2027-05-31",
+      "requiredApprovals": [
+        "Vorstand TEFA e.V.",
+        "Projektleitung (Marc Tagne)"
+      ],
+      "supportingDocuments": [
+        "IFOPSIM_Inclusive_Vocational_Concept_Note_Draft.pdf"
+      ],
+      "noPeopleMode": true,
+      "status": "draft",
+      "createdAt": "2026-10-24T10:00:00Z",
+      "updatedAt": "2026-10-24T10:00:00Z",
+      "version": 1
+    },
+    "brandIdentity": {
+      "projectName": "IFOPSIM",
+      "campaignName": "Digital Skills. Inclusive Futures.",
+      "approvedLogo": {
+        "useOfficialTefaLogo": true,
+        "logoSource": "official_approved_asset",
+        "disclaimer": "Offizielles TEFA e.V. Verbands-Brandmark (genehmigt nach Satzung)."
+      },
+      "colorPalette": {
+        "primary": "#0f2b48",
+        "secondary": "#10b981",
+        "accent": "#f97316",
+        "neutralLight": "#ffffff",
+        "neutralDark": "#0f172a"
+      },
+      "typographyGuidance": {
+        "headingFont": "Plus Jakarta Sans, Inter, system-ui",
+        "bodyFont": "Inter, system-ui, sans-serif",
+        "styleTone": "Modern, welcoming, professional, realistic, environmentally conscious"
+      },
+      "visualComposition": "Modern digital vocational classroom in Douala Cameroon with accessible computer workstations, visual sign language learning charts, tropical plants, solar backup unit, warm sunlight, zero humans.",
+      "visualStyle": "photo_documentary",
+      "coreVisualSubject": "Accessible digital vocational training laboratory for deaf and hard-of-hearing learners in Cameroon",
+      "keyCampaignMessage": "Digital Skills. Inclusive Futures.",
+      "noPeopleMode": true,
+      "disallowedVisualElements": [
+        "human figures",
+        "faces",
+        "silhouettes",
+        "crowds",
+        "hands"
+      ],
+      "allowedVisualElements": [
+        "computers",
+        "laptops",
+        "tablets",
+        "chalkboard diagrams",
+        "sign language charts",
+        "solar backup unit",
+        "tropical plants",
+        "wooden desks"
+      ]
+    },
+    "masterVisual": {
+      "imageUrl": "/assets/images/ifopsim_master_visual_1792938889435.jpg",
+      "promptUsed": "Modern welcoming digital vocational training classroom concept in Cameroon designed for inclusive education for deaf and hard-of-hearing learners. Wooden desks with open laptop computers displaying accessible visual interfaces and graphic learning materials, tablet stands with colorful visual study charts, large chalkboard with clean diagrams, subtle Douala Cameroon architectural accents, warm natural tropical sunlight through windows, lush green indoor plants, clean solar-battery power unit mounted neatly in background. Strictly NO people, NO human figures, NO faces, NO human silhouettes, NO hands, NO crowds.",
+      "negativePrompt": "people, person, human, face, silhouette, hand, crowd, messy, distorted logos, unrealistic technology",
+      "generatedAt": "2026-10-25T07:34:50Z",
+      "model": "gemini-3.1-flash-lite-image",
+      "isApprovedAsMaster": true
+    },
+    "selectedFormats": [
+      "donor_presentation_cover",
+      "linkedin_graphic",
+      "billboard_poster"
+    ],
+    "assets": [
+      {
+        "id": "asset_ifopsim_presentation_001",
+        "campaignId": "camp_ifopsim_inclusive_002",
+        "format": "donor_presentation_cover",
+        "version": 1,
+        "imageUrl": "/assets/images/ifopsim_master_visual_1792938889435.jpg",
+        "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+        "subtitle": "An inclusive vocational education initiative in development.",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+          "subtitle": "An inclusive vocational education initiative in development.",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "left",
+          "fontSize": "prominent",
+          "textColor": "light",
+          "overlayOpacity": 0.38,
+          "badgeText": "PROJECT PRESENTATION CONCEPT"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-24T10:05:00Z",
+        "updatedAt": "2026-10-24T10:05:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_ifopsim_linkedin_002",
+        "campaignId": "camp_ifopsim_inclusive_002",
+        "format": "linkedin_graphic",
+        "version": 1,
+        "imageUrl": "/assets/images/ifopsim_master_visual_1792938889435.jpg",
+        "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+        "subtitle": "An inclusive vocational education initiative in development.",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+          "subtitle": "An inclusive vocational education initiative in development.",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-right",
+          "textAlignment": "left",
+          "fontSize": "medium",
+          "textColor": "light",
+          "overlayOpacity": 0.4,
+          "badgeText": "INCLUSIVE VOCATIONAL INITIATIVE"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-24T10:05:00Z",
+        "updatedAt": "2026-10-24T10:05:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_ifopsim_poster_003",
+        "campaignId": "camp_ifopsim_inclusive_002",
+        "format": "billboard_poster",
+        "version": 1,
+        "imageUrl": "/assets/images/ifopsim_master_visual_1792938889435.jpg",
+        "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+        "subtitle": "An inclusive vocational education initiative in development.",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "IFOPSIM – Digital Skills. Inclusive Futures.",
+          "subtitle": "An inclusive vocational education initiative in development.",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "left",
+          "fontSize": "prominent",
+          "textColor": "light",
+          "overlayOpacity": 0.38,
+          "badgeText": "DONOR CONCEPT NOTE"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-24T10:05:00Z",
+        "updatedAt": "2026-10-24T10:05:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      }
+    ],
+    "approvalHistory": [
+      {
+        "id": "app_hist_ifop_001",
+        "status": "draft",
+        "changedBy": "Marc Tagne",
+        "changedByRole": "project_manager",
+        "timestamp": "2026-10-24T10:00:00Z",
+        "comment": "Entwurf für IFOPSIM Inklusions-Kampagnenkonzept angelegt. Ausdrücklich im Planungsstadium (Draft), keine vorzeitige Veröffentlichung."
+      }
+    ],
+    "isSavedToProject": true,
+    "savedToProjectId": "proj_ifopsim_001"
+  },
+  {
+    "id": "camp_gen_green_awareness_001",
+    "brief": {
+      "id": "brief_gen_green_001",
+      "projectId": "proj_gen_green_002",
+      "projectTitle": "Generation Green – Environmental Education and Sustainability",
+      "title": "Generation Green – Small Actions, Big Change",
+      "lifecyclePhase": "awareness_campaign",
+      "objective": "Inspire young people to engage in environmental protection, sustainability, and practical green innovation.",
+      "targetAudience": "Young people, educational institutions, potential project partners, and donors.",
+      "mainMessage": "Generation Green – Small Actions, Big Change: Empowering youth through practical environmental protection, clean solar technology, and sustainable green innovation.",
+      "callToAction": "Discover the initiative",
+      "language": "en",
+      "channels": [
+        "billboard_poster",
+        "instagram_square",
+        "linkedin_graphic"
+      ],
+      "visualStyle": "photo_documentary",
+      "preferredColors": [
+        "#15803d",
+        "#0f2b48",
+        "#ffffff",
+        "#f59e0b"
+      ],
+      "imageDescription": "A small green plant growing from a recycled computer motherboard, surrounded by subtle solar-energy and environmental design elements bathed in warm sunlight.",
+      "textToDisplay": {
+        "headline": "Generation Green – Small Actions, Big Change",
+        "subtitle": "Inspire young people to engage in environmental protection, sustainability, and practical green innovation.",
+        "callToAction": "Discover the initiative"
+      },
+      "startDate": "2026-11-01",
+      "endDate": "2027-04-30",
+      "requiredApprovals": [
+        "Vorstand TEFA e.V.",
+        "Projektleitung (Amina Diallo)"
+      ],
+      "supportingDocuments": [
+        "Generation_Green_Curriculum_Draft.pdf"
+      ],
+      "noPeopleMode": true,
+      "status": "draft",
+      "createdAt": "2026-10-23T15:00:00Z",
+      "updatedAt": "2026-10-23T15:00:00Z",
+      "version": 1
+    },
+    "brandIdentity": {
+      "projectName": "Generation Green",
+      "campaignName": "Generation Green – Small Actions, Big Change",
+      "approvedLogo": {
+        "useOfficialTefaLogo": true,
+        "logoSource": "official_approved_asset",
+        "disclaimer": "Offizielles TEFA e.V. Verbands-Brandmark (genehmigt nach Satzung)."
+      },
+      "colorPalette": {
+        "primary": "#15803d",
+        "secondary": "#0f2b48",
+        "accent": "#f59e0b",
+        "neutralLight": "#ffffff",
+        "neutralDark": "#0f172a"
+      },
+      "typographyGuidance": {
+        "headingFont": "Plus Jakarta Sans, Inter, system-ui",
+        "bodyFont": "Inter, system-ui, sans-serif",
+        "styleTone": "Modern, optimistic, professional, realistic, environmentally conscious"
+      },
+      "visualComposition": "Macro focus on a young green plant seedling emerging from recycled motherboard circuitry with photovoltaic cell accents and golden solar lighting. Strictly zero human figures.",
+      "visualStyle": "photo_documentary",
+      "coreVisualSubject": "Small plant sprout growing from recycled computer motherboard with solar-energy elements",
+      "keyCampaignMessage": "Small Actions, Big Change",
+      "noPeopleMode": true,
+      "disallowedVisualElements": [
+        "human figures",
+        "faces",
+        "silhouettes",
+        "crowds",
+        "hands"
+      ],
+      "allowedVisualElements": [
+        "plant seedling",
+        "recycled motherboard",
+        "circuit board",
+        "photovoltaic solar cells",
+        "golden sunlight",
+        "macro natural bokeh"
+      ]
+    },
+    "masterVisual": {
+      "imageUrl": "/assets/images/gengreen_master_1792768070112.jpg",
+      "promptUsed": "Photorealistic macro close-up of a small vibrant green plant sprout growing upwards out of the intricate microchip circuits of a recycled computer motherboard, surrounded by miniature solar-energy cell patterns, bathed in warm natural golden sunlight rays and soft forest green bokeh. Professional, modern, optimistic environmental technology aesthetic. Strictly no people, no human figures, no faces, no hands, no human silhouettes.",
+      "negativePrompt": "people, person, human, face, silhouette, hand, crowd, messy, distorted logos, unrealistic technology",
+      "generatedAt": "2026-10-23T15:07:00Z",
+      "model": "gemini-3.1-flash-lite-image",
+      "isApprovedAsMaster": true
+    },
+    "selectedFormats": [
+      "billboard_poster",
+      "instagram_square",
+      "linkedin_graphic"
+    ],
+    "assets": [
+      {
+        "id": "asset_gg_poster_001",
+        "campaignId": "camp_gen_green_awareness_001",
+        "format": "billboard_poster",
+        "version": 1,
+        "imageUrl": "/assets/images/gengreen_master_1792768070112.jpg",
+        "headline": "Generation Green – Small Actions, Big Change",
+        "subtitle": "Practical green innovation and environmental education with TechEnergy For Africa e.V.",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "Generation Green – Small Actions, Big Change",
+          "subtitle": "Practical green innovation and environmental education with TechEnergy For Africa e.V.",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "left",
+          "fontSize": "prominent",
+          "textColor": "light",
+          "overlayOpacity": 0.38,
+          "badgeText": "TEFA ENVIRONMENTAL EDUCATION"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-23T15:08:00Z",
+        "updatedAt": "2026-10-23T15:08:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_gg_insta_002",
+        "campaignId": "camp_gen_green_awareness_001",
+        "format": "instagram_square",
+        "version": 1,
+        "imageUrl": "/assets/images/gengreen_master_1792768070112.jpg",
+        "headline": "Generation Green – Small Actions, Big Change",
+        "subtitle": "Inspiring youth in sustainability and practical solar innovation",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "Generation Green – Small Actions, Big Change",
+          "subtitle": "Inspiring youth in sustainability and practical solar innovation",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-left",
+          "textAlignment": "center",
+          "fontSize": "medium",
+          "textColor": "light",
+          "overlayOpacity": 0.4,
+          "badgeText": "GENERATION GREEN"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-23T15:08:00Z",
+        "updatedAt": "2026-10-23T15:08:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      },
+      {
+        "id": "asset_gg_linkedin_003",
+        "campaignId": "camp_gen_green_awareness_001",
+        "format": "linkedin_graphic",
+        "version": 1,
+        "imageUrl": "/assets/images/gengreen_master_1792768070112.jpg",
+        "headline": "Generation Green – Small Actions, Big Change",
+        "subtitle": "Empowering youth through practical environmental protection & green innovation",
+        "callToAction": "Discover the initiative",
+        "overlayConfig": {
+          "headline": "Generation Green – Small Actions, Big Change",
+          "subtitle": "Empowering youth through practical environmental protection & green innovation",
+          "callToAction": "Discover the initiative",
+          "organizationBadge": "TechEnergy For Africa e.V.",
+          "logoPosition": "top-right",
+          "textAlignment": "left",
+          "fontSize": "medium",
+          "textColor": "light",
+          "overlayOpacity": 0.36,
+          "badgeText": "GREEN INNOVATION BRIEF"
+        },
+        "status": "draft",
+        "createdAt": "2026-10-23T15:08:00Z",
+        "updatedAt": "2026-10-23T15:08:00Z",
+        "isAiGenerated": true,
+        "modelUsed": "gemini-3.1-flash-lite-image"
+      }
+    ],
+    "approvalHistory": [
+      {
+        "id": "app_hist_gg_001",
+        "status": "draft",
+        "changedBy": "Amina Diallo",
+        "changedByRole": "member",
+        "timestamp": "2026-10-23T15:00:00Z",
+        "comment": "Kampagnen-Entwurf Generation Green erstellt (Konzeptentwurf, unbestätigt)."
+      }
+    ],
+    "isSavedToProject": true,
+    "savedToProjectId": "proj_gen_green_002"
+  }
+]

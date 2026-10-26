@@ -21,10 +21,12 @@ import {
   X,
   Palette,
   Sparkles,
+  BarChart3,
 } from 'lucide-react';
 
 export type ActiveTab =
   | 'dashboard'
+  | 'intelligence'
   | 'proposal'
   | 'advisor'
   | 'feasibility'
@@ -67,6 +69,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: t.nav.dashboard,
       icon: LayoutDashboard,
       badge: null,
+      allowed: true,
+    },
+    {
+      id: 'intelligence' as ActiveTab,
+      label: (t.nav as any).projectIntelligence || 'Project Intelligence',
+      icon: BarChart3,
+      badge: 'BI & Analytics',
       allowed: true,
     },
     {

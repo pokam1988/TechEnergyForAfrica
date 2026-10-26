@@ -24,6 +24,8 @@ import { FinancialAccounting } from './components/finance/FinancialAccounting';
 import { ImpactEvaluation } from './components/impact/ImpactEvaluation';
 import { ProjectClosure } from './components/closure/ProjectClosure';
 import { AuditLogViewer } from './components/audit/AuditLogViewer';
+import { CreativeStudioView } from './components/creative-studio/CreativeStudioView';
+import { ProjectIntelligenceView } from './components/intelligence/ProjectIntelligenceView';
 import { DocumentExportModal } from './components/documents/DocumentExportModal';
 import { X, Plus, Sparkles, Building } from 'lucide-react';
 
@@ -101,6 +103,7 @@ const AppContent: React.FC = () => {
                 onOpenExport={() => setIsExportOpen(true)}
               />
             )}
+            {activeTab === 'intelligence' && <ProjectIntelligenceView />}
             {activeTab === 'proposal' && <ProposalWizard />}
             {activeTab === 'advisor' && <AIDecisionAdvisor />}
             {activeTab === 'feasibility' && <FeasibilityChecklist />}
@@ -108,6 +111,7 @@ const AppContent: React.FC = () => {
             {activeTab === 'budget' && <BudgetDashboard />}
             {activeTab === 'simulator' && <ProjectSimulator />}
             {activeTab === 'partners' && <PartnersFundraising />}
+            {activeTab === 'creative_studio' && <CreativeStudioView />}
             {activeTab === 'inventory' && <InventoryManager />}
             {activeTab === 'monitoring' && <ImplementationMonitoring />}
             {activeTab === 'finance' && <FinancialAccounting />}

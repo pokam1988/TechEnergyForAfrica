@@ -25,6 +25,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '10mb' }));
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Storage directory & persistence files
 const DATA_DIR = path.join(__dirname, 'data');
@@ -45,8 +47,12 @@ function loadProjects(): Project[] {
       const loaded: Project[] = JSON.parse(data);
       let changed = false;
       for (const sp of SEED_PROJECTS) {
-        if (!loaded.some((p) => p.id === sp.id)) {
+        const idx = loaded.findIndex((p) => p.id === sp.id);
+        if (idx === -1) {
           loaded.push(sp);
+          changed = true;
+        } else if (sp.isDemoOrHypothetical) {
+          loaded[idx] = sp;
           changed = true;
         }
       }
@@ -73,7 +79,20 @@ function loadInventory(): InventoryAsset[] {
   try {
     if (fs.existsSync(INVENTORY_FILE)) {
       const data = fs.readFileSync(INVENTORY_FILE, 'utf-8');
-      return JSON.parse(data);
+      const loaded: InventoryAsset[] = JSON.parse(data);
+      let changed = false;
+      for (const si of SEED_INVENTORY) {
+        const idx = loaded.findIndex((i) => i.id === si.id);
+        if (idx === -1) {
+          loaded.push(si);
+          changed = true;
+        } else if (si.environment === 'test') {
+          loaded[idx] = si;
+          changed = true;
+        }
+      }
+      if (changed) saveInventory(loaded);
+      return loaded;
     }
   } catch (err) {
     console.error('Error loading inventory file:', err);
@@ -165,6 +184,93 @@ const ai = new GoogleGenAI({
     },
   },
 });
+
+// Helper to extract inline image data from Gemini candidates parts
+export function extractImageFromResponse(response: any): string | null {
+  const parts = response?.candidates?.[0]?.content?.parts || [];
+  for (const part of parts) {
+    if (part.inlineData && part.inlineData.data) {
+      const mime = part.inlineData.mimeType || 'image/png';
+      return `data:${mime};base64,${part.inlineData.data}`;
+    }
+  }
+  return null;
+}
+
+// Helper to resolve reference image for Nano Banana image-to-image / editing
+export function resolveReferenceImage(imageUrl?: string | null): { data: string; mimeType: string } | null {
+  if (!imageUrl || typeof imageUrl !== 'string') return null;
+
+  // Case 1: Base64 Data URL (e.g., data:image/png;base64,...)
+  const match = imageUrl.match(/^data:([^;]+);base64,(.+)$/);
+  if (match) {
+    return {
+      mimeType: match[1],
+      data: match[2],
+    };
+  }
+
+  // Case 2: Local relative file path (e.g. /assets/images/...)
+  const cleanPath = imageUrl.replace(/^\/+/, '');
+  const candidatePaths = [
+    path.join(__dirname, 'public', cleanPath),
+    path.join(__dirname, 'src', cleanPath),
+    path.join(__dirname, cleanPath),
+  ];
+
+  for (const cp of candidatePaths) {
+    if (fs.existsSync(cp)) {
+      try {
+        const ext = path.extname(cp).toLowerCase();
+        let mimeType = 'image/jpeg';
+        if (ext === '.png') mimeType = 'image/png';
+        else if (ext === '.webp') mimeType = 'image/webp';
+        else if (ext === '.svg') mimeType = 'image/svg+xml';
+
+        const buffer = fs.readFileSync(cp);
+        return {
+          mimeType,
+          data: buffer.toString('base64'),
+        };
+      } catch (err) {
+        console.warn(`Failed reading reference image from ${cp}:`, err);
+      }
+    }
+  }
+
+  return null;
+}
+
+// Helper to format actionable image generation errors
+export function formatImageGenerationError(err: unknown, model: string): { status: number; error: string; code: string; details?: string } {
+  const errMsg = err instanceof Error ? err.message : String(err);
+  const lower = errMsg.toLowerCase();
+
+  if (lower.includes('429') || lower.includes('resource_exhausted') || lower.includes('quota') || lower.includes('rate limit')) {
+    return {
+      status: 429,
+      error: `Google AI Studio API-Ratenlimit erreicht (429: Resource Exhausted) für Modell '${model}'. Bitte warten Sie einen Moment oder prüfen Sie Ihr Google AI Studio Kontingent.`,
+      code: 'RATE_LIMIT_EXCEEDED',
+      details: errMsg,
+    };
+  }
+
+  if (lower.includes('api_key') || lower.includes('401') || lower.includes('unauthenticated') || lower.includes('permission_denied') || lower.includes('403')) {
+    return {
+      status: 401,
+      error: `Google AI Studio Authentifizierungsfehler: Der konfigurierte GEMINI_API_KEY ist ungültig oder nicht für das Bildmodell '${model}' autorisiert.`,
+      code: 'AUTH_ERROR',
+      details: errMsg,
+    };
+  }
+
+  return {
+    status: 502,
+    error: `Das konfigurierte Bildmodell '${model}' ist derzeit nicht verfügbar: ${errMsg}. Überprüfen Sie API-Verbindung und Modellberechtigungen.`,
+    code: 'MODEL_UNAVAILABLE',
+    details: errMsg,
+  };
+}
 
 // -------------------------------------------------------------
 // REST API ENDPOINTS
@@ -596,6 +702,462 @@ Return JSON:
 });
 
 // -------------------------------------------------------------
+// TEFA PROJECT INTELLIGENCE – INTERACTIVE ANALYTICS & ASSISTANT
+// -------------------------------------------------------------
+
+app.post('/api/intelligence/assistant', async (req: Request, res: Response) => {
+  try {
+    const { query, lang = 'de', filters = {} } = req.body;
+    const userRole = (req.headers['x-user-role'] as string) || 'visitor';
+    const isVisitor = userRole === 'visitor';
+
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ error: 'Query parameter is required' });
+    }
+
+    // Filter projects based on active filters
+    let filteredProjects = [...projects];
+    if (filters.projectId && filters.projectId !== 'all') {
+      filteredProjects = filteredProjects.filter((p) => p.id === filters.projectId);
+    }
+    if (filters.country && filters.country !== 'all') {
+      filteredProjects = filteredProjects.filter((p) => p.country === filters.country);
+    }
+    if (filters.category && filters.category !== 'all') {
+      filteredProjects = filteredProjects.filter((p) => p.category === filters.category);
+    }
+    if (filters.status && filters.status !== 'all') {
+      filteredProjects = filteredProjects.filter((p) => p.status === filters.status);
+    }
+    if (filters.environment === 'live') {
+      filteredProjects = filteredProjects.filter((p) => !p.isDemoOrHypothetical);
+    } else if (filters.environment === 'demo') {
+      filteredProjects = filteredProjects.filter((p) => p.isDemoOrHypothetical);
+    }
+
+    // Build grounded facts
+    const today = new Date().toISOString().split('T')[0];
+    const projectSummaries = filteredProjects.map((p) => {
+      const totalBudget = p.budgetItems?.reduce((sum, b) => sum + (b.approvedBudget || b.plannedCost || 0), 0) || p.proposal?.estimatedBudgetEUR || 0;
+      const confirmedFunding = p.fundingSources?.filter((f) => f.status === 'confirmed').reduce((sum, f) => sum + (f.currency === 'XAF' ? Math.round(f.amount / 655.957) : f.amount), 0) || 0;
+      const pendingFunding = p.fundingSources?.filter((f) => f.status === 'pending_application').reduce((sum, f) => sum + (f.currency === 'XAF' ? Math.round(f.amount / 655.957) : f.amount), 0) || 0;
+      const actualSpend = p.budgetItems?.reduce((sum, b) => sum + (b.actualExpenditure || 0), 0) || 0;
+      const fundingGap = Math.max(0, totalBudget - confirmedFunding);
+      const overdueMilestones = p.milestones?.filter((m) => !m.isCompleted && m.targetDate < today) || [];
+      const openHighRisks = p.risks?.filter((r) => r.status === 'active' && (r.impact === 'high' || r.probability === 'high')) || [];
+      const verifiedBeneficiaries = p.impactIndicators?.filter((i) => i.evidenceStatus === 'verified').reduce((sum, i) => sum + (i.actual || 0), 0);
+      const missingReceipts = p.transactions?.filter((t) => t.type === 'expense' && !t.receiptAttached) || [];
+
+      return {
+        id: p.id,
+        referenceId: p.referenceId,
+        title: p.title,
+        country: p.country,
+        category: p.category,
+        status: p.status,
+        phase: p.lifecyclePhase,
+        isDemoOrHypothetical: p.isDemoOrHypothetical,
+        totalBudgetEUR: totalBudget,
+        confirmedFundingEUR: confirmedFunding,
+        pendingFundingEUR: pendingFunding,
+        fundingGapEUR: fundingGap,
+        actualSpendEUR: actualSpend,
+        overdueMilestonesCount: overdueMilestones.length,
+        overdueMilestoneTitles: overdueMilestones.map((m) => `${m.title} (Fällig: ${m.targetDate})`),
+        openHighRisksCount: openHighRisks.length,
+        openHighRiskTitles: openHighRisks.map((r) => `${r.title || r.category}: ${r.description}`),
+        verifiedBeneficiaries: verifiedBeneficiaries,
+        missingReceiptsCount: isVisitor ? 0 : missingReceipts.length,
+      };
+    });
+
+    // Check inventory status
+    const liveAssets = inventory.filter((i) => i.environment === 'live');
+    const operationalLive = liveAssets.filter((i) => i.donationStatus === 'approved_for_use').length;
+    const pendingInspection = liveAssets.filter((i) => i.donationStatus === 'inspected' || i.donationStatus === 'arrived').length;
+    const inTransit = liveAssets.filter((i) => i.donationStatus === 'in_transit' || i.donationStatus === 'customs_processing').length;
+
+    // Call Gemini if API key available
+    if (process.env.GEMINI_API_KEY) {
+      const prompt = `
+You are the Senior Business Intelligence and Financial Controlling Assistant for TechEnergy For Africa e.V. (TEFA).
+Answer the user's question with complete accuracy based ONLY on the provided project records and inventory data.
+
+User Question: "${query}"
+Language: ${lang}
+User Role: ${userRole}
+
+GROUND TRUTH DATA (Strictly verified):
+Projects in current filter (${projectSummaries.length}):
+${JSON.stringify(projectSummaries, null, 2)}
+
+Live Hardware Inventory Summary:
+Total live assets: ${liveAssets.length}, Approved operational: ${operationalLive}, Pending inspection/arrival: ${pendingInspection}, In transit/customs: ${inTransit}
+
+CRITICAL RULES:
+1. Provide a direct, factual answer.
+2. CITE specific project Reference IDs in your text using "[Ref: TEFA-2026-...]" whenever referring to a project.
+3. STRICTLY SEPARATE:
+   - "facts": Exact quantitative and verified facts directly observable in the dataset.
+   - "recommendations": Professional recommendations, next actions, and controlling advice.
+4. FINANCES RULE: Never confuse pending grants with confirmed funding! Pending grants are NOT secured funding.
+5. BENEFICIARIES RULE: Never invent beneficiary numbers. If unverified or planning phase, explicitly mention that.
+6. "dataLimitations": Explicitly state any limitations (e.g. if IFOPSIM is in planning phase, if receipts are pending verification, or if fictional demo data is present).
+7. Return ONLY valid JSON with keys:
+   {
+     "answer": "Comprehensive answer text in markdown format with clear headings and citations",
+     "facts": ["Fact 1 with numbers and project ref", "Fact 2..."],
+     "recommendations": ["Recommendation 1...", "Recommendation 2..."],
+     "references": [{"id": "...", "referenceId": "...", "title": "...", "metric": "..."}],
+     "dataLimitations": ["Limitation 1..."]
+   }
+`;
+
+      const aiResponse = await ai.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+        },
+      });
+
+      const parsed = JSON.parse(aiResponse.text || '{}');
+      return res.json({ success: true, ...parsed });
+    }
+
+    // Deterministic Rule-Based Fallback when offline / without Gemini API Key
+    const qLower = query.toLowerCase();
+    const references: any[] = [];
+    const facts: string[] = [];
+    const recommendations: string[] = [];
+    const dataLimitations: string[] = [];
+
+    let answer = '';
+
+    if (qLower.includes('attention') || qLower.includes('aufmerksamkeit') || qLower.includes('handlungsbedarf') || qLower.includes('board') || qLower.includes('vorstand')) {
+      const needingAttention = projectSummaries.filter(
+        (p) => p.status === 'Under Review' || p.overdueMilestonesCount > 0 || p.openHighRisksCount > 0 || p.missingReceiptsCount > 0
+      );
+      answer = `### Projekte mit unmittelbarem Steuerungs- & Managementbedarf\n\nBasierend auf den aktuellen Portfoliodaten erfordern **${needingAttention.length}** Projekte die Aufmerksamkeit des Vorstands bzw. der Projektleitung:\n\n`;
+      needingAttention.forEach((p) => {
+        const issues: string[] = [];
+        if (p.status === 'Under Review') issues.push('Status: In Begutachtung (Freigabe ausstehend)');
+        if (p.overdueMilestonesCount > 0) issues.push(`${p.overdueMilestonesCount} überfällige Meilensteine`);
+        if (p.openHighRisksCount > 0) issues.push(`${p.openHighRisksCount} offene Hochrisiken`);
+        if (p.missingReceiptsCount > 0) issues.push(`${p.missingReceiptsCount} Ausgaben ohne Beleg`);
+        answer += `- **${p.title}** ([Ref: ${p.referenceId}]): ${issues.join('; ')}\n`;
+        facts.push(`${p.title} (${p.referenceId}): ${issues.join(', ')}`);
+        references.push({ id: p.id, referenceId: p.referenceId, title: p.title, metric: issues.join(' | ') });
+      });
+      recommendations.push('Vorstandssitzung zur formalen Beschlussfassung von anstehenden Freigaben und Meilenstein-Anpassungen anberaumen.');
+      recommendations.push('Risikominderungspläne für technische und regulatorische Hochrisiken gemeinsam mit den Länderkoordinatoren prüfen.');
+      dataLimitations.push('Planungs- und Demo-Datensätze (z.B. IFOPSIM) enthalten hypothetische Annahmen und stellen keine realen Zahlungsverpflichtungen dar.');
+    } else if (qLower.includes('finanzierungslücke') || qLower.includes('gap') || qLower.includes('funding') || qLower.includes('budget') || qLower.includes('finanz')) {
+      const sortedByGap = [...projectSummaries].sort((a, b) => b.fundingGapEUR - a.fundingGapEUR);
+      const topGap = sortedByGap[0];
+      answer = `### Analyse der Fördermittellücke im Projektportfolio\n\nDas Projekt mit der größten bestätigten Finanzierungslücke ist **${topGap?.title || 'Keines'}** ([Ref: ${topGap?.referenceId}]).\n\n`;
+      sortedByGap.forEach((p) => {
+        answer += `- **${p.title}** ([Ref: ${p.referenceId}]): Genehmigtes/Geplantes Budget: **${p.totalBudgetEUR.toLocaleString('de-DE')} €**, Bestätigt: **${p.confirmedFundingEUR.toLocaleString('de-DE')} €**, Offene Lücke: **${p.fundingGapEUR.toLocaleString('de-DE')} €** (Beantragt/Offen: ${p.pendingFundingEUR.toLocaleString('de-DE')} €)\n`;
+        facts.push(`${p.title} (${p.referenceId}): Budget ${p.totalBudgetEUR.toLocaleString()} €, Bestätigt ${p.confirmedFundingEUR.toLocaleString()} €, Lücke ${p.fundingGapEUR.toLocaleString()} €`);
+        references.push({ id: p.id, referenceId: p.referenceId, title: p.title, metric: `Lücke: ${p.fundingGapEUR.toLocaleString('de-DE')} €` });
+      });
+      recommendations.push('Beantragte Fördermittel (z.B. Stiftungsanträge) engmaschig nachfassen; keine Verträge vor formalem Förderbescheid schließen.');
+      recommendations.push('Eigenmittel-Reserven und Kofinanzierungszusagen auf Währungsschwankungen (EUR/XAF Peg) absichern.');
+      dataLimitations.push('Beantragte Förderanträge werden gemäß TEFA-Governance-Regeln strikt NICHT als bestätigte Deckung gewertet.');
+    } else if (qLower.includes('meilenstein') || qLower.includes('milestone') || qLower.includes('überfällig') || qLower.includes('overdue')) {
+      const withOverdue = projectSummaries.filter((p) => p.overdueMilestonesCount > 0);
+      answer = `### Status überfälliger Meilensteine\n\nIm gefilterten Portfolio weisen **${withOverdue.length}** Projekte Terminverzögerungen auf:\n\n`;
+      withOverdue.forEach((p) => {
+        answer += `- **${p.title}** ([Ref: ${p.referenceId}]): ${p.overdueMilestoneTitles.join(', ')}\n`;
+        facts.push(`${p.title} (${p.referenceId}): ${p.overdueMilestonesCount} überfällige Meilensteine (${p.overdueMilestoneTitles.join('; ')})`);
+        references.push({ id: p.id, referenceId: p.referenceId, title: p.title, metric: `${p.overdueMilestonesCount} überfällig` });
+      });
+      recommendations.push('Projektzeitpläne mit den lokalen Partnern vor Ort nachjustieren und Pufferzeiten für Zoll- und Einfuhrgenehmigungen einplanen.');
+      dataLimitations.push('Meilenstein-Fortschritte basieren auf den zuletzt im System gepflegten Statusberichten.');
+    } else if (qLower.includes('beleg') || qLower.includes('receipt') || qLower.includes('nachweis') || qLower.includes('unreconciled')) {
+      const withMissingReceipts = projectSummaries.filter((p) => p.missingReceiptsCount > 0);
+      answer = `### Belegprüfung & Verwendungsnachweis-Audit\n\nEs wurden Buchungen ohne archivierte Originalbelege identifiziert:\n\n`;
+      if (withMissingReceipts.length === 0) {
+        answer += `Aktuell liegen für alle verbuchten Finanztransaktionen im geprüften Bereich die erforderlichen Belegnachweise vor.\n`;
+        facts.push('Alle verbuchten Ausgaben im aktuellen Filter verfügen über Belegnachweise.');
+      } else {
+        withMissingReceipts.forEach((p) => {
+          answer += `- **${p.title}** ([Ref: ${p.referenceId}]): **${p.missingReceiptsCount}** Ausgabenposten ohne Belegdatei.\n`;
+          facts.push(`${p.title}: ${p.missingReceiptsCount} unvollständige Belege.`);
+          references.push({ id: p.id, referenceId: p.referenceId, title: p.title, metric: `${p.missingReceiptsCount} Belege fehlen` });
+        });
+      }
+      recommendations.push('Fehlende Originalquittungen und Bankbelege vor Abschluss des Quartalsberichts bei den Länderbeauftragten anfordern.');
+      dataLimitations.push('Sensible Zahlungsempfängerdaten sind für nicht-autorisierte Rollen maskiert.');
+    } else {
+      answer = `### Portfolio-Zusammenfassung TEFA Project Intelligence\n\nDas gefilterte Portfolio umfasst **${filteredProjects.length}** Vorhaben. Gesamtes genehmigtes/geplantes Budget: **${projectSummaries.reduce((s, p) => s + p.totalBudgetEUR, 0).toLocaleString('de-DE')} €**, davon bestätigt finanziert: **${projectSummaries.reduce((s, p) => s + p.confirmedFundingEUR, 0).toLocaleString('de-DE')} €** (Offene Gesamtlücke: **${projectSummaries.reduce((s, p) => s + p.fundingGapEUR, 0).toLocaleString('de-DE')} €**).\n\n`;
+      projectSummaries.forEach((p) => {
+        answer += `- **${p.title}** ([Ref: ${p.referenceId}]): Phase *${p.phase}*, Status *${p.status}*, Budget: ${p.totalBudgetEUR.toLocaleString('de-DE')} €.\n`;
+        facts.push(`${p.title} (${p.referenceId}): Status ${p.status}, Budget ${p.totalBudgetEUR.toLocaleString()} €.`);
+        references.push({ id: p.id, referenceId: p.referenceId, title: p.title, metric: `Status: ${p.status}` });
+      });
+      recommendations.push('Regelmäßige Status-Reviews mit den operativen Projektleitern durchführen.');
+      dataLimitations.push('Daten spiegeln den aktuellen Stand der TEFA-Datenbank wider.');
+    }
+
+    res.json({
+      success: true,
+      answer,
+      facts,
+      recommendations,
+      references,
+      dataLimitations,
+    });
+  } catch (err: unknown) {
+    console.error('Error in Project Intelligence assistant:', err);
+    res.status(500).json({
+      error: 'Intelligence assistant failed',
+      details: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
+// Import validation endpoint
+app.post('/api/intelligence/import-validate', (req: Request, res: Response) => {
+  try {
+    const { rows = [] } = req.body;
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return res.status(400).json({ error: 'Rows array is required and must not be empty.' });
+    }
+
+    const errors: { row: number; field: string; message: string }[] = [];
+    const warnings: { row: number; field: string; message: string }[] = [];
+    const validRows: any[] = [];
+
+    const existingRefs = new Set(projects.map((p) => p.referenceId.toLowerCase()));
+    const existingTitles = new Set(projects.map((p) => p.title.toLowerCase()));
+
+    rows.forEach((row, idx) => {
+      const rowNum = idx + 1;
+      let isValid = true;
+
+      if (!row.title || typeof row.title !== 'string' || row.title.trim().length < 3) {
+        errors.push({ row: rowNum, field: 'title', message: 'Titel ist erforderlich (mindestens 3 Zeichen).' });
+        isValid = false;
+      }
+
+      if (row.title && existingTitles.has(row.title.trim().toLowerCase())) {
+        warnings.push({ row: rowNum, field: 'title', message: `Mögliches Duplikat: Titel '${row.title}' existiert bereits.` });
+      }
+
+      if (row.referenceId && existingRefs.has(row.referenceId.trim().toLowerCase())) {
+        warnings.push({ row: rowNum, field: 'referenceId', message: `Referenz-ID '${row.referenceId}' existiert bereits und wird bei Import aktualisiert oder neu vergeben.` });
+      }
+
+      if (row.plannedBudgetEUR !== undefined && (isNaN(Number(row.plannedBudgetEUR)) || Number(row.plannedBudgetEUR) < 0)) {
+        errors.push({ row: rowNum, field: 'plannedBudgetEUR', message: 'Budget muss eine gültige positive Zahl sein.' });
+        isValid = false;
+      }
+
+      if (row.submissionDate && isNaN(Date.parse(row.submissionDate))) {
+        errors.push({ row: rowNum, field: 'submissionDate', message: 'Ungültiges Datumsformat (erwartet YYYY-MM-DD).' });
+        isValid = false;
+      }
+
+      if (isValid) {
+        validRows.push(row);
+      }
+    });
+
+    res.json({
+      success: true,
+      totalRows: rows.length,
+      validRowsCount: validRows.length,
+      invalidRowsCount: rows.length - validRows.length,
+      errors,
+      warnings,
+      preview: rows.slice(0, 5),
+    });
+  } catch (err: unknown) {
+    res.status(500).json({ error: 'Import validation failed', details: String(err) });
+  }
+});
+
+// Import commit endpoint
+app.post('/api/intelligence/import-commit', (req: Request, res: Response) => {
+  try {
+    const { rows = [], targetEnvironment = 'demo' } = req.body;
+    const userRole = (req.headers['x-user-role'] as string) || 'project_manager';
+    const userName = (req.headers['x-user-name'] as string) || 'TEFA Manager';
+    const userId = (req.headers['x-user-id'] as string) || 'user_pm';
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return res.status(400).json({ error: 'No rows provided to commit.' });
+    }
+
+    const isDemo = targetEnvironment === 'demo';
+    const importedProjects: Project[] = [];
+
+    rows.forEach((row, idx) => {
+      const year = new Date().getFullYear();
+      const count = projects.length + idx + 1;
+      const refId = row.referenceId || `TEFA-${year}-${isDemo ? 'DEMO' : 'PRJ'}-${String(count).padStart(3, '0')}`;
+
+      const newProj: Project = {
+        id: 'proj_imp_' + Date.now() + '_' + idx,
+        referenceId: refId,
+        title: row.title || `Importiertes Projekt ${count}`,
+        shortDescription: row.shortDescription || 'Über TEFA Project Intelligence Datenimport angelegt.',
+        category: row.category || 'digital_inclusion',
+        country: row.country || 'Cameroon',
+        locationDetails: row.locationDetails || 'Einsatzort im Antrag definiert',
+        lifecyclePhase: row.lifecyclePhase || 'proposal',
+        status: row.status || 'Draft',
+        isDemoOrHypothetical: isDemo,
+        demoDisclaimer: isDemo ? 'Synthetischer Demo-Datensatz zu Simulations- und Testzwecken.' : undefined,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: userName,
+        proposal: {
+          problemStatement: row.problemStatement || 'Bedarfsanalyse im Antragsdossier hinterlegt.',
+          targetBeneficiaries: row.targetBeneficiaries || 'Jugendliche & Auszubildende',
+          beneficiaryCountPlanned: Number(row.beneficiariesPlanned || row.beneficiaryCountPlanned || 25),
+          proposedSolution: row.proposedSolution || 'Gezielte Bildungs- und Technologieförderung.',
+          objectives: ['Aufbau von Fachkompetenz', 'Inklusive Bildungschancen schaffen'],
+          expectedResults: ['Abschlusszertifikate', 'Erhöhte Beschäftigungsfähigkeit'],
+          activities: ['Workshops', 'Praxistraining'],
+          durationMonths: Number(row.durationMonths || 6),
+          estimatedBudgetEUR: Number(row.plannedBudgetEUR || row.estimatedBudgetEUR || 20000),
+          potentialPartners: ['Lokale Berufsschulen'],
+          sustainabilityPlan: 'Langfristige lokale Übergabe an Partner.',
+          inclusionAccessibilityNeeds: 'Barrierefreie Zugänglichkeit gewährleistet.',
+          proposerName: userName,
+          proposerEmail: 'controlling@techenergyforafrica.com',
+          submissionDate: new Date().toISOString().split('T')[0],
+        },
+        feasibilityChecks: [],
+        decisions: [],
+        milestones: [
+          {
+            id: 'ms_' + Date.now() + '_1',
+            title: 'Projektstart & Partner-Kickoff',
+            description: 'Initiale Abstimmung und Vertragsunterzeichnung',
+            phase: 'planning',
+            targetDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            isCompleted: false,
+            responsiblePerson: userName,
+            deliverables: ['Kick-off Protokoll'],
+          },
+        ],
+        tasks: [],
+        risks: [
+          {
+            id: 'rk_' + Date.now() + '_1',
+            category: 'operational',
+            description: 'Logistische Verzögerungen bei der Materialbeschaffung',
+            probability: 'medium',
+            impact: 'medium',
+            mitigationStrategy: 'Pufferzeiten und lokale Beschaffungsalternativen prüfen',
+            responsiblePerson: userName,
+            status: 'active',
+          },
+        ],
+        budgetItems: [
+          {
+            id: 'bi_' + Date.now() + '_1',
+            category: 'Training & Pedagogy',
+            description: 'Schulungsmaterial & Dozentenhonorare',
+            plannedCost: Number(row.plannedBudgetEUR || 20000),
+            approvedBudget: row.status === 'Approved' ? Number(row.plannedBudgetEUR || 20000) : 0,
+            committedCost: 0,
+            actualExpenditure: 0,
+            currency: 'EUR',
+          },
+        ],
+        fundingSources: row.confirmedFundingEUR
+          ? [
+              {
+                id: 'fs_' + Date.now() + '_1',
+                name: 'Bestätigte Kofinanzierung',
+                type: 'grant',
+                status: 'confirmed',
+                amount: Number(row.confirmedFundingEUR),
+                currency: 'EUR',
+                isRestricted: true,
+              },
+            ]
+          : [],
+        transactions: [],
+        impactIndicators: [
+          {
+            id: 'ii_' + Date.now() + '_1',
+            name: 'Qualifizierte Teilnehmende',
+            category: 'education',
+            definition: 'Anzahl erfolgreich zertifizierter Jugendlicher',
+            baseline: 0,
+            target: Number(row.beneficiariesPlanned || 25),
+            actual: 0,
+            unit: 'Personen',
+            reportingPeriod: '2026',
+            evidenceSource: 'Teilnehmerlisten & Prüfungszeugnisse',
+            evidenceStatus: 'user_provided_unverified',
+            responsiblePerson: userName,
+          },
+        ],
+        closure: {
+          deliverablesAccepted: false,
+          financialReconciliationDone: false,
+          commitmentsReviewed: false,
+          assetsHandedOver: false,
+          finalPartnerReportReceived: false,
+          lessonsLearnedDocumented: false,
+          impactEvaluationComplete: false,
+          donorReportingFinalized: false,
+          boardApprovedClosure: false,
+          archiveRetentionConfigured: false,
+        },
+        simulationParams: {
+          beneficiariesCount: Number(row.beneficiariesPlanned || 25),
+          trainersCount: 2,
+          trainingDurationMonths: 6,
+          usableWorkstations: 12,
+          studentsPerWorkstation: 2,
+          donatedHardwareCount: 0,
+          hardwareUnitPurchaseCostEUR: 450,
+          logisticsCustomsCostEUR: 1200,
+          infrastructureSolarCostEUR: 3000,
+          monthlyOperatingCostEUR: 800,
+          accessibilityInterpreterCostEUR: 1500,
+          maintenanceReservePct: 10,
+          confirmedGrantsEUR: Number(row.confirmedFundingEUR || 0),
+          pendingGrantsEUR: 0,
+        },
+      };
+
+      projects.push(newProj);
+      importedProjects.push(newProj);
+    });
+
+    saveProjects(projects);
+
+    appendAuditLog({
+      id: 'audit_' + Date.now(),
+      timestamp: new Date().toISOString(),
+      userId,
+      userName,
+      userRole: userRole as UserRole,
+      action: 'INTELLIGENCE_DATA_IMPORTED',
+      details: `${importedProjects.length} Datensätze in Umgebung '${targetEnvironment.toUpperCase()}' über Project Intelligence importiert.`,
+    });
+
+    res.json({
+      success: true,
+      importedCount: importedProjects.length,
+      targetEnvironment,
+      projects: importedProjects,
+    });
+  } catch (err: unknown) {
+    console.error('Error committing imported intelligence records:', err);
+    res.status(500).json({ error: 'Commit failed', details: String(err) });
+  }
+});
+
+// -------------------------------------------------------------
 // CREATIVE STUDIO API ENDPOINTS
 // -------------------------------------------------------------
 
@@ -677,22 +1239,50 @@ app.delete('/api/creative-studio/campaigns/:id', (req: Request, res: Response) =
 
 // 6. AI Campaign Text & Creative Strategy Planning (Gemini)
 app.post('/api/creative-studio/plan', async (req: Request, res: Response) => {
-  const { projectTitle, projectDescription, objective, targetAudience, lifecyclePhase, lang, noPeopleMode } = req.body;
+  const project = req.body.project || {};
+  const brief = req.body.brief || {};
+
+  const projectTitle = req.body.projectTitle || project.title || brief.projectTitle || 'TEFA Vorhaben';
+  const projectDescription = req.body.projectDescription || project.shortDescription || brief.mainMessage || '';
+  const objective = req.body.objective || brief.objective || 'Öffentlichkeit und Förderpartner informieren';
+  const targetAudience = req.body.targetAudience || brief.targetAudience || 'Junge Menschen, Schulen, Geber';
+  const lifecyclePhase = req.body.lifecyclePhase || brief.lifecyclePhase || 'fundraising_outreach';
+  const lang = req.body.lang || brief.language || 'de';
+  const noPeopleMode = req.body.noPeopleMode !== undefined ? req.body.noPeopleMode : (brief.noPeopleMode !== false);
 
   if (!process.env.GEMINI_API_KEY) {
-    return res.json({
-      success: true,
-      mode: 'offline_planner',
-      suggestedTitle: `${projectTitle || 'TEFA Vorhaben'}: Saubere Solarenergie & Bildungschancen`,
+    const offlineResult = {
+      suggestedTitle: `${projectTitle}: Saubere Solarenergie & Bildungschancen`,
       mainMessage: 'Nachhaltige Solarinfrastruktur eröffnet verlässliche Bildungschancen ohne CO2-Emissionen.',
       callToAction: 'Jetzt Bildungspartner von TechEnergy For Africa e.V. werden',
       headline: 'Solarenergie für verlässliche Bildung',
-      subtitle: `Gemeinsam schaffen wir digitale Lernräume für ${targetAudience || 'junge Menschen'} in Afrika.`,
-      imagePromptDescription: `Modern sustainable solar-powered educational setup in Africa. High efficiency photovoltaic panels, clean desks with open laptops, books, natural sunlight, lush vegetation. STRICT CONSTRAINT: ${noPeopleMode !== false ? 'NO people, NO human faces, NO human silhouettes, NO hands.' : 'Authentic non-stereotypical community representation.'}`,
-      negativePrompt: noPeopleMode !== false ? 'people, human, face, silhouette, hands, crowd, messy, distorted' : 'stereotypes, distorted, low quality',
+      subtitle: `Gemeinsam schaffen wir digitale Lernräume für ${targetAudience} in Afrika.`,
+      imagePromptDescription: `Modern sustainable solar-powered educational setup in Africa. High efficiency photovoltaic panels, clean desks with open laptops, books, natural sunlight, lush vegetation. STRICT CONSTRAINT: ${noPeopleMode ? 'NO people, NO human faces, NO human silhouettes, NO hands.' : 'Authentic community equipment.'}`,
+      negativePrompt: noPeopleMode ? 'people, human, face, silhouette, hands, crowd, messy, distorted' : 'stereotypes, distorted, low quality',
       suggestedColors: ['#0f2b48', '#10b981', '#f97316'],
       visualElements: ['Solar photovoltaic modules', 'Laptops with coding interface', 'Educational books', 'Green seedlings & eco-tech sensors'],
       typographyTone: 'Professional, forward-looking, non-profit transparency',
+    };
+
+    return res.json({
+      success: true,
+      mode: 'offline_planner',
+      ...offlineResult,
+      briefSuggestions: {
+        title: offlineResult.suggestedTitle,
+        mainMessage: offlineResult.mainMessage,
+        callToAction: offlineResult.callToAction,
+        objective,
+        targetAudience,
+        preferredColors: offlineResult.suggestedColors,
+        imageDescription: offlineResult.imagePromptDescription,
+        textToDisplay: {
+          headline: offlineResult.headline,
+          subtitle: offlineResult.subtitle,
+          callToAction: offlineResult.callToAction,
+        },
+        visualStyle: 'photo_documentary',
+      },
     });
   }
 
@@ -703,13 +1293,13 @@ TEFA is a German registered non-profit (e.V.) advancing renewable energy and dig
 Website: https://www.techenergyforafrica.com
 
 Plan a comprehensive visual campaign strategy:
-Project Title: "${projectTitle || 'TEFA Project'}"
-Project Context: "${projectDescription || 'Solar energy and digital literacy hub'}"
-Campaign Objective: "${objective || 'Fundraising and partner outreach'}"
-Target Audience: "${targetAudience || 'Institutional donors, foundations, CSR partners'}"
-Lifecycle Phase: "${lifecyclePhase || 'fundraising_outreach'}"
-Language: "${lang || 'de'}" (Write headlines, copy, messages completely in this language: de, en, or fr)
-No People Mode: ${noPeopleMode !== false ? 'ENABLED - STRICTLY NO HUMANS, NO FACES, NO SILHOUETTES, NO CROWDS, NO HANDS. Focus on equipment, renewable tech, laptops, architecture, seedlings, landscapes.' : 'Disabled'}
+Project Title: "${projectTitle}"
+Project Context: "${projectDescription}"
+Campaign Objective: "${objective}"
+Target Audience: "${targetAudience}"
+Lifecycle Phase: "${lifecyclePhase}"
+Language: "${lang}" (Write headlines, copy, messages completely in this language: de, en, or fr)
+No People Mode: ${noPeopleMode ? 'ENABLED - STRICTLY NO HUMANS, NO FACES, NO SILHOUETTES, NO CROWDS, NO HANDS. Focus on equipment, renewable tech, laptops, architecture, seedlings, landscapes.' : 'Disabled'}
 
 CRITICAL RULES:
 - Do NOT invent fake achievements, unconfirmed funding amounts, or exaggerated impact statistics.
@@ -740,7 +1330,27 @@ Return valid JSON:
     });
 
     const parsed = JSON.parse(response.text || '{}');
-    res.json({ success: true, ...parsed });
+    const briefSuggestions = {
+      title: parsed.suggestedTitle || `${projectTitle} – Kampagne`,
+      mainMessage: parsed.mainMessage || projectDescription,
+      callToAction: parsed.callToAction || 'Mehr erfahren',
+      objective,
+      targetAudience,
+      preferredColors: parsed.suggestedColors || ['#0f2b48', '#10b981', '#f97316'],
+      imageDescription: parsed.imagePromptDescription || '',
+      textToDisplay: {
+        headline: parsed.headline || projectTitle,
+        subtitle: parsed.subtitle || projectDescription,
+        callToAction: parsed.callToAction || 'Mehr erfahren',
+      },
+      visualStyle: 'photo_documentary',
+    };
+
+    res.json({
+      success: true,
+      ...parsed,
+      briefSuggestions,
+    });
   } catch (err: unknown) {
     console.error('Error generating creative studio plan:', err);
     res.status(500).json({
@@ -752,108 +1362,240 @@ Return valid JSON:
 
 // 7. AI Master Visual Image Generation (Nano Banana: 'gemini-3.1-flash-lite-image')
 app.post('/api/creative-studio/generate-master', async (req: Request, res: Response) => {
-  const { prompt, negativePrompt, visualStyle, noPeopleMode, colors, projectTitle } = req.body;
+  const brief = req.body.brief || {};
+  const brandIdentity = req.body.brandIdentity || {};
+  const projectTitle = req.body.projectTitle || brief.projectTitle || brandIdentity.projectName || 'TEFA Project';
 
-  // Build strict negative constraint if no-people mode is on (default: true)
-  const isNoPeople = noPeopleMode !== false;
-  let finalPrompt = prompt || `Clean solar-powered technology hub for ${projectTitle || 'TechEnergy For Africa'}. Modern photovoltaic panels, computers, educational hardware, vibrant energy.`;
+  // Extract base prompt from explicit prompt or campaign brief/brand identity
+  const prompt =
+    req.body.prompt ||
+    brief.imageDescription ||
+    brief.creativeStrategy?.imagePromptDescription ||
+    brandIdentity.coreVisualSubject ||
+    `Clean solar-powered technology hub for ${projectTitle}. Modern photovoltaic panels, computers, educational hardware, vibrant energy.`;
 
-  if (isNoPeople) {
-    finalPrompt += ' STRICT REQUIREMENT: Absolutely NO people, NO human figures, NO faces, NO human silhouettes, NO human hands, NO crowds. Focus solely on equipment, clean tech, solar panels, laptops, books, seedlings, modern classrooms.';
-  }
+  const negativePrompt =
+    req.body.negativePrompt ||
+    brief.negativePrompt ||
+    'people, person, human, face, silhouette, hand, crowd, distorted equipment, low quality';
 
-  // Model ID check: Use centralized model
+  const noPeopleMode = req.body.noPeopleMode !== undefined ? req.body.noPeopleMode : (brief.noPeopleMode !== false);
+  const colors =
+    req.body.colors ||
+    brief.preferredColors ||
+    (brandIdentity.colorPalette
+      ? [brandIdentity.colorPalette.primary, brandIdentity.colorPalette.secondary, brandIdentity.colorPalette.accent]
+      : ['#0f2b48', '#10b981', '#f97316']);
+
+  const rawAspectRatio = req.body.aspectRatio || '1:1';
+  const aspectRatio = (['1:1', '3:4', '4:3', '9:16', '16:9'].includes(rawAspectRatio)
+    ? rawAspectRatio
+    : '1:1') as '1:1' | '3:4' | '4:3' | '9:16' | '16:9';
+
   const imageModel = CREATIVE_STUDIO_MODELS.IMAGE_MODEL;
 
-  // If Gemini API Key is available, attempt real image generation
+  let finalPrompt = prompt;
+  if (noPeopleMode) {
+    finalPrompt +=
+      ' STRICT REQUIREMENT: Absolutely NO people, NO human figures, NO faces, NO human silhouettes, NO human hands, NO crowds. Focus solely on equipment, clean tech, solar panels, laptops, books, seedlings, modern classrooms.';
+  }
+
+  // Handle Missing API Key with clear actionable error (unless explicitly preview/simulation mode)
+  if (!process.env.GEMINI_API_KEY) {
+    if (req.body.previewOnly || req.headers['x-preview-mode'] === 'vector') {
+      const primary = colors?.[0] || '#0f2b48';
+      const secondary = colors?.[1] || '#10b981';
+      const accent = colors?.[2] || '#f97316';
+      const svgUrl = generateConsistentSvgArtwork('master_visual', finalPrompt, primary, secondary, accent);
+      const masterVisual = {
+        imageUrl: svgUrl,
+        promptUsed: finalPrompt,
+        negativePrompt,
+        generatedAt: new Date().toISOString(),
+        model: imageModel,
+        isApprovedAsMaster: true,
+      };
+
+      return res.json({
+        success: true,
+        imageUrl: svgUrl,
+        masterVisual,
+        modelUsed: imageModel,
+        promptUsed: finalPrompt,
+        isNoPeopleApplied: noPeopleMode,
+        isLiveModel: false,
+        notice: `Offline Vektor-Vorschau. Konfigurieren Sie GEMINI_API_KEY für reale ${imageModel} Generierung.`,
+      });
+    }
+
+    return res.status(401).json({
+      error: `Google AI Studio API-Schlüssel nicht konfiguriert (GEMINI_API_KEY fehlt). Für die Bildgenerierung mit dem Nano Banana Modell '${imageModel}' ist ein gültiger API-Schlüssel erforderlich.`,
+      code: 'MISSING_API_KEY',
+      modelUsed: imageModel,
+    });
+  }
+
+  try {
+    const response = await ai.models.generateContent({
+      model: imageModel,
+      contents: {
+        parts: [{ text: finalPrompt }],
+      },
+      config: {
+        imageConfig: {
+          aspectRatio,
+        },
+      },
+    });
+
+    const base64Image = extractImageFromResponse(response);
+
+    if (base64Image) {
+      const masterVisual = {
+        imageUrl: base64Image,
+        promptUsed: finalPrompt,
+        negativePrompt,
+        generatedAt: new Date().toISOString(),
+        model: imageModel,
+        isApprovedAsMaster: true,
+      };
+
+      return res.json({
+        success: true,
+        imageUrl: base64Image,
+        masterVisual,
+        modelUsed: imageModel,
+        promptUsed: finalPrompt,
+        isNoPeopleApplied: noPeopleMode,
+        isLiveModel: true,
+      });
+    }
+
+    return res.status(502).json({
+      error: `Das Bildmodell '${imageModel}' hat keine Bilddaten zurückgegeben. Bitte prüfen Sie den Prompt oder versuchen Sie es erneut.`,
+      code: 'NO_IMAGE_RETURNED',
+      modelUsed: imageModel,
+    });
+  } catch (err: unknown) {
+    console.error(`Nano Banana image model '${imageModel}' error:`, err);
+    const formatted = formatImageGenerationError(err, imageModel);
+    return res.status(formatted.status).json(formatted);
+  }
+});
+
+// 8. Generate Specific Format Asset from Master Visual (with reference-image-guided Nano Banana adaptation)
+app.post('/api/creative-studio/generate-format', async (req: Request, res: Response) => {
+  const { format, headline, subtitle, callToAction } = req.body;
+  const brief = req.body.brief || {};
+  const brandIdentity = req.body.brandIdentity || {};
+  const masterVisual = req.body.masterVisual || {};
+  const masterVisualUrl = req.body.masterVisualUrl || masterVisual.imageUrl || '';
+
+  const formatConfig = CAMPAIGN_FORMAT_CONFIGS.find((f) => f.id === format) || CAMPAIGN_FORMAT_CONFIGS[0];
+  const primary = brandIdentity?.colorPalette?.primary || brief?.preferredColors?.[0] || '#0f2b48';
+  const secondary = brandIdentity?.colorPalette?.secondary || brief?.preferredColors?.[1] || '#10b981';
+  const accent = brandIdentity?.colorPalette?.accent || brief?.preferredColors?.[2] || '#f97316';
+  const isNoPeople = brief?.noPeopleMode !== false;
+  const imageModel = CREATIVE_STUDIO_MODELS.IMAGE_MODEL;
+
+  // Map to supported aspect ratio: "1:1" | "3:4" | "4:3" | "9:16" | "16:9"
+  const targetAspectRatio = (['1:1', '3:4', '4:3', '9:16', '16:9'].includes(formatConfig.aspectRatio)
+    ? formatConfig.aspectRatio
+    : '1:1') as '1:1' | '3:4' | '4:3' | '9:16' | '16:9';
+
+  let formatImageUrl: string = '';
+  let isLiveGenerated = false;
+
+  // Reference image extraction from master visual (data URL or local file path)
+  const refImage = resolveReferenceImage(masterVisualUrl);
+
   if (process.env.GEMINI_API_KEY) {
     try {
+      const parts: any[] = [];
+      let formatPrompt = `Campaign asset format: ${formatConfig.name} (${formatConfig.aspectRatio}). Subject: ${brief.title || brandIdentity.campaignName || 'TEFA Campaign'}. `;
+
+      if (refImage) {
+        // Nano Banana Reference Image Adaptation (Edit/Guided Composition)
+        parts.push({
+          inlineData: {
+            data: refImage.data,
+            mimeType: refImage.mimeType,
+          },
+        });
+        formatPrompt += `Adapt this exact master campaign visual into the specified aspect ratio (${formatConfig.aspectRatio}). Maintain the exact same visual subject, color palette, lighting, textures, and style. Ensure brand consistency with the reference image.`;
+      } else {
+        const visualSubject =
+          brief.imageDescription ||
+          masterVisual.promptUsed ||
+          `Clean solar-powered technology and environmental design for ${brief.title || 'TechEnergy For Africa'}`;
+        formatPrompt += `${visualSubject}. Clean composition tailored for ${formatConfig.name}.`;
+      }
+
+      if (isNoPeople) {
+        formatPrompt += ' STRICT REQUIREMENT: Absolutely NO people, NO human figures, NO faces, NO human silhouettes, NO hands, NO crowds.';
+      }
+
+      parts.push({ text: formatPrompt });
+
       const response = await ai.models.generateContent({
         model: imageModel,
-        contents: {
-          parts: [{ text: finalPrompt }],
-        },
+        contents: { parts },
         config: {
           imageConfig: {
-            aspectRatio: '1:1',
+            aspectRatio: targetAspectRatio,
           },
         },
       });
 
-      // Find image part in candidates
-      let base64Image: string | null = null;
-      for (const part of response.candidates?.[0]?.content?.parts || []) {
-        if (part.inlineData && part.inlineData.data) {
-          const mime = part.inlineData.mimeType || 'image/png';
-          base64Image = `data:${mime};base64,${part.inlineData.data}`;
-          break;
-        }
-      }
-
-      if (base64Image) {
-        return res.json({
-          success: true,
-          imageUrl: base64Image,
-          modelUsed: imageModel,
-          promptUsed: finalPrompt,
-          isNoPeopleApplied: isNoPeople,
-          isLiveModel: true,
-        });
+      const extracted = extractImageFromResponse(response);
+      if (extracted) {
+        formatImageUrl = extracted;
+        isLiveGenerated = true;
       }
     } catch (err: unknown) {
-      console.warn(`Nano Banana image model '${imageModel}' call note:`, err);
-      // Return clear error if model is unavailable
-      const errMsg = err instanceof Error ? err.message : String(err);
-      return res.status(502).json({
-        error: `Bildgenerierungs-Modell '${imageModel}' ist derzeit nicht verfügbar: ${errMsg}. Sie können den konsistenten Studio-Vektor-Render nutzen.`,
-        modelUsed: imageModel,
-        fallbackAvailable: true,
-      });
+      console.warn(`Format generation via '${imageModel}' encountered an issue:`, err);
+      const formatted = formatImageGenerationError(err, imageModel);
+      // On 429 rate limit or 401 auth, abort and return clear error
+      if (formatted.status === 429 || formatted.status === 401) {
+        return res.status(formatted.status).json(formatted);
+      }
+      // If live model fails on format derivative but we have an approved master visual URL,
+      // preserve the approved master visual to guarantee shared visual identity
+      if (masterVisualUrl) {
+        formatImageUrl = masterVisualUrl;
+      } else {
+        return res.status(formatted.status).json(formatted);
+      }
     }
   }
 
-  // Fallback high-fidelity consistent SVG artwork for offline / sandbox execution
-  const primary = colors?.[0] || '#0f2b48';
-  const secondary = colors?.[1] || '#10b981';
-  const accent = colors?.[2] || '#f97316';
-  const svgUrl = generateConsistentSvgArtwork('master_visual', finalPrompt, primary, secondary, accent);
+  // If not generated via live model (no key or offline preview):
+  if (!formatImageUrl) {
+    if (masterVisualUrl) {
+      // Shared visual identity: reuse the approved master visual across coordinated assets
+      formatImageUrl = masterVisualUrl;
+    } else {
+      formatImageUrl = generateConsistentSvgArtwork(format, brief?.title || 'TEFA Campaign', primary, secondary, accent);
+    }
+  }
 
-  res.json({
-    success: true,
-    imageUrl: svgUrl,
-    modelUsed: imageModel,
-    promptUsed: finalPrompt,
-    isNoPeopleApplied: isNoPeople,
-    isLiveModel: false,
-    notice: `Generiert im TEFA Studio Render-Modus. Aktives Modell-Target: '${imageModel}'.`,
-  });
-});
-
-// 8. Generate Specific Format Asset from Master Visual
-app.post('/api/creative-studio/generate-format', async (req: Request, res: Response) => {
-  const { format, masterVisualUrl, brandIdentity, brief, headline, subtitle, callToAction } = req.body;
-
-  const formatConfig = CAMPAIGN_FORMAT_CONFIGS.find((f) => f.id === format) || CAMPAIGN_FORMAT_CONFIGS[0];
-  const primary = brandIdentity?.colorPalette?.primary || '#0f2b48';
-  const secondary = brandIdentity?.colorPalette?.secondary || '#10b981';
-  const accent = brandIdentity?.colorPalette?.accent || '#f97316';
-
-  // Format adaptation: generate matching aspect ratio SVG or derivative
-  const formatArtworkUrl = generateConsistentSvgArtwork(format, brief?.title || 'TEFA Campaign', primary, secondary, accent);
+  const assetHeadline = headline || brief?.textToDisplay?.headline || brief?.title || 'Solar-Bildung für Afrika';
+  const assetSubtitle = subtitle || brief?.textToDisplay?.subtitle || brief?.mainMessage || 'Nachhaltige Energie & Inklusion';
+  const assetCta = callToAction || brief?.textToDisplay?.callToAction || brief?.callToAction || 'Mehr erfahren';
 
   const asset: CampaignAsset = {
     id: `asset_${format}_${Date.now()}`,
     campaignId: brief?.id || 'camp_active',
     format: format as CampaignFormatType,
     version: 1,
-    imageUrl: formatArtworkUrl,
-    headline: headline || brief?.textToDisplay?.headline || 'Solar-Bildung für Afrika',
-    subtitle: subtitle || brief?.textToDisplay?.subtitle || 'Nachhaltige Energie & Inklusion',
-    callToAction: callToAction || brief?.textToDisplay?.callToAction || 'Mehr erfahren',
+    imageUrl: formatImageUrl,
+    headline: assetHeadline,
+    subtitle: assetSubtitle,
+    callToAction: assetCta,
     overlayConfig: {
-      headline: headline || brief?.textToDisplay?.headline || 'Solar-Bildung für Afrika',
-      subtitle: subtitle || brief?.textToDisplay?.subtitle || 'Nachhaltige Energie & Inklusion',
-      callToAction: callToAction || brief?.textToDisplay?.callToAction || 'Mehr erfahren',
+      headline: assetHeadline,
+      subtitle: assetSubtitle,
+      callToAction: assetCta,
       organizationBadge: 'TechEnergy For Africa e.V.',
       logoPosition: format === 'linkedin_graphic' ? 'top-right' : 'top-left',
       textAlignment: format === 'instagram_square' ? 'center' : 'left',
@@ -866,10 +1608,16 @@ app.post('/api/creative-studio/generate-format', async (req: Request, res: Respo
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     isAiGenerated: true,
-    modelUsed: CREATIVE_STUDIO_MODELS.IMAGE_MODEL,
+    modelUsed: imageModel,
   };
 
-  res.json({ success: true, asset, formatConfig });
+  res.json({
+    success: true,
+    asset,
+    formatConfig,
+    isLiveGenerated,
+    modelUsed: imageModel,
+  });
 });
 
 // 9. Campaign Review and Approval (Human Approval with RBAC)
@@ -1029,6 +1777,9 @@ async function setupVite() {
   });
 }
 
-setupVite().catch((err) => {
-  console.error('Failed to start server:', err);
-});
+// Only run dev server setup when executed directly (not when imported in test runners)
+if (!process.argv[1]?.includes('test')) {
+  setupVite().catch((err) => {
+    console.error('Failed to start server:', err);
+  });
+}
