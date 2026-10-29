@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import { SEED_PROJECTS, SEED_INVENTORY } from './src/data/seedProjects';
+import { SEED_ORGANIZATIONS, SEED_PROGRAMMES } from './src/data/seedOrganizations';
 import { SEED_CAMPAIGNS, generateConsistentSvgArtwork, CAMPAIGN_FORMAT_CONFIGS } from './src/data/seedCampaigns';
 import {
   Project,
@@ -14,6 +15,8 @@ import {
   GeneratedCampaign,
   CampaignAsset,
   CampaignFormatType,
+  Organization,
+  Programme,
 } from './src/types';
 
 dotenv.config();
@@ -34,6 +37,8 @@ const PROJECTS_FILE = path.join(DATA_DIR, 'projects.json');
 const INVENTORY_FILE = path.join(DATA_DIR, 'inventory.json');
 const AUDIT_FILE = path.join(DATA_DIR, 'audit_logs.json');
 const CAMPAIGNS_FILE = path.join(DATA_DIR, 'campaigns.json');
+const ORGANIZATIONS_FILE = path.join(DATA_DIR, 'organizations.json');
+const PROGRAMMES_FILE = path.join(DATA_DIR, 'programmes.json');
 
 // Ensure data folder and files exist
 if (!fs.existsSync(DATA_DIR)) {
@@ -163,10 +168,72 @@ function saveCampaigns(campaignsData: GeneratedCampaign[]): void {
   }
 }
 
+function loadOrganizations(): Organization[] {
+  try {
+    if (fs.existsSync(ORGANIZATIONS_FILE)) {
+      const data = fs.readFileSync(ORGANIZATIONS_FILE, 'utf-8');
+      const loaded: Organization[] = JSON.parse(data);
+      let changed = false;
+      for (const so of SEED_ORGANIZATIONS) {
+        if (!loaded.some((o) => o.id === so.id)) {
+          loaded.push(so);
+          changed = true;
+        }
+      }
+      if (changed) saveOrganizations(loaded);
+      return loaded;
+    }
+  } catch (err) {
+    console.error('Error loading organizations file:', err);
+  }
+  saveOrganizations(SEED_ORGANIZATIONS);
+  return SEED_ORGANIZATIONS;
+}
+
+function saveOrganizations(orgs: Organization[]): void {
+  try {
+    fs.writeFileSync(ORGANIZATIONS_FILE, JSON.stringify(orgs, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save organizations:', err);
+  }
+}
+
+function loadProgrammes(): Programme[] {
+  try {
+    if (fs.existsSync(PROGRAMMES_FILE)) {
+      const data = fs.readFileSync(PROGRAMMES_FILE, 'utf-8');
+      const loaded: Programme[] = JSON.parse(data);
+      let changed = false;
+      for (const sp of SEED_PROGRAMMES) {
+        if (!loaded.some((p) => p.id === sp.id)) {
+          loaded.push(sp);
+          changed = true;
+        }
+      }
+      if (changed) saveProgrammes(loaded);
+      return loaded;
+    }
+  } catch (err) {
+    console.error('Error loading programmes file:', err);
+  }
+  saveProgrammes(SEED_PROGRAMMES);
+  return SEED_PROGRAMMES;
+}
+
+function saveProgrammes(progs: Programme[]): void {
+  try {
+    fs.writeFileSync(PROGRAMMES_FILE, JSON.stringify(progs, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save programmes:', err);
+  }
+}
+
 // In-memory / file-backed state
 let projects: Project[] = loadProjects();
 let inventory: InventoryAsset[] = loadInventory();
 let campaigns: GeneratedCampaign[] = loadCampaigns();
+let organizations: Organization[] = loadOrganizations();
+let programmes: Programme[] = loadProgrammes();
 
 export const CREATIVE_STUDIO_MODELS = {
   IMAGE_MODEL: process.env.IMAGE_MODEL_ID || 'gemini-3.1-flash-lite-image',
@@ -280,24 +347,82 @@ export function formatImageGenerationError(err: unknown, model: string): { statu
 // -------------------------------------------------------------
 
 // System Status & Storage Mode
-app.get('/api/system/status', (_req: Request, res: Response) => {
+app.get('/api/system/status', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || 'org_tefa';
+  const org = organizations.find((o) => o.id === orgId) || organizations[0];
   res.json({
     status: 'online',
-    appName: 'TEFA ProjectHub – From Idea to Impact',
-    organization: 'TechEnergy For Africa e.V.',
+    appName: 'ImpactFlow – From Idea to Impact',
+    platform: 'Universal NGO Project Lifecycle Platform',
+    organization: org.name,
+    organizationId: org.id,
+    website: org.website,
     storageType: 'Persistent File Store (JSON database on server)',
-    projectCount: projects.length,
+    projectCount: projects.filter((p) => (p.organizationId || 'org_tefa') === org.id).length,
+    totalProjectCount: projects.length,
     inventoryCount: inventory.length,
     hasGeminiKey: Boolean(process.env.GEMINI_API_KEY),
   });
+});
+
+// Organization & Programme Routes (Universal SaaS)
+app.get('/api/organizations', (_req: Request, res: Response) => {
+  res.json(organizations);
+});
+
+app.post('/api/organizations', (req: Request, res: Response) => {
+  const org = req.body as Organization;
+  if (!org.name) {
+    return res.status(400).json({ error: 'Organization name is required' });
+  }
+  org.id = org.id || 'org_' + Date.now();
+  org.createdAt = org.createdAt || new Date().toISOString();
+  organizations.push(org);
+  saveOrganizations(organizations);
+  res.status(201).json(org);
+});
+
+app.put('/api/organizations/:id', (req: Request, res: Response) => {
+  const id = req.params.id;
+  const idx = organizations.findIndex((o) => o.id === id);
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Organization not found' });
+  }
+  organizations[idx] = { ...organizations[idx], ...req.body, id };
+  saveOrganizations(organizations);
+  res.json(organizations[idx]);
+});
+
+app.get('/api/programmes', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || (req.query.orgId as string);
+  if (orgId) {
+    return res.json(programmes.filter((p) => p.organizationId === orgId));
+  }
+  res.json(programmes);
+});
+
+app.post('/api/programmes', (req: Request, res: Response) => {
+  const prog = req.body as Programme;
+  if (!prog.name) {
+    return res.status(400).json({ error: 'Programme name is required' });
+  }
+  prog.id = prog.id || 'prog_' + Date.now();
+  prog.createdAt = prog.createdAt || new Date().toISOString();
+  programmes.push(prog);
+  saveProgrammes(programmes);
+  res.status(201).json(prog);
 });
 
 // Reset Demo Data
 app.post('/api/projects/reset-demo', (_req: Request, res: Response) => {
   projects = JSON.parse(JSON.stringify(SEED_PROJECTS));
   inventory = JSON.parse(JSON.stringify(SEED_INVENTORY));
+  organizations = JSON.parse(JSON.stringify(SEED_ORGANIZATIONS));
+  programmes = JSON.parse(JSON.stringify(SEED_PROGRAMMES));
   saveProjects(projects);
   saveInventory(inventory);
+  saveOrganizations(organizations);
+  saveProgrammes(programmes);
   appendAuditLog({
     id: 'log_reset_' + Date.now(),
     timestamp: new Date().toISOString(),
@@ -305,13 +430,18 @@ app.post('/api/projects/reset-demo', (_req: Request, res: Response) => {
     userName: 'System Administrator',
     userRole: 'system_admin',
     action: 'DEMO_DATA_RESET',
-    details: 'Reset projects and inventory to initial verified seed state.',
+    details: 'Reset projects, organizations and inventory to initial verified seed state.',
   });
-  res.json({ success: true, message: 'Projects and inventory reset to default seed data.' });
+  res.json({ success: true, message: 'Projects, organizations and inventory reset to default seed data.' });
 });
 
-// List all projects
-app.get('/api/projects', (_req: Request, res: Response) => {
+// List all projects (optionally filtered by organization header)
+app.get('/api/projects', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || (req.query.orgId as string);
+  if (orgId) {
+    const orgProjects = projects.filter((p) => (p.organizationId || 'org_tefa') === orgId);
+    return res.json(orgProjects);
+  }
   res.json(projects);
 });
 
@@ -346,11 +476,15 @@ app.post('/api/projects', (req: Request, res: Response) => {
   if (!newProj.title) {
     return res.status(400).json({ error: 'Project title is required' });
   }
+  const orgId = newProj.organizationId || (req.headers['x-organization-id'] as string) || 'org_tefa';
+  newProj.organizationId = orgId;
+
   // Generate reference ID if not provided
   if (!newProj.referenceId) {
     const year = new Date().getFullYear();
     const count = projects.length + 1;
-    newProj.referenceId = `TEFA-${year}-PRJ-${String(count).padStart(3, '0')}`;
+    const prefix = orgId === 'org_tefa' ? 'TEFA' : orgId.replace('org_', '').toUpperCase().slice(0, 6);
+    newProj.referenceId = `${prefix}-${year}-PRJ-${String(count).padStart(3, '0')}`;
   }
   newProj.createdAt = newProj.createdAt || new Date().toISOString();
   newProj.updatedAt = new Date().toISOString();
@@ -1379,7 +1513,7 @@ app.post('/api/intelligence/import-commit', (req: Request, res: Response) => {
           sustainabilityPlan: 'Langfristige lokale Übergabe an Partner.',
           inclusionAccessibilityNeeds: 'Barrierefreie Zugänglichkeit gewährleistet.',
           proposerName: userName,
-          proposerEmail: 'controlling@techenergyforafrica.com',
+          proposerEmail: 'controlling@techenergyforafrica.org',
           submissionDate: new Date().toISOString().split('T')[0],
         },
         feasibilityChecks: [],
@@ -1642,7 +1776,7 @@ app.post('/api/creative-studio/plan', async (req: Request, res: Response) => {
     const prompt = `
 You are the Senior Communications Strategist & Creative Director for TechEnergy For Africa e.V. (TEFA).
 TEFA is a German registered non-profit (e.V.) advancing renewable energy and digital education in Africa (Cameroon, Senegal, etc.).
-Website: https://www.techenergyforafrica.com
+Website: https://www.techenergyforafrica.org
 
 Plan a comprehensive visual campaign strategy:
 Project Title: "${projectTitle}"

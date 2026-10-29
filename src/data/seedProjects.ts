@@ -3,6 +3,8 @@ import { Project, InventoryAsset } from '../types';
 export const SEED_PROJECTS: Project[] = [
   {
     id: 'proj_ifopsim_001',
+    organizationId: 'org_tefa',
+    programmeId: 'prog_tgiep',
     referenceId: 'TEFA-2026-CMR-001',
     title: 'IFOPSIM – Inclusive Digital Vocational Training, Cameroon',
     shortDescription:
@@ -59,7 +61,7 @@ export const SEED_PROJECTS: Project[] = [
       inclusionAccessibilityNeeds:
         'Full sign language interpretation during all lecture sessions; visual alerting systems; screen-magnification software; physical ramp access.',
       proposerName: 'Marc Tagne',
-      proposerEmail: 'marc.tagne@techenergyforafrica.com',
+      proposerEmail: 'marc.tagne@techenergyforafrica.org',
       proposerOrganization: 'TechEnergy For Africa e.V.',
       submissionDate: '2026-03-01',
     },
@@ -857,6 +859,7 @@ export const SEED_PROJECTS: Project[] = [
   },
   {
     id: 'proj_gen_green_002',
+    organizationId: 'org_tefa',
     referenceId: 'TEFA-2026-DE-CMR-002',
     title: 'Generation Green – Environmental Education and Sustainability',
     shortDescription:
@@ -908,7 +911,7 @@ export const SEED_PROJECTS: Project[] = [
       inclusionAccessibilityNeeds:
         'Materials translated into French and German with large-format pictorial assembly manuals.',
       proposerName: 'Amina Diallo',
-      proposerEmail: 'amina.diallo@techenergyforafrica.com',
+      proposerEmail: 'amina.diallo@techenergyforafrica.org',
       proposerOrganization: 'TechEnergy For Africa e.V.',
       submissionDate: '2025-11-15',
     },
@@ -1357,6 +1360,7 @@ export const SEED_PROJECTS: Project[] = [
   },
   {
     id: 'proj_dfg_003',
+    organizationId: 'org_tefa',
     referenceId: 'TEFA-2026-CMR-003',
     title: 'Digital Future Girls – Digital Empowerment for Young Women, Cameroon',
     shortDescription:

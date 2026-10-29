@@ -2,9 +2,11 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Project } from '../types';
 import { SEED_PROJECTS } from '../data/seedProjects';
 import { useAuthRole } from './AuthRoleContext';
+import { useOrganization } from './OrganizationContext';
 
 interface ProjectContextType {
   projects: Project[];
+  allProjects: Project[];
   activeProject: Project | null;
   activeProjectId: string;
   setActiveProjectId: (id: string) => void;
@@ -21,7 +23,8 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const { activeOrgId } = useOrganization();
   const [activeProjectId, setActiveProjectIdState] = useState<string>(() => {
     return localStorage.getItem('tefa_active_proj_id') || 'proj_ifopsim_001';
   });
@@ -29,6 +32,18 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [error, setError] = useState<string | null>(null);
 
   const { currentUser, logAuditAction } = useAuthRole();
+
+  // Filter projects by current active organization workspace
+  const projects = allProjects.filter((p) => (p.organizationId || 'org_tefa') === activeOrgId);
+
+  // Sync active project if active organization changes or projects update
+  useEffect(() => {
+    if (projects.length > 0) {
+      if (!projects.some((p) => p.id === activeProjectId)) {
+        setActiveProjectIdState(projects[0].id);
+      }
+    }
+  }, [projects, activeProjectId, activeOrgId]);
 
   const fetchProjects = useCallback(async () => {
     setIsLoading(true);
@@ -39,16 +54,13 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           'x-user-role': currentUser?.role || 'visitor',
           'x-user-id': currentUser?.id || 'anonymous',
           'x-user-name': currentUser?.name || 'Anonymous',
+          'x-organization-id': activeOrgId || 'org_tefa',
         },
       });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          setProjects(data);
-          // verify activeProjectId exists
-          if (!data.some((p: Project) => p.id === activeProjectId)) {
-            setActiveProjectIdState(data[0].id);
-          }
+          setAllProjects(data);
           setIsLoading(false);
           return;
         }
@@ -60,17 +72,17 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          setProjects(parsed);
+          setAllProjects(parsed);
           setIsLoading(false);
           return;
         } catch {
           // ignore
         }
       }
-      setProjects(SEED_PROJECTS);
+      setAllProjects(SEED_PROJECTS);
       setIsLoading(false);
     }
-  }, [activeProjectId]);
+  }, [activeOrgId, currentUser]);
 
   useEffect(() => {
     fetchProjects();
@@ -78,6 +90,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const setActiveProjectId = (id: string) => {
     setActiveProjectIdState(id);
+    localStorage.setItem(`tefa_active_proj_id_${activeOrgId}`, id);
     localStorage.setItem('tefa_active_proj_id', id);
   };
 
@@ -85,11 +98,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const createProject = async (newProjectData: Partial<Project>): Promise<Project> => {
     const year = new Date().getFullYear();
-    const count = projects.length + 1;
-    const refId = newProjectData.referenceId || `TEFA-${year}-PRJ-${String(count).padStart(3, '0')}`;
+    const count = allProjects.length + 1;
+    const prefix = activeOrgId === 'org_tefa' ? 'TEFA' : activeOrgId.replace('org_', '').toUpperCase().slice(0, 6);
+    const refId = newProjectData.referenceId || `${prefix}-${year}-PRJ-${String(count).padStart(3, '0')}`;
 
     const newProject: Project = {
       id: 'proj_' + Date.now(),
+      organizationId: newProjectData.organizationId || activeOrgId,
+      programmeId: newProjectData.programmeId,
       referenceId: refId,
       title: newProjectData.title || 'New Untitled Project',
       shortDescription: newProjectData.shortDescription || '',
@@ -102,7 +118,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       demoDisclaimer: newProjectData.demoDisclaimer,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      createdBy: newProjectData.createdBy || 'Authorized User',
+      createdBy: newProjectData.createdBy || currentUser.name || 'Authorized User',
       proposal: newProjectData.proposal || {
         problemStatement: '',
         targetBeneficiaries: '',
@@ -167,14 +183,15 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           'x-user-role': currentUser.role,
           'x-user-id': currentUser.id,
           'x-user-name': currentUser.name,
+          'x-organization-id': activeOrgId || 'org_tefa',
         },
         body: JSON.stringify(newProject),
       });
       if (res.ok) {
         const savedProject = await res.json();
-        setProjects((prev) => [savedProject, ...prev]);
+        setAllProjects((prev) => [savedProject, ...prev]);
         setActiveProjectId(savedProject.id);
-        localStorage.setItem('tefa_projects_backup', JSON.stringify([savedProject, ...projects]));
+        localStorage.setItem('tefa_projects_backup', JSON.stringify([savedProject, ...allProjects]));
         logAuditAction('PROJECT_CREATED', `Created new project ${savedProject.title}`, savedProject.id, savedProject.title);
         return savedProject;
       } else {
@@ -185,15 +202,19 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.warn('Backend offline, saving locally:', e);
     }
 
-    setProjects((prev) => [newProject, ...prev]);
+    setAllProjects((prev) => [newProject, ...prev]);
     setActiveProjectId(newProject.id);
-    localStorage.setItem('tefa_projects_backup', JSON.stringify([newProject, ...projects]));
+    localStorage.setItem('tefa_projects_backup', JSON.stringify([newProject, ...allProjects]));
     logAuditAction('PROJECT_CREATED', `Created new project (local storage) ${newProject.title}`, newProject.id, newProject.title);
     return newProject;
   };
 
   const updateProject = async (updatedProject: Project): Promise<Project> => {
-    const finalProj = { ...updatedProject, updatedAt: new Date().toISOString() };
+    const finalProj = {
+      ...updatedProject,
+      organizationId: updatedProject.organizationId || activeOrgId,
+      updatedAt: new Date().toISOString(),
+    };
 
     try {
       const res = await fetch(`/api/projects/${finalProj.id}`, {
@@ -203,6 +224,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
           'x-user-role': currentUser.role,
           'x-user-id': currentUser.id,
           'x-user-name': currentUser.name,
+          'x-organization-id': activeOrgId || 'org_tefa',
         },
         body: JSON.stringify(finalProj),
       });
@@ -216,16 +238,16 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
 
       const saved = await res.json();
-      setProjects((prev) => prev.map((p) => (p.id === saved.id ? saved : p)));
-      localStorage.setItem('tefa_projects_backup', JSON.stringify(projects.map((p) => (p.id === saved.id ? saved : p))));
+      setAllProjects((prev) => prev.map((p) => (p.id === saved.id ? saved : p)));
+      localStorage.setItem('tefa_projects_backup', JSON.stringify(allProjects.map((p) => (p.id === saved.id ? saved : p))));
       return saved;
     } catch (e) {
       if ((e as Error).message.includes('Forbidden') || (e as Error).message.includes('Governance')) {
         throw e;
       }
       console.warn('Backend offline, saving locally:', e);
-      setProjects((prev) => prev.map((p) => (p.id === finalProj.id ? finalProj : p)));
-      localStorage.setItem('tefa_projects_backup', JSON.stringify(projects.map((p) => (p.id === finalProj.id ? finalProj : p))));
+      setAllProjects((prev) => prev.map((p) => (p.id === finalProj.id ? finalProj : p)));
+      localStorage.setItem('tefa_projects_backup', JSON.stringify(allProjects.map((p) => (p.id === finalProj.id ? finalProj : p))));
       return finalProj;
     }
   };
@@ -235,7 +257,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     newPhase: Project['lifecyclePhase'],
     newStatus?: Project['status']
   ) => {
-    const target = projects.find((p) => p.id === projectId);
+    const target = allProjects.find((p) => p.id === projectId);
     if (!target) return;
     const updated: Project = {
       ...target,
@@ -252,10 +274,10 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const deleteProject = async (id: string): Promise<boolean> => {
-    const target = projects.find((p) => p.id === id);
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-    if (activeProjectId === id && projects.length > 1) {
-      const remaining = projects.filter((p) => p.id !== id);
+    const target = allProjects.find((p) => p.id === id);
+    setAllProjects((prev) => prev.filter((p) => p.id !== id));
+    const remaining = projects.filter((p) => p.id !== id);
+    if (activeProjectId === id && remaining.length > 0) {
       setActiveProjectId(remaining[0].id);
     }
 
@@ -278,8 +300,11 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     } catch {
       // ignore
     }
-    setProjects(SEED_PROJECTS);
-    setActiveProjectId(SEED_PROJECTS[0].id);
+    setAllProjects(SEED_PROJECTS);
+    const tefaProjects = SEED_PROJECTS.filter((p) => (p.organizationId || 'org_tefa') === activeOrgId);
+    if (tefaProjects.length > 0) {
+      setActiveProjectId(tefaProjects[0].id);
+    }
     localStorage.removeItem('tefa_projects_backup');
     setIsLoading(false);
   };
@@ -288,6 +313,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <ProjectContext.Provider
       value={{
         projects,
+        allProjects,
         activeProject,
         activeProjectId,
         setActiveProjectId,

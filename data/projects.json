@@ -70,6 +70,8 @@
   },
   {
     "id": "proj_ifopsim_001",
+    "organizationId": "org_tefa",
+    "programmeId": "prog_tgiep",
     "referenceId": "TEFA-2026-CMR-001",
     "title": "IFOPSIM – Inclusive Digital Vocational Training, Cameroon",
     "shortDescription": "Support for inclusive digital vocational education for deaf and hard-of-hearing young people in Douala, Cameroon. Equipped with solar-backed IT lab and sign-language pedagogical resources.",
@@ -119,7 +121,7 @@
       "sustainabilityPlan": "Graduates establish a cooperative digital service bureau (transcription, data entry, typesetting) generating income to cover ongoing facility electricity maintenance and recurring internet costs.",
       "inclusionAccessibilityNeeds": "Full sign language interpretation during all lecture sessions; visual alerting systems; screen-magnification software; physical ramp access.",
       "proposerName": "Marc Tagne",
-      "proposerEmail": "marc.tagne@techenergyforafrica.com",
+      "proposerEmail": "marc.tagne@techenergyforafrica.org",
       "proposerOrganization": "TechEnergy For Africa e.V.",
       "submissionDate": "2026-03-01"
     },
@@ -1019,6 +1021,7 @@
   },
   {
     "id": "proj_gen_green_002",
+    "organizationId": "org_tefa",
     "referenceId": "TEFA-2026-DE-CMR-002",
     "title": "Generation Green – Environmental Education and Sustainability",
     "shortDescription": "Youth-led solar and environmental sustainability education clubs linking high schools in Germany and Cameroon with practical solar DIY workshops.",
@@ -1063,7 +1066,7 @@
       "sustainabilityPlan": "Schools integrate the solar workshop into their permanent annual natural science curriculum.",
       "inclusionAccessibilityNeeds": "Materials translated into French and German with large-format pictorial assembly manuals.",
       "proposerName": "Amina Diallo",
-      "proposerEmail": "amina.diallo@techenergyforafrica.com",
+      "proposerEmail": "amina.diallo@techenergyforafrica.org",
       "proposerOrganization": "TechEnergy For Africa e.V.",
       "submissionDate": "2025-11-15"
     },
@@ -1557,6 +1560,7 @@
   },
   {
     "id": "proj_dfg_003",
+    "organizationId": "org_tefa",
     "referenceId": "TEFA-2026-CMR-003",
     "title": "Digital Future Girls – Digital Empowerment for Young Women, Cameroon",
     "shortDescription": "Inklusives 6-monatiges IT- und Berufsbildungsprogramm für 20 junge Frauen aus sozial benachteiligten Verhältnissen in Yaoundé/Douala mit Mentorinnen-Netzwerk.",
@@ -2240,6 +2244,147 @@
       "accessibilityInterpreterCostEUR": 500,
       "maintenanceReservePct": 10,
       "confirmedGrantsEUR": 0,
+      "pendingGrantsEUR": 15000
+    }
+  },
+  {
+    "id": "proj_global_eco_001",
+    "organizationId": "org_global_eco",
+    "referenceId": "GECF-2026-CH-001",
+    "title": "Alpine & Community Forest Regeneration Initiative",
+    "shortDescription": "Community-based high-altitude reforestation and ecological watershed protection led by local citizen volunteers in the Swiss Prealps.",
+    "category": "environmental_education",
+    "country": "Other",
+    "locationDetails": "Canton of Valais & Bernese Oberland, Switzerland",
+    "lifecyclePhase": "implementation",
+    "status": "In Progress",
+    "isDemoOrHypothetical": false,
+    "createdAt": "2026-01-10T08:00:00.000Z",
+    "updatedAt": "2026-10-15T12:00:00.000Z",
+    "createdBy": "Helena Meyer (Foundation Director)",
+    "proposal": {
+      "problemStatement": "Changing precipitation patterns and forest decline threaten biodiversity and natural watershed stabilization in alpine valleys.",
+      "targetBeneficiaries": "Alpine valley communities and regional watershed ecosystems.",
+      "beneficiaryCountPlanned": 450,
+      "proposedSolution": "Community planting of climate-resilient mixed tree saplings, soil sensor telemetry, and environmental education workshops for regional schools.",
+      "objectives": [
+        "Plant 5,000 native climate-resilient saplings across 12 hectares.",
+        "Engage 450 school students and community volunteers in participatory biodiversity monitoring."
+      ],
+      "expectedResults": [
+        "5,000 trees planted with 88% monitored survival rate.",
+        "Digital alpine microclimate monitoring dashboard established."
+      ],
+      "activities": [
+        "Baseline ecological soil survey.",
+        "Community planting weekend workshops.",
+        "Deployment of solar-powered IoT soil telemetry stations."
+      ],
+      "durationMonths": 24,
+      "estimatedBudgetEUR": 65000,
+      "potentialPartners": [
+        "Swiss Alpine Protection League",
+        "Valais Regional Forestry Office"
+      ],
+      "sustainabilityPlan": "Community stewardship councils oversee the sites with regional forestry support.",
+      "inclusionAccessibilityNeeds": "Accessible trails for youth and senior community volunteers.",
+      "proposerName": "Helena Meyer",
+      "proposerEmail": "helena.meyer@global-eco-community.org",
+      "proposerOrganization": "Global Eco & Community Foundation",
+      "submissionDate": "2026-01-05"
+    },
+    "feasibilityChecks": [],
+    "decisions": [],
+    "milestones": [],
+    "tasks": [],
+    "risks": [],
+    "budgetItems": [
+      {
+        "id": "bi-ge-1",
+        "category": "equipment",
+        "description": "Tree saplings, protection mesh, and planting equipment",
+        "plannedCostEUR": 25000,
+        "actualExpenditure": 18000,
+        "committedCost": 4000,
+        "status": "approved"
+      },
+      {
+        "id": "bi-ge-2",
+        "category": "personnel",
+        "description": "Lead Forester and Community Workshop Coordination",
+        "plannedCostEUR": 22000,
+        "actualExpenditure": 14000,
+        "committedCost": 5000,
+        "status": "approved"
+      }
+    ],
+    "fundingSources": [
+      {
+        "id": "fs-ge-1",
+        "donorName": "Swiss Climate Action Fund",
+        "fundingType": "Institutional Grant",
+        "amountEUR": 50000,
+        "currency": "CHF",
+        "status": "received",
+        "probabilityPct": 100,
+        "agreementDate": "2026-01-20",
+        "disbursementSchedule": "Lump sum disbursed"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "tx-ge-1",
+        "date": "2026-03-15",
+        "type": "expense",
+        "category": "equipment",
+        "amountEUR": 12000,
+        "currency": "CHF",
+        "status": "paid",
+        "recipientPayee": "Valais Forestry Nursery",
+        "description": "Initial batch of 2,500 larch and pine saplings",
+        "documentUrl": "/docs/receipt-ge-001.pdf",
+        "complianceVerified": true
+      }
+    ],
+    "impactIndicators": [
+      {
+        "id": "ii-ge-1",
+        "name": "Planted Native Trees",
+        "target": 5000,
+        "actual": 2800,
+        "unit": "Trees",
+        "reportingPeriod": "2026 Q1-Q3",
+        "evidenceSource": "Forestry Nursery Receipts & GPS Tagging",
+        "evidenceStatus": "confirmed_fact",
+        "responsiblePerson": "Helena Meyer"
+      }
+    ],
+    "closure": {
+      "deliverablesAccepted": false,
+      "financialReconciliationDone": false,
+      "commitmentsReviewed": false,
+      "assetsHandedOver": false,
+      "finalPartnerReportReceived": false,
+      "lessonsLearnedDocumented": false,
+      "impactEvaluationComplete": false,
+      "donorReportingFinalized": false,
+      "boardApprovedClosure": false,
+      "archiveRetentionConfigured": false
+    },
+    "simulationParams": {
+      "beneficiariesCount": 450,
+      "trainersCount": 3,
+      "trainingDurationMonths": 24,
+      "usableWorkstations": 5,
+      "studentsPerWorkstation": 1,
+      "donatedHardwareCount": 0,
+      "hardwareUnitPurchaseCostEUR": 300,
+      "logisticsCustomsCostEUR": 0,
+      "infrastructureSolarCostEUR": 2000,
+      "monthlyOperatingCostEUR": 500,
+      "accessibilityInterpreterCostEUR": 0,
+      "maintenanceReservePct": 5,
+      "confirmedGrantsEUR": 50000,
       "pendingGrantsEUR": 15000
     }
   }

@@ -108,7 +108,7 @@ export const CreativeStudioView: React.FC = () => {
             textToDisplay: {
               headline: proj.title,
               subtitle: proj.shortDescription,
-              callToAction: 'Erfahre mehr auf techenergyforafrica.com',
+              callToAction: 'Erfahre mehr auf techenergyforafrica.org',
             },
             startDate: new Date().toISOString().split('T')[0],
             endDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0],

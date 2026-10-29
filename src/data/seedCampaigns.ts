@@ -297,11 +297,11 @@ export const SEED_CAMPAIGNS: GeneratedCampaign[] = [
         imageUrl: generateConsistentSvgArtwork('instagram_square', 'Solar IT Hub Square', '#0f2b48', '#10b981', '#f97316'),
         headline: 'Digital Future Girls',
         subtitle: 'Bildungschancen durch saubere Solarenergie',
-        callToAction: 'Erfahre mehr auf techenergyforafrica.com',
+        callToAction: 'Erfahre mehr auf techenergyforafrica.org',
         overlayConfig: {
           headline: 'Digital Future Girls',
           subtitle: 'Bildungschancen durch saubere Solarenergie',
-          callToAction: 'Erfahre mehr auf techenergyforafrica.com',
+          callToAction: 'Erfahre mehr auf techenergyforafrica.org',
           organizationBadge: 'TechEnergy For Africa e.V.',
           logoPosition: 'top-left',
           textAlignment: 'center',

@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useAuthRole } from '../context/AuthRoleContext';
 import { useProjects } from '../context/ProjectContext';
+import { useOrganization } from '../context/OrganizationContext';
 import {
   LayoutDashboard,
   FilePlus,
@@ -22,6 +23,7 @@ import {
   Palette,
   Sparkles,
   BarChart3,
+  Building2,
 } from 'lucide-react';
 
 export type ActiveTab =
@@ -46,6 +48,7 @@ interface SidebarProps {
   activeTab: ActiveTab;
   onSelectTab: (tab: ActiveTab) => void;
   onNewProjectClick: () => void;
+  onOpenProfile?: () => void;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
 }
@@ -54,12 +57,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onSelectTab,
   onNewProjectClick,
+  onOpenProfile,
   isMobileOpen = false,
   onCloseMobile,
 }) => {
   const { t } = useLanguage();
   const { currentUser, canViewInternalFinances } = useAuthRole();
   const { projects, activeProject, setActiveProjectId } = useProjects();
+  const { activeOrganization } = useOrganization();
 
   const isVisitor = currentUser.role === 'visitor';
 
@@ -199,11 +204,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Mobile Header with Close Button */}
         <div className="flex md:hidden items-center justify-between p-3 border-b border-slate-800 bg-slate-950">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded bg-emerald-600 flex items-center justify-center font-black text-sm text-white">
-              T
+            <div className="w-7 h-7 rounded bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-sm text-white">
+              IF
             </div>
             <div>
-              <span className="font-bold text-white text-xs block leading-tight">TEFA ProjectHub</span>
+              <span className="font-bold text-white text-xs block leading-tight">ImpactFlow</span>
               <span className="text-[10px] text-slate-400 block leading-tight">From Idea to Impact</span>
             </div>
           </div>
@@ -215,6 +220,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Organization Workspace indicator */}
+        {activeOrganization && (
+          <div className="px-3 pt-2 pb-1 border-b border-slate-800/80 bg-slate-950/40">
+            <div className="flex items-center justify-between text-[11px] text-slate-300">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Building2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="font-semibold truncate">{activeOrganization.name}</span>
+              </div>
+              <span className="text-[9px] bg-slate-800 text-slate-300 px-1 py-0.5 rounded font-mono shrink-0">
+                {activeOrganization.defaultCurrency}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Create Project Button */}
         <div className="p-3 border-b border-slate-800">
@@ -322,15 +342,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         {/* User profile footer */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/40 flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-slate-700 text-slate-200 flex items-center justify-center text-xs font-bold shrink-0">
-            {currentUser.avatarInitials}
+        <button
+          type="button"
+          onClick={onOpenProfile}
+          title="Benutzerprofil verwalten & wechseln"
+          className="w-full text-left p-3 border-t border-slate-800 bg-slate-950/40 hover:bg-slate-800/60 transition-colors flex items-center justify-between gap-2.5 focus:outline-none"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-7 h-7 rounded-full bg-emerald-700 text-white flex items-center justify-center text-xs font-bold shrink-0">
+              {currentUser.avatarInitials}
+            </div>
+            <div className="truncate">
+              <div className="text-xs font-medium text-white truncate">{currentUser.name}</div>
+              <div className="text-[10px] text-slate-400 truncate">{currentUser.email}</div>
+            </div>
           </div>
-          <div className="truncate">
-            <div className="text-xs font-medium text-white truncate">{currentUser.name}</div>
-            <div className="text-[10px] text-slate-400 truncate">{currentUser.email}</div>
-          </div>
-        </div>
+          <span className="text-[9px] bg-slate-800 text-emerald-400 border border-slate-700 px-1 py-0.5 rounded shrink-0">
+            Profil
+          </span>
+        </button>
       </aside>
     </>
   );

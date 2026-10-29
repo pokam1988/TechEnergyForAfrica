@@ -251,7 +251,7 @@ export async function renderAssetToCanvas(
   ctx.font = `600 ${Math.round(14 * baseScale)}px system-ui, sans-serif`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillText('TechEnergy For Africa e.V. | www.techenergyforafrica.com', paddingX, footerY + 14);
+  ctx.fillText('TechEnergy For Africa e.V. | www.techenergyforafrica.org', paddingX, footerY + 14);
 
   ctx.textAlign = 'right';
   ctx.fillText(`TEFA CREATIVE STUDIO | ${cfg.name.toUpperCase()}`, canvas.width - paddingX, footerY + 14);

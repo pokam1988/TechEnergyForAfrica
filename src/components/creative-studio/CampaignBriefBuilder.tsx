@@ -389,7 +389,7 @@ export const CampaignBriefBuilder: React.FC<CampaignBriefBuilderProps> = ({
                       textToDisplay: { ...brief.textToDisplay, callToAction: e.target.value },
                     })
                   }
-                  placeholder="z.B. Jetzt Bildungspartner werden | techenergyforafrica.com"
+                  placeholder="z.B. Jetzt Bildungspartner werden | techenergyforafrica.org"
                   className="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>

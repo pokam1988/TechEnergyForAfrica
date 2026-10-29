@@ -132,7 +132,7 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
                 Gemeinnütziger Verein zur Förderung von Bildung & Erneuerbaren Energien
               </div>
               <div className="text-[11px] text-slate-400 mt-1">
-                www.techenergyforafrica.com • München & Douala
+                www.techenergyforafrica.org • München & Douala
               </div>
             </div>
             <div className="text-right">

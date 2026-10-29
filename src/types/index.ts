@@ -367,6 +367,9 @@ export interface Project {
   simulationParams: SimulationParameters;
   communicationCampaigns?: GeneratedCampaign[];
   campaignAssets?: CampaignAsset[];
+  organizationId?: string; // Default: 'org_tefa'
+  programmeId?: string; // Optional parent programme ID (e.g. 'prog_tgiep')
+  programmeName?: string;
 }
 
 // -------------------------------------------------------------
@@ -526,3 +529,52 @@ export interface GeneratedCampaign {
   isSavedToProject: boolean;
   savedToProjectId?: string;
 }
+
+// -------------------------------------------------------------
+// Universal Multi-Organization SaaS Entities (ImpactFlow)
+// -------------------------------------------------------------
+
+export interface Organization {
+  id: string; // e.g. 'org_tefa', 'org_green_peace'
+  name: string; // e.g. 'TechEnergy For Africa e.V.'
+  legalForm?: string; // e.g. 'Eingetragener Verein (e.V.)', 'Nonprofit Foundation'
+  country: string; // e.g. 'Deutschland', 'Schweiz', 'Kamerun'
+  website: string; // e.g. 'https://www.techenergyforafrica.org'
+  logoUrl?: string;
+  defaultCurrency: 'EUR' | 'USD' | 'XAF' | 'GBP' | 'CHF';
+  timeZone: string; // e.g. 'Europe/Berlin'
+  primaryLanguage: 'de' | 'en' | 'fr';
+  description?: string;
+  status: 'active' | 'suspended';
+  createdAt: string;
+}
+
+export interface Programme {
+  id: string; // e.g. 'prog_tgiep'
+  organizationId: string;
+  name: string; // e.g. 'TGIEP – The Global Internship & Education Programme'
+  description: string;
+  lead: string;
+  status: 'active' | 'planning' | 'completed';
+  createdAt: string;
+}
+
+export interface UserProfile {
+  id: string;
+  organizationId: string;
+  name: string;
+  role: UserRole;
+  email: string;
+  avatarInitials: string;
+  customTitle?: string; // e.g. "Vorstandsvorsitzender", "Program Director"
+  phone?: string;
+  bio?: string;
+}
+
+export interface PlatformConfig {
+  productName: string; // Default: 'ImpactFlow'
+  tagline: string; // 'From Idea to Impact'
+  version: string;
+  isMultiOrgEnabled: boolean;
+}
+

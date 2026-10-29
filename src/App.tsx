@@ -1,12 +1,14 @@
 /**
- * TEFA ProjectHub – From Idea to Impact
- * TechEnergy For Africa e.V. (TEFA)
- * https://www.techenergyforafrica.com
+ * ImpactFlow – From Idea to Impact
+ * Universal Multi-Organization NGO Project Lifecycle Platform
+ * TechEnergy For Africa e.V. (TEFA) & Global NGO Workspaces
+ * Official TEFA Website: https://www.techenergyforafrica.org
  */
 
 import React, { useState } from 'react';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { AuthRoleProvider } from './context/AuthRoleContext';
+import { OrganizationProvider } from './context/OrganizationContext';
 import { ProjectProvider, useProjects } from './context/ProjectContext';
 import { Header } from './components/Header';
 import { Sidebar, ActiveTab } from './components/Sidebar';
@@ -27,12 +29,16 @@ import { AuditLogViewer } from './components/audit/AuditLogViewer';
 import { CreativeStudioView } from './components/creative-studio/CreativeStudioView';
 import { ProjectIntelligenceView } from './components/intelligence/ProjectIntelligenceView';
 import { DocumentExportModal } from './components/documents/DocumentExportModal';
+import { UserProfileModal } from './components/profile/UserProfileModal';
+import { NewOrganizationModal } from './components/organization/NewOrganizationModal';
 import { X, Plus, Sparkles, Building } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+  const [isUserProfileModalOpen, setIsUserProfileModalOpen] = useState(false);
+  const [isNewOrgModalOpen, setIsNewOrgModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { createProject } = useProjects();
@@ -76,6 +82,8 @@ const AppContent: React.FC = () => {
           setActiveTab('audit');
           setIsMobileMenuOpen(false);
         }}
+        onOpenProfile={() => setIsUserProfileModalOpen(true)}
+        onOpenNewOrg={() => setIsNewOrgModalOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
       />
@@ -91,6 +99,7 @@ const AppContent: React.FC = () => {
             setIsNewProjectModalOpen(true);
             setIsMobileMenuOpen(false);
           }}
+          onOpenProfile={() => setIsUserProfileModalOpen(true)}
           isMobileOpen={isMobileMenuOpen}
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
@@ -128,6 +137,18 @@ const AppContent: React.FC = () => {
         onClose={() => setIsExportOpen(false)}
       />
 
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isUserProfileModalOpen}
+        onClose={() => setIsUserProfileModalOpen(false)}
+      />
+
+      {/* New Organization Modal */}
+      <NewOrganizationModal
+        isOpen={isNewOrgModalOpen}
+        onClose={() => setIsNewOrgModalOpen(false)}
+      />
+
       {/* New Project Dialog */}
       {isNewProjectModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
@@ -136,12 +157,12 @@ const AppContent: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Plus className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-bold text-slate-900 text-sm">
-                  Neues TEFA-Projektvorhaben anlegen
+                  Neues Projektvorhaben anlegen
                 </h3>
               </div>
               <button
                 onClick={() => setIsNewProjectModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -157,25 +178,25 @@ const AppContent: React.FC = () => {
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="z.B. Solar Literacy Hub Garoua"
-                  className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  placeholder="z.B. Solardach für Ausbildungszentrum Bafoussam"
+                  className="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Schwerpunktbereich *
+                    Themenbereich
                   </label>
                   <select
                     value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value as typeof newCategory)}
+                    onChange={(e: any) => setNewCategory(e.target.value)}
                     className="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
-                    <option value="digital_inclusion">Digitale Teilhabe</option>
+                    <option value="digital_inclusion">Digitale Inklusion</option>
                     <option value="inclusive_education">Inklusive Bildung</option>
                     <option value="renewable_energy">Erneuerbare Energien</option>
-                    <option value="environmental_education">Umweltbildung (Gen Green)</option>
+                    <option value="environmental_education">Umweltbildung</option>
                     <option value="international_exchange">Internationaler Austausch</option>
                     <option value="community_development">Gemeindeentwicklung</option>
                     <option value="youth_empowerment">Jugendförderung</option>
@@ -184,11 +205,11 @@ const AppContent: React.FC = () => {
 
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Zielland *
+                    Zielland
                   </label>
                   <select
                     value={newCountry}
-                    onChange={(e) => setNewCountry(e.target.value as typeof newCountry)}
+                    onChange={(e: any) => setNewCountry(e.target.value)}
                     className="w-full p-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                   >
                     <option value="Cameroon">Kamerun</option>
@@ -241,9 +262,11 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthRoleProvider>
-        <ProjectProvider>
-          <AppContent />
-        </ProjectProvider>
+        <OrganizationProvider>
+          <ProjectProvider>
+            <AppContent />
+          </ProjectProvider>
+        </OrganizationProvider>
       </AuthRoleProvider>
     </LanguageProvider>
   );
