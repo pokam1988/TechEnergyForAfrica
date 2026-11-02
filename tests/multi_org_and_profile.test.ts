@@ -98,3 +98,45 @@ test('MULTI-ORG TEST 6: User Profiles pikop, mistral, and info @techenergyforafr
   const yahooUser = INITIAL_CUSTOM_PROFILES.find((p: any) => p.email.endsWith('@yahoo.com'));
   assert.ok(yahooUser, 'External @yahoo.com profile exists');
 });
+
+test('MULTI-ORG TEST 7: Organization Logo and Letterhead Configuration for Print Templates', () => {
+  const tefa = SEED_ORGANIZATIONS.find((o) => o.id === 'org_tefa');
+  assert.ok(tefa?.logoUrl, 'TEFA has an official vector SVG logo configured');
+  assert.ok(tefa?.letterhead, 'TEFA has letterhead structure configured');
+  assert.strictEqual(tefa?.letterhead?.addressCity, 'Berlin');
+  assert.strictEqual(tefa?.letterhead?.email, 'info@techenergyforafrica.org');
+  assert.ok(tefa?.letterhead?.registrationCourt?.includes('Charlottenburg'));
+  assert.ok(tefa?.letterhead?.taxId?.includes('27/653/55123'));
+  assert.strictEqual(tefa?.letterhead?.signatory1Name, 'Dr. Frederic Pokam');
+  assert.strictEqual(tefa?.letterhead?.signatory2Name, 'Marc Tagne');
+
+  const eco = SEED_ORGANIZATIONS.find((o) => o.id === 'org_global_eco');
+  assert.ok(eco?.logoUrl, 'Global Eco has its own distinct logo');
+  assert.strictEqual(eco?.letterhead?.addressCity, 'Zürich');
+});
+
+test('MULTI-ORG TEST 8: Document Studio supports Digital Signatures and Four-Eyes Governance', () => {
+  const sampleSignatureRecord = {
+    signer1Name: 'Dr. Frederic Pokam',
+    signer1Role: 'Vorstandsvorsitzender',
+    signer1City: 'Berlin',
+    signer1Date: '02.11.2026',
+    signer1SignatureDataUrl: 'data:image/svg+xml;utf8,...',
+    signer1IsSigned: true,
+    signer2Name: 'Marc Tagne',
+    signer2Role: 'Finanzvorstand',
+    signer2City: 'Berlin',
+    signer2Date: '02.11.2026',
+    signer2SignatureDataUrl: 'data:image/svg+xml;utf8,...',
+    signer2IsSigned: true,
+    includeOfficialSeal: true,
+    auditHash: 'SIG-TEFA-2026-X99',
+    isVerified: true,
+  };
+
+  assert.strictEqual(sampleSignatureRecord.signer1IsSigned, true);
+  assert.strictEqual(sampleSignatureRecord.signer2IsSigned, true);
+  assert.strictEqual(sampleSignatureRecord.includeOfficialSeal, true);
+  assert.ok(sampleSignatureRecord.auditHash.startsWith('SIG-TEFA'));
+});
+

@@ -207,10 +207,11 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           </button>
           <button
             onClick={onOpenExport}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-xs"
+            title="Offizielle Dokumente (Antrag, Verwendungsnachweis, MoU) mit Logo drucken & signieren"
           >
             <FileText className="w-4 h-4 text-emerald-400" />
-            <span>{t.dashboard?.actionExport || 'Dossier Export'}</span>
+            <span>Dokument drucken &amp; signieren</span>
           </button>
         </div>
       </div>

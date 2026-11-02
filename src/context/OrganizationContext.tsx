@@ -22,10 +22,16 @@ export const OrganizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Ensure org_tefa always exists and has the correct official URL
+          // Ensure org_tefa always exists and has the correct official URL, logo and letterhead
           const tefaIdx = parsed.findIndex((o: Organization) => o.id === 'org_tefa');
           if (tefaIdx >= 0) {
             parsed[tefaIdx].website = 'https://www.techenergyforafrica.org';
+            if (!parsed[tefaIdx].logoUrl) {
+              parsed[tefaIdx].logoUrl = SEED_ORGANIZATIONS[0].logoUrl;
+            }
+            if (!parsed[tefaIdx].letterhead) {
+              parsed[tefaIdx].letterhead = SEED_ORGANIZATIONS[0].letterhead;
+            }
           } else {
             parsed.unshift(SEED_ORGANIZATIONS[0]);
           }
@@ -89,12 +95,33 @@ export const OrganizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       legalForm: orgData.legalForm || 'Nonprofit Association',
       country: orgData.country || 'Deutschland',
       website: orgData.website || '',
+      logoUrl: orgData.logoUrl || '',
       defaultCurrency: orgData.defaultCurrency || 'EUR',
       timeZone: orgData.timeZone || 'Europe/Berlin',
       primaryLanguage: orgData.primaryLanguage || 'de',
       description: orgData.description || '',
       status: 'active',
       createdAt: new Date().toISOString(),
+      letterhead: orgData.letterhead || {
+        addressStreet: '',
+        addressCity: '',
+        addressPostalCode: '',
+        addressCountry: orgData.country || 'Deutschland',
+        phone: '',
+        email: '',
+        registrationCourt: '',
+        taxId: '',
+        bankName: '',
+        iban: '',
+        bic: '',
+        signatory1Name: '',
+        signatory1Role: 'Vorstand / Geschäftsführer',
+        signatory2Name: '',
+        signatory2Role: 'Finanzvorstand / Controlling',
+        primaryBrandColor: '#059669',
+        officialTagline: 'Gemeinnützige Initiative',
+        digitalStampText: `${orgData.name || 'Organisation'} • Offizielles Dokument`,
+      },
     };
 
     setOrganizations((prev) => {

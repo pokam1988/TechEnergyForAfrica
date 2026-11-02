@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Pencil,
   Trash2,
+  Palette,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -28,6 +29,7 @@ interface HeaderProps {
   onOpenAudit: () => void;
   onOpenProfile?: () => void;
   onOpenNewOrg?: () => void;
+  onOpenOrgBranding?: () => void;
   onOpenProjectSettings?: () => void;
   onToggleMobileMenu?: () => void;
   isMobileMenuOpen?: boolean;
@@ -39,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAudit,
   onOpenProfile,
   onOpenNewOrg,
+  onOpenOrgBranding,
   onOpenProjectSettings,
   onToggleMobileMenu,
   isMobileMenuOpen = false,
@@ -205,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Desktop Center: Workspace & Project Switchers */}
           <div className="hidden lg:flex items-center gap-3 flex-1 justify-center max-w-2xl px-4">
             {/* Workspace Selector */}
-            <div className="flex items-center gap-2 bg-slate-800/90 border border-slate-700/80 rounded-lg px-3 py-1.5 shadow-xs">
+            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 rounded-lg px-2.5 py-1.5 shadow-xs">
               <Building2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <div className="flex flex-col min-w-0">
                 <label htmlFor="desktop-workspace-select" className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight">
@@ -217,6 +220,8 @@ export const Header: React.FC<HeaderProps> = ({
                   onChange={(e) => {
                     if (e.target.value === '__new__') {
                       onOpenNewOrg?.();
+                    } else if (e.target.value === '__branding__') {
+                      onOpenOrgBranding?.();
                     } else {
                       setActiveOrgId(e.target.value);
                     }
@@ -229,11 +234,25 @@ export const Header: React.FC<HeaderProps> = ({
                       {org.name} ({org.defaultCurrency})
                     </option>
                   ))}
+                  <option value="__branding__" className="bg-slate-800 text-amber-300 font-semibold">
+                    🎨 Logo &amp; Briefkopf anpassen...
+                  </option>
                   <option value="__new__" className="bg-slate-800 text-emerald-300 font-semibold">
                     + Neue Organisation...
                   </option>
                 </select>
               </div>
+
+              {onOpenOrgBranding && (
+                <button
+                  type="button"
+                  onClick={onOpenOrgBranding}
+                  title="Logo &amp; Briefkopf der Organisation anpassen"
+                  className="p-1 text-slate-400 hover:text-emerald-300 hover:bg-slate-700/60 rounded transition-colors"
+                >
+                  <Palette className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
 
             {/* Project Selector & Actions */}
@@ -308,15 +327,15 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {/* Quick Export Dossier (Tablet/Desktop) */}
+            {/* Quick Export Dossier & Digital Signing Studio (Tablet/Desktop) */}
             <button
               type="button"
               onClick={onOpenExport}
-              title={t.app.exportSummary}
-              className="hidden md:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium px-3 py-2 rounded-lg transition-colors"
+              title="Amtliche Dokumente drucken, exportieren & digital signieren"
+              className="hidden md:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition-colors shadow-xs"
             >
               <FileText className="w-4 h-4 text-emerald-400" />
-              <span>{t.common.export}</span>
+              <span>Dokumente &amp; Signieren</span>
             </button>
 
             {/* Role Switcher */}
@@ -415,7 +434,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="lg:hidden bg-slate-950/95 border-t border-slate-800 px-3 py-2">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
           {/* Mobile Workspace Selector */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5">
+          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5">
             <Building2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <label htmlFor="mobile-workspace-select" className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
@@ -427,6 +446,8 @@ export const Header: React.FC<HeaderProps> = ({
                 onChange={(e) => {
                   if (e.target.value === '__new__') {
                     onOpenNewOrg?.();
+                  } else if (e.target.value === '__branding__') {
+                    onOpenOrgBranding?.();
                   } else {
                     setActiveOrgId(e.target.value);
                   }
@@ -438,11 +459,25 @@ export const Header: React.FC<HeaderProps> = ({
                     {org.name} ({org.defaultCurrency})
                   </option>
                 ))}
+                <option value="__branding__" className="bg-slate-800 text-amber-300 font-semibold">
+                  🎨 Logo &amp; Briefkopf anpassen...
+                </option>
                 <option value="__new__" className="bg-slate-800 text-emerald-300 font-semibold">
                   + Neue Organisation...
                 </option>
               </select>
             </div>
+
+            {onOpenOrgBranding && (
+              <button
+                type="button"
+                onClick={onOpenOrgBranding}
+                title="Logo &amp; Briefkopf der Organisation anpassen"
+                className="p-1 text-slate-400 hover:text-emerald-300 rounded"
+              >
+                <Palette className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           {/* Mobile Project Selector & Actions */}

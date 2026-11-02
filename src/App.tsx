@@ -32,6 +32,7 @@ import { DocumentExportModal } from './components/documents/DocumentExportModal'
 import { UserProfileModal } from './components/profile/UserProfileModal';
 import { NewOrganizationModal } from './components/organization/NewOrganizationModal';
 import { ProjectSettingsModal } from './components/project/ProjectSettingsModal';
+import { OrganizationBrandingModal } from './components/organization/OrganizationBrandingModal';
 import { AIChatCompanion } from './components/chat/AIChatCompanion';
 import { X, Plus, Sparkles, Building } from 'lucide-react';
 
@@ -41,6 +42,7 @@ const AppContent: React.FC = () => {
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isUserProfileModalOpen, setIsUserProfileModalOpen] = useState(false);
   const [isNewOrgModalOpen, setIsNewOrgModalOpen] = useState(false);
+  const [isOrgBrandingOpen, setIsOrgBrandingOpen] = useState(false);
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -88,6 +90,7 @@ const AppContent: React.FC = () => {
         }}
         onOpenProfile={() => setIsUserProfileModalOpen(true)}
         onOpenNewOrg={() => setIsNewOrgModalOpen(true)}
+        onOpenOrgBranding={() => setIsOrgBrandingOpen(true)}
         onOpenProjectSettings={() => setIsProjectSettingsOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
@@ -138,10 +141,17 @@ const AppContent: React.FC = () => {
         </main>
       </div>
 
-      {/* Export Modal */}
+      {/* Export & Document Signing Modal */}
       <DocumentExportModal
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
+        onOpenBranding={() => setIsOrgBrandingOpen(true)}
+      />
+
+      {/* Organization Branding & Letterhead Modal */}
+      <OrganizationBrandingModal
+        isOpen={isOrgBrandingOpen}
+        onClose={() => setIsOrgBrandingOpen(false)}
       />
 
       {/* User Profile Modal */}

@@ -1,4 +1,5 @@
 import { Organization, Programme } from '../types';
+import { TEFA_OFFICIAL_SVG_LOGO, GLOBAL_ECO_SVG_LOGO } from './defaultLogos';
 
 export const SEED_ORGANIZATIONS: Organization[] = [
   {
@@ -7,6 +8,7 @@ export const SEED_ORGANIZATIONS: Organization[] = [
     legalForm: 'Eingetragener Verein (e.V.)',
     country: 'Deutschland',
     website: 'https://www.techenergyforafrica.org',
+    logoUrl: TEFA_OFFICIAL_SVG_LOGO,
     defaultCurrency: 'EUR',
     timeZone: 'Europe/Berlin',
     primaryLanguage: 'de',
@@ -14,6 +16,26 @@ export const SEED_ORGANIZATIONS: Organization[] = [
       'Gemeinnütziger Verein mit Sitz in Berlin zur Förderung von erneuerbaren Energien, digitaler Inklusion und nachhaltigen Bildungspartnerschaften in Afrika.',
     status: 'active',
     createdAt: '2025-01-01T00:00:00Z',
+    letterhead: {
+      addressStreet: 'Kottbusser Damm 79',
+      addressPostalCode: '10967',
+      addressCity: 'Berlin',
+      addressCountry: 'Deutschland',
+      phone: '+49 30 555 789 20',
+      email: 'info@techenergyforafrica.org',
+      registrationCourt: 'Amtsgericht Berlin-Charlottenburg, VR 38920 B',
+      taxId: 'StNr. 27/653/55123 • Finanzamt für Körperschaften I Berlin (Gemeinnützigkeit nach §§ 51 ff. AO)',
+      bankName: 'GLS Gemeinschaftsbank eG Berlin',
+      iban: 'DE89 4306 0967 1144 5500 00',
+      bic: 'GENODEM1GLS',
+      signatory1Name: 'Dr. Frederic Pokam',
+      signatory1Role: 'Vorstandsvorsitzender (TEFA e.V.)',
+      signatory2Name: 'Marc Tagne',
+      signatory2Role: 'Finanzvorstand & Programmkoordinator',
+      primaryBrandColor: '#059669',
+      officialTagline: 'Gemeinnütziger Verein zur Förderung von Bildung, IT-Laboren & Erneuerbaren Energien',
+      digitalStampText: 'TechEnergy For Africa e.V. • Berlin • Amtlich Bestätigt',
+    },
   },
   {
     id: 'org_global_eco',
@@ -21,6 +43,7 @@ export const SEED_ORGANIZATIONS: Organization[] = [
     legalForm: 'International Nonprofit Foundation',
     country: 'Schweiz',
     website: 'https://global-eco-community.org',
+    logoUrl: GLOBAL_ECO_SVG_LOGO,
     defaultCurrency: 'CHF',
     timeZone: 'Europe/Zurich',
     primaryLanguage: 'en',
@@ -28,6 +51,26 @@ export const SEED_ORGANIZATIONS: Organization[] = [
       'Independent charitable foundation advancing community-led ecology, clean water access, and vocational inclusion across multiple continents.',
     status: 'active',
     createdAt: '2025-09-15T00:00:00Z',
+    letterhead: {
+      addressStreet: 'Bahnhofstrasse 45',
+      addressPostalCode: '8001',
+      addressCity: 'Zürich',
+      addressCountry: 'Schweiz',
+      phone: '+41 44 211 44 00',
+      email: 'contact@global-eco-community.org',
+      registrationCourt: 'Handelsregisteramt des Kantons Zürich, CHE-459.123.890',
+      taxId: 'Steuerbefreite gemeinnützige Stiftung gemäss Beschluss Kanton Zürich',
+      bankName: 'Zürcher Kantonalbank (ZKB)',
+      iban: 'CH93 0070 0110 0045 9123 8',
+      bic: 'ZKBKCHZZ80A',
+      signatory1Name: 'Elena Rossi',
+      signatory1Role: 'Executive Foundation Director',
+      signatory2Name: 'Thomas Meier',
+      signatory2Role: 'Head of Audit & Treasury',
+      primaryBrandColor: '#0284c7',
+      officialTagline: 'International NGO advancing community ecology, solar microgrids & clean water',
+      digitalStampText: 'Global Eco Foundation • Zürich • Verified Registry',
+    },
   },
 ];
 

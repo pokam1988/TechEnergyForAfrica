@@ -536,6 +536,45 @@ export interface GeneratedCampaign {
 // Universal Multi-Organization SaaS Entities (ImpactFlow)
 // -------------------------------------------------------------
 
+export interface OrganizationLetterhead {
+  addressStreet?: string;
+  addressCity?: string;
+  addressPostalCode?: string;
+  addressCountry?: string;
+  phone?: string;
+  email?: string;
+  registrationCourt?: string; // e.g. "Amtsgericht Berlin-Charlottenburg, VR 38920 B"
+  taxId?: string; // e.g. "Finanzamt für Körperschaften I Berlin, StNr. 27/653/55123 - Gemeinnützig nach §§ 51 ff. AO"
+  bankName?: string;
+  iban?: string;
+  bic?: string;
+  signatory1Name?: string;
+  signatory1Role?: string;
+  signatory2Name?: string;
+  signatory2Role?: string;
+  primaryBrandColor?: string; // e.g. "#059669"
+  officialTagline?: string;
+  digitalStampText?: string;
+}
+
+export interface DocumentSignatureRecord {
+  signer1Name: string;
+  signer1Role: string;
+  signer1Date: string;
+  signer1City: string;
+  signer1SignatureDataUrl?: string;
+  signer1IsSigned: boolean;
+  signer2Name: string;
+  signer2Role: string;
+  signer2Date: string;
+  signer2City: string;
+  signer2SignatureDataUrl?: string;
+  signer2IsSigned: boolean;
+  includeOfficialSeal: boolean;
+  auditHash: string;
+  isVerified: boolean;
+}
+
 export interface Organization {
   id: string; // e.g. 'org_tefa', 'org_green_peace'
   name: string; // e.g. 'TechEnergy For Africa e.V.'
@@ -549,6 +588,7 @@ export interface Organization {
   description?: string;
   status: 'active' | 'suspended';
   createdAt: string;
+  letterhead?: OrganizationLetterhead;
 }
 
 export interface Programme {
