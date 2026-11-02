@@ -568,14 +568,14 @@ app.put('/api/projects/:id', (req: Request, res: Response) => {
   res.json(updated);
 });
 
-// Delete project (Board member & Admin only)
+// Delete project (Authorized team roles)
 app.delete('/api/projects/:id', (req: Request, res: Response) => {
   const id = req.params.id;
   const userRole = (req.headers['x-user-role'] as string) || 'visitor';
 
-  if (userRole !== 'board_member' && userRole !== 'system_admin') {
+  if (userRole === 'visitor' || userRole === 'project_reviewer') {
     return res.status(403).json({
-      error: 'Forbidden: Only board members or system administrators can delete projects.',
+      error: 'Forbidden: Visitors and external reviewers cannot delete projects.',
     });
   }
 
@@ -585,7 +585,213 @@ app.delete('/api/projects/:id', (req: Request, res: Response) => {
   }
   const deleted = projects.splice(index, 1)[0];
   saveProjects(projects);
+
+  appendAuditLog({
+    id: 'log_del_' + Date.now(),
+    timestamp: new Date().toISOString(),
+    userId: (req.headers['x-user-id'] as string) || 'user',
+    userName: (req.headers['x-user-name'] as string) || 'Authorized User',
+    userRole: (userRole as UserRole) || 'board_member',
+    action: 'PROJECT_DELETED',
+    projectId: id,
+    projectTitle: deleted.title,
+    details: `Deleted project [${deleted.referenceId}]: ${deleted.title}`,
+  });
+
   res.json({ success: true, deletedId: id, title: deleted.title });
+});
+
+// Clean Platform for Official Production Use (Removes demo/test projects)
+app.post('/api/projects/clean-official', (req: Request, res: Response) => {
+  const userRole = (req.headers['x-user-role'] as string) || 'visitor';
+  if (userRole === 'visitor') {
+    return res.status(403).json({ error: 'Forbidden: Visitors cannot clean platform data.' });
+  }
+
+  // Retain only non-demo and non-test projects
+  projects = projects.filter((p) => !p.isDemoOrHypothetical && p.title.toLowerCase() !== 'test');
+
+  // If TEFA has no projects left, initialize an official flagship project
+  const tefaHasProj = projects.some((p) => (p.organizationId || 'org_tefa') === 'org_tefa');
+  if (!tefaHasProj) {
+    const officialTefaProject: Project = {
+      id: 'proj_tefa_official_001',
+      organizationId: 'org_tefa',
+      programmeId: 'prog_tgiep',
+      referenceId: 'TEFA-2026-OFFICIAL-001',
+      title: 'TechEnergy For Africa – Offizielles Solar- & Digitalbildungsprogramm 2026',
+      shortDescription: 'Offizielles Vorhaben von TechEnergy For Africa e.V. zur Realisierung nachhaltiger Solarinselsysteme und inklusiver IT-Schulungslabore für junge Menschen.',
+      category: 'renewable_energy',
+      country: 'Cameroon',
+      locationDetails: 'Douala & Yaoundé, Kamerun / Berlin, Deutschland',
+      lifecyclePhase: 'planning',
+      status: 'Approved',
+      isDemoOrHypothetical: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      createdBy: (req.headers['x-user-name'] as string) || 'Dr. Frederic Pokam (TEFA Board Member)',
+      proposal: {
+        problemStatement: 'Mangel an verlässlicher Stromversorgung und digitaler Ausbildungsinfrastruktur in ländlichen und städtischen Ausbildungszentren in Kamerun.',
+        targetBeneficiaries: 'Jugendliche, Auszubildende und Lehrkräfte (min. 50% weiblich)',
+        beneficiaryCountPlanned: 120,
+        proposedSolution: 'Aufbau von 2 solargestützten IT-Ausbildungslaboren mit 25 Rechnerarbeitsplätzen und zertifizierten Trainern vor Ort.',
+        objectives: [
+          'Inbetriebnahme von 2 Solar-Inselanlagen mit 10 kWp und Batteriespeichern.',
+          'Ausbildung von 120 Teilnehmenden in digitalen Basiskompetenzen und Bürosoftware.',
+          'Aufbau langfristiger Wartungsverträge mit lokalen Handwerksbetrieben.',
+        ],
+        expectedResults: [
+          '100% autarke Stromversorgung während der Unterrichtszeiten.',
+          'Zertifizierung von 120 Jugendlichen innerhalb von 12 Monaten.',
+        ],
+        activities: [
+          'Standortbegutachtung und Partnervereinbarung (MoU).',
+          'Beschaffung, Transport und zollfreie Einfuhr der Solarkomponenten.',
+          'Installation und Sicherheitsprüfung.',
+          'Curriculum-Entwicklung und Trainerausbildung.',
+        ],
+        durationMonths: 12,
+        estimatedBudgetEUR: 50000,
+        potentialPartners: ['Lokale Berufsbildungszentren Douala', 'GIZ / Deutsche Botschaft'],
+        sustainabilityPlan: 'Eigenfinanzierung von Wartung und Betrieb über lokale Solardienstleistungen.',
+        inclusionAccessibilityNeeds: 'Barrierefreie Zugangsrampen und barrierearme Schulungsunterlagen.',
+        proposerName: (req.headers['x-user-name'] as string) || 'Dr. Frederic Pokam',
+        proposerEmail: 'frederic.pokam@techenergyforafrica.org',
+        submissionDate: new Date().toISOString().split('T')[0],
+      },
+      feasibilityChecks: [],
+      decisions: [],
+      milestones: [
+        {
+          id: 'm1',
+          title: 'Offizieller Projektstart & Partnervereinbarungen',
+          description: 'Abschluss der Kooperationsverträge mit lokalen Partnern in Douala.',
+          phase: 'planning',
+          targetDate: '2026-03-31',
+          isCompleted: true,
+          completedDate: '2026-03-25',
+          deliverables: ['Unterzeichnetes MoU'],
+          responsiblePerson: 'Marc Tagne',
+        },
+        {
+          id: 'm2',
+          title: 'Beschaffung & Verschiffung Solaranlagen',
+          description: 'Solarmodule, Wechselrichter und Lithium-Batteriespeicher.',
+          phase: 'planning',
+          targetDate: '2026-06-30',
+          isCompleted: false,
+          deliverables: ['Zolldokumente & Lieferscheine'],
+          responsiblePerson: 'Marc Tagne',
+        },
+      ],
+      tasks: [],
+      risks: [
+        {
+          id: 'r1',
+          category: 'operational',
+          description: 'Verzögerungen bei Zollabfertigung im Hafen von Douala.',
+          impact: 'medium',
+          probability: 'medium',
+          mitigationStrategy: 'Frühzeitige Beantragung der Zollbefreiung über Ministerium.',
+          status: 'active',
+          responsiblePerson: 'Marc Tagne',
+        },
+      ],
+      budgetItems: [
+        {
+          id: 'b1',
+          category: 'Equipment & Hardware',
+          description: 'Solar-PV-Anlagen, Inverter & 25 Schulungsrechner',
+          plannedCost: 35000,
+          approvedBudget: 35000,
+          actualExpenditure: 0,
+          committedCost: 0,
+          currency: 'EUR',
+        },
+        {
+          id: 'b2',
+          category: 'Personnel',
+          description: 'Ausbildungsleitung, Dozenten & Solartechniker',
+          plannedCost: 15000,
+          approvedBudget: 15000,
+          actualExpenditure: 0,
+          committedCost: 0,
+          currency: 'EUR',
+        },
+      ],
+      fundingSources: [
+        {
+          id: 'f1',
+          name: 'TechEnergy For Africa e.V. Projektfond & Kofinanzierung',
+          type: 'grant',
+          amount: 50000,
+          currency: 'EUR',
+          status: 'confirmed',
+          isRestricted: false,
+        },
+      ],
+      transactions: [],
+      impactIndicators: [
+        {
+          id: 'ind1',
+          name: 'Anzahl ausgebildeter Jugendlicher',
+          category: 'energy',
+          definition: 'Jugendliche mit erfolgreichem Zertifikatsabschluss im Solar- & IT-Programm.',
+          baseline: 0,
+          target: 120,
+          actual: 0,
+          unit: 'Personen',
+          reportingPeriod: '2026',
+          evidenceSource: 'Teilnehmerlisten & Abschlussprüfungen',
+          evidenceStatus: 'verified',
+          responsiblePerson: 'Marc Tagne',
+        },
+      ],
+      closure: {
+        deliverablesAccepted: false,
+        financialReconciliationDone: false,
+        commitmentsReviewed: false,
+        assetsHandedOver: false,
+        finalPartnerReportReceived: false,
+        lessonsLearnedDocumented: false,
+        impactEvaluationComplete: false,
+        donorReportingFinalized: false,
+        boardApprovedClosure: false,
+        archiveRetentionConfigured: false,
+      },
+      simulationParams: {
+        beneficiariesCount: 120,
+        trainersCount: 4,
+        trainingDurationMonths: 12,
+        usableWorkstations: 25,
+        studentsPerWorkstation: 2,
+        donatedHardwareCount: 10,
+        hardwareUnitPurchaseCostEUR: 250,
+        logisticsCustomsCostEUR: 2000,
+        infrastructureSolarCostEUR: 12000,
+        monthlyOperatingCostEUR: 500,
+        accessibilityInterpreterCostEUR: 1500,
+        maintenanceReservePct: 10,
+        confirmedGrantsEUR: 50000,
+        pendingGrantsEUR: 0,
+      },
+    };
+    projects.unshift(officialTefaProject);
+  }
+
+  saveProjects(projects);
+
+  appendAuditLog({
+    id: 'log_clean_' + Date.now(),
+    timestamp: new Date().toISOString(),
+    userId: (req.headers['x-user-id'] as string) || 'user',
+    userName: (req.headers['x-user-name'] as string) || 'Authorized User',
+    userRole: (userRole as UserRole) || 'board_member',
+    action: 'PLATFORM_CLEANED',
+    details: 'Removed demo and test projects. Platform is configured for official production use.',
+  });
+
+  res.json({ success: true, message: 'Platform cleaned for official use.', projects });
 });
 
 // Inventory APIs
@@ -836,6 +1042,354 @@ Return JSON:
       details: err instanceof Error ? err.message : String(err),
     });
   }
+});
+
+// 4. Universal NGO Project Lifecycle AI Companion Chat (Gemini & ChatGPT Ready)
+app.post('/api/ai/companion-chat', async (req: Request, res: Response) => {
+  const {
+    messages = [],
+    query,
+    projectContext,
+    orgContext,
+    provider = 'gemini',
+    lang = 'de',
+  } = req.body;
+
+  const userQuery = query || (messages.length > 0 ? messages[messages.length - 1].content : '');
+
+  if (!userQuery) {
+    return res.status(400).json({ error: 'Query or messages are required' });
+  }
+
+  const projTitle = projectContext?.title || 'NGO Vorhaben';
+  const projPhase = projectContext?.lifecyclePhase || 'proposal';
+  const projStatus = projectContext?.status || 'Draft';
+  const projRef = projectContext?.referenceId || 'PRJ-NEW';
+  const projCountry = projectContext?.country || 'International';
+  const plannedBudget = projectContext?.totalPlanned || 0;
+  const confirmedFunding = projectContext?.confirmedFunding || 0;
+  const fundingGap = projectContext?.fundingGap || 0;
+  const beneficiaries = projectContext?.beneficiaries || 0;
+  const orgName = orgContext?.name || 'TechEnergy For Africa e.V.';
+  const orgCurrency = orgContext?.defaultCurrency || 'EUR';
+
+  const systemPrompt = `
+You are the Senior NGO Project Lifecycle Companion & Strategic In-App Guide inside the ImpactFlow platform.
+You assist project leaders, coordinators, board members, and finance officers across international NGOs, associations, and social enterprises (including ${orgName}).
+
+ACTIVE PROJECT CONTEXT:
+- Organization: ${orgName} (${orgCurrency})
+- Active Project: [${projRef}] "${projTitle}"
+- Project Country / Location: ${projCountry}
+- Current Lifecycle Phase: ${projPhase} (12-Phase Model: idea, proposal, feasibility, planning, approval, fundraising, implementation, monitoring, financial_accounting, evaluation, closure, impact_reporting)
+- Project Status: ${projStatus}
+- Planned Budget: ${plannedBudget} ${orgCurrency}
+- Confirmed Financing: ${confirmedFunding} ${orgCurrency}
+- Net Funding Gap: ${fundingGap} ${orgCurrency}
+- Planned Beneficiaries: ${beneficiaries}
+
+APPLICATION CAPABILITIES & IN-APP NAVIGATION:
+You know how every part of the ImpactFlow web application works and guide users to use it accordingly.
+Whenever you recommend an action or feature, ALWAYS include the matching clickable action token in your reply:
+- [[nav:dashboard|Zur Projekt-Übersicht]]: Portfolio KPIs, Launch Countdown, and Governance status workflow.
+- [[nav:proposal|Zum Antrags-Assistenten]]: Drafting problem statements, solutions, SMART objectives, and accessibility details.
+- [[nav:advisor|Zum KI-Entscheidungsberater]]: AI SWOT analyses, weighted criteria matrices, and formal human decision records.
+- [[nav:feasibility|Zur Machbarkeitsprüfung]]: 7-dimension risk & governance checklist (Technical, Financial, Legal, Partner, Environmental, Socio-cultural, Operational).
+- [[nav:planning|Zur Planung (Gantt & Kanban)]]: Milestone scheduling, work package assignment, and deadline tracking.
+- [[nav:budget|Zu Budget & Finanzierung]]: Cost item breakdown, approved vs planned budgets, and currency management.
+- [[nav:simulator|Zum Finanzsimulator]]: Dynamic sliders for participants, computers, solar infrastructure, and scenario presets.
+- [[nav:partners|Zu Partner & Fundraising]]: Donor relations, foundation pipelines, grant applications, and partner MoUs.
+- [[nav:creative_studio|Zum Creative Studio]]: Generating campaign flyers, social media banners, and community outreach assets.
+- [[nav:inventory|Zum IT- & Solar-Inventar]]: Equipment tracking, operational readiness status, serial numbers, and 3D Interactive Solar Lab.
+- [[nav:monitoring|Zum Umsetzungs-Dashboard]]: Milestone execution tracking, status updates, and early-warning indicators.
+- [[nav:finance|Zu Finanzen & Belegen]]: General ledger, transaction logging, receipt attachment, and official Verwendungsnachweis (VwN) draft.
+- [[nav:impact|Zu Wirkung & KPI-Monitoring]]: Indicator evaluation, SDG alignment, and target vs. actual outcome measurement.
+- [[nav:closure|Zum Projektabschluss]]: Formal 10-point closure checklist, asset handover, and final donor reporting.
+- [[nav:audit|Zum Revisions-Audit-Trail]]: Revisionssicheres logging of all user activities and status approvals.
+- [[action:export|Dossier exportieren]]: Exporting official donor dossiers and printable PDF summaries.
+- [[action:new_project|Neues Projekt anlegen]]: Creating a new project proposal modal.
+- [[action:profile|Benutzerprofil verwalten]]: Switching or creating custom user profiles.
+
+GOVERNANCE & FOUR-EYES APPROVAL RULES:
+- Proposers cannot self-approve their own proposals. Approvals must be made by a Board Member or Administrator.
+- To approve a project, navigate to the Dashboard Governance box and click "Projekt formell genehmigen (Vorstand)".
+- Role permissions: Board Member (full approvals), Project Manager (planning & implementation), Finance Officer (budget & receipts audit), Reviewer (inspection), Visitor (read-only without financial internals).
+
+CORE DIRECTIVES:
+1. Provide actionable, high-quality, professional guidance tailored to this project's current phase and context.
+2. If the user asks how to use the app, explain the exact steps and buttons to click, including the relevant [[nav:...]] or [[action:...]] tokens.
+3. Structure your reply cleanly using Markdown: bold headers, concise bullet points, and clear next steps.
+4. Respond in the requested language: ${lang} (de = German, en = English, fr = French).
+`;
+
+  // Check if OpenAI provider requested and if OPENAI_API_KEY is available
+  if ((provider === 'openai' || provider === 'chatgpt') && process.env.OPENAI_API_KEY) {
+    try {
+      const openAiMessages = [
+        { role: 'system', content: systemPrompt },
+        ...messages.map((m: any) => ({
+          role: m.role === 'model' || m.role === 'assistant' ? 'assistant' : 'user',
+          content: m.content,
+        })),
+      ];
+
+      const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: openAiMessages,
+          temperature: 0.7,
+        }),
+      });
+
+      if (openAiRes.ok) {
+        const data = await openAiRes.json();
+        const text = data.choices?.[0]?.message?.content || '';
+        return res.json({
+          success: true,
+          provider: 'openai',
+          model: 'gpt-4o-mini',
+          reply: text,
+        });
+      }
+    } catch (openAiErr) {
+      console.warn('OpenAI call failed, falling back to Gemini:', openAiErr);
+    }
+  }
+
+  // Primary Google Gemini Execution
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      const contents = [
+        {
+          role: 'user',
+          parts: [{ text: `${systemPrompt}\n\nUSER INQUIRY:\n${userQuery}` }],
+        },
+      ];
+
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Gemini API timeout')), 6500)
+      );
+
+      const response = await Promise.race([
+        ai.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents,
+          config: {
+            temperature: 0.4,
+          },
+        }),
+        timeoutPromise,
+      ]);
+
+      const replyText = response.text || '';
+      return res.json({
+        success: true,
+        provider: provider === 'openai' || provider === 'chatgpt' ? 'openai-bridge-gemini' : 'gemini',
+        model: 'gemini-3.8-flash',
+        reply: replyText,
+      });
+    } catch (geminiErr: any) {
+      console.error('Error generating AI Companion chat with Gemini:', geminiErr);
+    }
+  }
+
+  // Structured Intent-Based Offline Fallback Engine (Reliable, app-aware NGO guidance)
+  const queryLower = userQuery.toLowerCase();
+  let offlineReply = '';
+
+  const isAppHelp = queryLower.includes('wie nutze') || queryLower.includes('how to use') || queryLower.includes('comment utiliser') || queryLower.includes('anleitung') || queryLower.includes('hilfe');
+  const isApprovalHelp = queryLower.includes('genehmig') || queryLower.includes('approve') || queryLower.includes('approbation') || queryLower.includes('freigabe');
+  const isSimulatorHelp = queryLower.includes('simulator') || queryLower.includes('simulier');
+  const isExportHelp = queryLower.includes('export') || queryLower.includes('dossier') || queryLower.includes('pdf') || queryLower.includes('druck');
+  const isFinanceHelp = queryLower.includes('beleg') || queryLower.includes('receipt') || queryLower.includes('rechnung') || queryLower.includes('justificatif') || queryLower.includes('buchung');
+  const isInventoryHelp = queryLower.includes('inventar') || queryLower.includes('hardware') || queryLower.includes('solar') || queryLower.includes('gerät');
+
+  if (lang === 'fr') {
+    if (isApprovalHelp) {
+      offlineReply = `### Comment approuver ou modifier le statut d'un projet ?
+1. **Rôle requis :** Seul un **Membre du Conseil (Board Member)** ou un **Administrateur** peut formellement approuver un projet.
+2. **Règle des 4 yeux :** Le porteur du projet ne peut jamais approuver sa propre proposition.
+3. **Procédure :**
+   - Accédez à la **Vue générale & Portefeuille**.
+   - Dans le bloc noir **Gouvernance & Workflow de statut**, cliquez sur le bouton vert **"Approuver formellement le projet"**.
+   - Le statut passera à "Approved" et la phase active deviendra la planification.
+
+[[nav:dashboard|Ouvrir la Vue générale]] [[nav:planning|Consulter la Planification]]`;
+    } else if (isSimulatorHelp) {
+      offlineReply = `### Comment utiliser le Simulateur Financier Interactif ?
+1. Accédez au **Simulateur financier** via le menu latéral ou le lien ci-dessous.
+2. Ajustez les curseurs interactifs (Nombre de participants, postes informatiques, formation, solaire).
+3. Visualisez en temps réel le coût total, le coût par bénéficiaire et le déficit net.
+4. Cliquez sur **"Enregistrer comme scénario actif"** pour mettre à jour automatiquement le budget de votre projet.
+
+[[nav:simulator|Accéder au Simulateur financier]] [[nav:budget|Vérifier le Budget]]`;
+    } else if (isExportHelp) {
+      offlineReply = `### Comment exporter le Dossier de projet en PDF ?
+1. Cliquez sur le bouton **"Dossier export"** dans l'en-tête supérieur ou ci-dessous.
+2. Cochez les sections à inclure (Résumé exécutif, Tableau budgétaire, Jalons, Faisabilité).
+3. Sélectionnez votre langue d'exportation (**Français**, **Anglais** ou **Allemand**).
+4. Cliquez sur **"Drucken / PDF speichern"** pour générer un PDF professionnel aux normes des bailleurs de fonds.
+
+[[action:export|Ouvrir la fenêtre d'export Dossier]]`;
+    } else if (isAppHelp) {
+      offlineReply = `### Guide d'utilisation d'ImpactFlow – De l'Idée à l'Impact
+ImpactFlow vous permet de piloter l'ensemble du cycle de vie de votre ONG en 12 étapes :
+- **1. Cadrage :** Rédigez vos objectifs dans le [[nav:proposal|Wizard de proposition]].
+- **2. Décision & Faisabilité :** Évaluez les risques via la [[nav:feasibility|Liste de contrôle]].
+- **3. Planification :** Définissez vos jalons dans la [[nav:planning|Planification (Gantt)]].
+- **4. Budget & Financement :** Suivez vos financements dans [[nav:budget|Budget]] et simulez des scénarios avec le [[nav:simulator|Simulateur]].
+- **5. Levée de fonds :** Gérez vos conventions bailleurs dans [[nav:partners|Partenaires & Fundraising]].
+- **6. Exécution & Clôture :** Enregistrez vos factures dans [[nav:finance|Finances & Justificatifs]] et clôturez le projet dans [[nav:closure|Clôture]].
+
+[[nav:dashboard|Tableau de bord]] [[action:export|Exporter le dossier]]`;
+    } else {
+      offlineReply = `### Recommandations méthodologiques pour "${projTitle}" (${projPhase})
+- **Déficit budgétaire actuel :** ${fundingGap.toLocaleString()} ${orgCurrency} restant à financer sur un budget prévisionnel de ${plannedBudget.toLocaleString()} ${orgCurrency}.
+- **Étape prioritaire (${projPhase}) :** Consolider la matrice de cadre logique (Logframe) et formaliser les accords de partenariat locaux.
+- **Gouvernance & Conformité :** Veillez à respecter la règle des 4 yeux : le porteur de projet ne doit pas approuver lui-même sa demande de subvention.
+- **Conseil bailleur :** Diversifiez les sources de cofinancement (fondations privées, coopération décentralisée, mécénat de compétences).
+
+[[nav:proposal|Consulter la proposition]] [[nav:simulator|Simuler le budget]] [[action:export|Exporter le dossier]]`;
+    }
+  } else if (lang === 'en') {
+    if (isApprovalHelp) {
+      offlineReply = `### How to Approve or Transition Project Status?
+1. **Required Role:** Only a **Board Member** or **System Administrator** has approval authority.
+2. **Four-Eyes Governance:** The project proposer cannot approve their own application.
+3. **Step-by-step:**
+   - Go to the **Overview & Portfolio** dashboard.
+   - Look for the dark **Governance & Status-Workflow** section.
+   - Click the green button **"Formally Approve Project (Board)"**.
+   - The status updates to "Approved" and unlocks implementation release.
+
+[[nav:dashboard|Open Overview Dashboard]] [[nav:planning|Go to Planning]]`;
+    } else if (isSimulatorHelp) {
+      offlineReply = `### How to Use the Interactive Finance Simulator?
+1. Open the **Finance Simulator** from the sidebar or using the button below.
+2. Adjust the dynamic sliders (Beneficiaries, IT Workstations, Trainers, Solar Backup, Operating Costs).
+3. The model instantly updates Total Cost, Cost per Student, and Net Funding Gap.
+4. Click **"Save as Active Project Scenario"** to commit the numbers to your live project budget.
+
+[[nav:simulator|Launch Finance Simulator]] [[nav:budget|View Project Budget]]`;
+    } else if (isExportHelp) {
+      offlineReply = `### How to Export Project Dossiers & Reports?
+1. Click the **"Export"** button in the header or use the action below.
+2. Select the report modules to include (Executive Summary, Budget Comparison, Milestone Timeline, Risk Matrix).
+3. Choose your preferred report language (**English**, **German**, or **French**).
+4. Click **"Print / Save PDF"** to produce an official donor dossier formatted with organization letterhead.
+
+[[action:export|Open Dossier Export Window]]`;
+    } else if (isAppHelp) {
+      offlineReply = `### ImpactFlow Web Application User Guide
+ImpactFlow guides non-profit teams through the complete 12-phase project lifecycle:
+- **Phase 1-2 (Idea & Proposal):** Structure narrative in the [[nav:proposal|Proposal Wizard]] and compare options in [[nav:advisor|AI Tiebreaker]].
+- **Phase 3-4 (Feasibility & Planning):** Verify criteria in [[nav:feasibility|Feasibility Checklist]] and schedule tasks in [[nav:planning|Gantt & Kanban Planning]].
+- **Phase 5-6 (Budget & Simulation):** Manage budget lines in [[nav:budget|Budget]] and model scenarios in the [[nav:simulator|Finance Simulator]].
+- **Phase 7-9 (Fundraising & Assets):** Track donors in [[nav:partners|Partners & Grants]] and hardware in [[nav:inventory|IT & Solar Inventory]].
+- **Phase 10-12 (Execution to Impact):** Track progress in [[nav:monitoring|Execution Monitoring]], attach receipts in [[nav:finance|Finance]], and formalize evaluation in [[nav:closure|Project Closure]].
+
+[[nav:dashboard|Back to Overview]] [[action:export|Export Project Dossier]]`;
+    } else {
+      offlineReply = `### Strategic Recommendations for "${projTitle}" (${projPhase})
+- **Current Net Funding Gap:** ${fundingGap.toLocaleString()} ${orgCurrency} remaining to be funded out of ${plannedBudget.toLocaleString()} ${orgCurrency} total planned.
+- **Immediate Priority (${projPhase}):** Align SMART milestones with the 12-phase project lifecycle and secure signed partner MoUs.
+- **Governance & Four-Eyes Principle:** Ensure project proposers cannot self-approve their own budget applications.
+- **Donor Readiness:** Prepare a concise Theory of Change and verified beneficiary counting criteria.
+
+[[nav:proposal|Open Proposal Wizard]] [[nav:simulator|Test Scenarios]] [[action:export|Export Dossier]]`;
+    }
+  } else {
+    // German (default)
+    if (isApprovalHelp) {
+      offlineReply = `### Wie funktioniert die formelle Projektgenehmigung?
+1. **Benötigte Rolle:** Nur ein **Vorstandsmitglied (Board Member)** oder ein **Systemadministrator** ist berechtigt, Projekte formell zu genehmigen.
+2. **Vier-Augen-Prinzip:** Ein Antragsteller darf seinen eigenen Antrag niemals selbst genehmigen!
+3. **So gehen Sie vor:**
+   - Wechseln Sie im Header zur Rolle **Vorstandsmitglied** (falls berechtigt).
+   - Öffnen Sie die **Projekt-Übersicht**.
+   - Im dunklen Kasten **"Governance & Status-Workflow"** finden Sie den grünen Button **"Projekt formell genehmigen (Vorstand)"**.
+   - Nach Klick wechselt der Status auf *Approved* und gibt das Projekt für die Umsetzung frei.
+
+[[nav:dashboard|Zur Projekt-Übersicht springen]] [[nav:planning|Zum Meilensteinplan]]`;
+    } else if (isSimulatorHelp) {
+      offlineReply = `### Wie funktioniert der interaktive Finanzsimulator?
+1. Öffnen Sie das Modul **Finanzsimulator** über die Seitenleiste oder den Button unten.
+2. Passen Sie die Schieberegler an:
+   - Anzahl Teilnehmende / Begünstigte
+   - IT-Arbeitsplätze & Hardware-Spenden
+   - Ausbildungsdauer & monatliche Betriebskosten
+   - Solaranlage & Inklusionsdolmetscher
+3. Die Kennzahlen für **Gesamtkosten**, **Kosten pro Person** und **Netto-Finanzierungslücke** berechnen sich in Echtzeit.
+4. Klicken Sie auf **"Als aktives Projektszenario speichern"**, um die simulierten Werte direkt in das Projektbudget zu übernehmen.
+
+[[nav:simulator|Zum Finanzsimulator springen]] [[nav:budget|Zu Budget & Finanzierung]]`;
+    } else if (isExportHelp) {
+      offlineReply = `### Wie erstelle und exportiere ich ein Projekt-Dossier?
+1. Klicken Sie oben im Header auf **Exportieren** oder nutzen Sie den Schnelllink unten.
+2. Wählen Sie die gewünschten Abschnitte:
+   - *Executive Summary & Deckblatt*
+   - *Budget vs. Ist-Kosten Analyse*
+   - *Meilenstein- und Terminplan*
+   - *Machbarkeits- und Risikobericht*
+3. Wählen Sie die Zielsprache (**Deutsch**, **Englisch** oder **Französisch**).
+4. Klicken Sie auf **Drucken / PDF speichern**, um ein revisionssicheres Stiftungsdossier mit offiziellem Briefkopf zu erzeugen.
+
+[[action:export|Dossier-Exportfenster öffnen]]`;
+    } else if (isFinanceHelp) {
+      offlineReply = `### Wie erfasse ich Ausgaben und Belege?
+1. Öffnen Sie das Modul **Finanzen & Belegprüfung** über die Navigation.
+2. Klicken Sie auf **"Ausgabe / Einnahme erfassen"**.
+3. Geben Sie Betrag, Datum, Budgetkategorie und Währung (EUR / XAF) ein.
+4. Fügen Sie Belegnummer und Beschreibung für den Verwendungsnachweis (VwN) hinzu.
+5. Die Ausgaben fließen automatisch in den Soll-Ist-Vergleich und die Liquiditätsabstimmung ein.
+
+[[nav:finance|Zu Finanzen & Belegprüfung springen]] [[nav:budget|Zum Budget]]`;
+    } else if (isInventoryHelp) {
+      offlineReply = `### Wo finde ich das IT- & Solarinventar?
+1. Öffnen Sie das Modul **IT- & Anlagen-Inventar** in der Seitenleiste.
+2. Hier verwalten Sie:
+   - Einsatzbereite Laptops und Schulungsrechner mit Seriennummern und Standort.
+   - Solarmodule, Wechselrichter und Batteriespeicher.
+   - Das interaktive **3D Solar Lab** zur Visualisierung der Energieversorgung.
+3. Nur verifizierte Geräte werden im Reifegrad-Radar als einsatzbereit gewertet.
+
+[[nav:inventory|Zum IT- & Anlagen-Inventar springen]] [[nav:dashboard|Zum Dashboard]]`;
+    } else if (isAppHelp) {
+      offlineReply = `### Benutzerleitfaden: So nutzen Sie ImpactFlow optimal
+ImpactFlow begleitet Sie über den gesamten 12-Phasen-Lebenszyklus:
+- **1. Ideen & Anträge:** Formulieren Sie Problemstellung und SMART-Ziele im [[nav:proposal|Antrags-Assistenten]].
+- **2. Machbarkeit & Risiken:** Prüfen Sie alle 7 Dimensionen in der [[nav:feasibility|Machbarkeitsprüfung]].
+- **3. Planung & Meilensteine:** Strukturieren Sie Aufgaben im [[nav:planning|Gantt- & Kanban-Planer]].
+- **4. Budget & Simulation:** Planen Sie Kostenstellen in [[nav:budget|Budget]] und testen Sie Szenarien im [[nav:simulator|Finanzsimulator]].
+- **5. Partner & Spenden:** Verwalten Sie Förderstiftungen in [[nav:partners|Partner & Fundraising]].
+- **6. Finanzen & Abschluss:** Buchen Sie Belege in [[nav:finance|Finanzbuchhaltung]] und schließen Sie das Projekt formal in [[nav:closure|Projektabschluss]] ab.
+
+[[nav:dashboard|Zurück zur Übersicht]] [[action:export|Projekt-Dossier drucken]]`;
+    } else {
+      offlineReply = `### Strategische Handlungsempfehlungen für "${projTitle}" (Phase: ${projPhase})
+- **Finanzierungsstatus:** Aktuell offene Lücke von € ${fundingGap.toLocaleString()} bei einem Gesamtbudget von € ${plannedBudget.toLocaleString()}.
+- **Dringende Maßnahmen für Phase ${projPhase}:**
+  1. **Antragsschärfung:** SMART-Ziele mit klaren Wirkungsindikatoren (z.B. ${beneficiaries} Teilnehmende) hinterlegen.
+  2. **Machbarkeits-Prüfung:** Nachweise für Zollfreistellungen und Solarkapazitäten vor Ort einholen.
+  3. **Governance-Regel:** Das Vier-Augen-Prinzip strikt einhalten – Anträge dürfen nur durch den Vorstand oder bevollmächtigte Reviewer freigegeben werden.
+  4. **Fördermittel-Pipeline:** Parallelanträge bei Stiftungen und Kofinanzierungspartnern einreichen, um das Risiko abzufedern.
+
+[[nav:proposal|Zum Antrags-Assistenten]] [[nav:simulator|Zum Finanzsimulator]] [[action:export|Dossier exportieren]]`;
+    }
+  }
+
+  res.json({
+    success: true,
+    provider: 'offline-intelligence',
+    model: 'ngo-lifecycle-rulebook',
+    reply: offlineReply,
+    isOffline: true,
+  });
 });
 
 // -------------------------------------------------------------

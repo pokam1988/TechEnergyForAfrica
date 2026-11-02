@@ -31,6 +31,8 @@ import { ProjectIntelligenceView } from './components/intelligence/ProjectIntell
 import { DocumentExportModal } from './components/documents/DocumentExportModal';
 import { UserProfileModal } from './components/profile/UserProfileModal';
 import { NewOrganizationModal } from './components/organization/NewOrganizationModal';
+import { ProjectSettingsModal } from './components/project/ProjectSettingsModal';
+import { AIChatCompanion } from './components/chat/AIChatCompanion';
 import { X, Plus, Sparkles, Building } from 'lucide-react';
 
 const AppContent: React.FC = () => {
@@ -39,9 +41,11 @@ const AppContent: React.FC = () => {
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [isUserProfileModalOpen, setIsUserProfileModalOpen] = useState(false);
   const [isNewOrgModalOpen, setIsNewOrgModalOpen] = useState(false);
+  const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-  const { createProject } = useProjects();
+  const { createProject, activeProject } = useProjects();
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState<
     | 'digital_inclusion'
@@ -84,8 +88,10 @@ const AppContent: React.FC = () => {
         }}
         onOpenProfile={() => setIsUserProfileModalOpen(true)}
         onOpenNewOrg={() => setIsNewOrgModalOpen(true)}
+        onOpenProjectSettings={() => setIsProjectSettingsOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
+        onOpenChat={() => setIsChatOpen(true)}
       />
 
       <div className="flex-1 flex overflow-hidden relative">
@@ -110,6 +116,7 @@ const AppContent: React.FC = () => {
               <OverviewDashboard
                 onNavigateTab={(tab) => setActiveTab(tab as ActiveTab)}
                 onOpenExport={() => setIsExportOpen(true)}
+                onOpenProjectSettings={() => setIsProjectSettingsOpen(true)}
               />
             )}
             {activeTab === 'intelligence' && <ProjectIntelligenceView />}
@@ -147,6 +154,13 @@ const AppContent: React.FC = () => {
       <NewOrganizationModal
         isOpen={isNewOrgModalOpen}
         onClose={() => setIsNewOrgModalOpen(false)}
+      />
+
+      {/* Project Settings & Management Modal (Edit, Official Mode, Delete) */}
+      <ProjectSettingsModal
+        isOpen={isProjectSettingsOpen}
+        onClose={() => setIsProjectSettingsOpen(false)}
+        project={activeProject}
       />
 
       {/* New Project Dialog */}
@@ -254,6 +268,18 @@ const AppContent: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ImpactFlow AI Companion Chat (Gemini & ChatGPT Ready, In-App Navigator) */}
+      <AIChatCompanion
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        onToggle={() => setIsChatOpen((prev) => !prev)}
+        onNavigateTab={(tab) => setActiveTab(tab)}
+        onOpenExport={() => setIsExportOpen(true)}
+        onOpenNewProject={() => setIsNewProjectModalOpen(true)}
+        onOpenProfile={() => setIsUserProfileModalOpen(true)}
+        onOpenNewOrg={() => setIsNewOrgModalOpen(true)}
+      />
     </div>
   );
 };

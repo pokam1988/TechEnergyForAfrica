@@ -1,44 +1,132 @@
 [
   {
-    "id": "proj_1793043432469",
-    "referenceId": "TEFA-2026-PRJ-004",
-    "title": "test",
-    "shortDescription": "test",
-    "category": "inclusive_education",
-    "country": "Other",
-    "locationDetails": "",
-    "lifecyclePhase": "proposal",
-    "status": "Draft",
+    "id": "proj_tefa_official_001",
+    "organizationId": "org_tefa",
+    "programmeId": "prog_tgiep",
+    "referenceId": "TEFA-2026-OFFICIAL-001",
+    "title": "TechEnergy For Africa – Offizielles Solar- & Digitalbildungsprogramm 2026",
+    "shortDescription": "Offizielles Vorhaben von TechEnergy For Africa e.V. zur Realisierung nachhaltiger Solarinselsysteme und inklusiver IT-Schulungslabore für junge Menschen.",
+    "category": "renewable_energy",
+    "country": "Cameroon",
+    "locationDetails": "Douala & Yaoundé, Kamerun / Berlin, Deutschland",
+    "lifecyclePhase": "planning",
+    "status": "Approved",
     "isDemoOrHypothetical": false,
-    "createdAt": "2026-10-26T19:37:12.469Z",
-    "updatedAt": "2026-10-26T19:37:13.271Z",
-    "createdBy": "Authorized User",
+    "createdAt": "2026-03-01T08:00:00.000Z",
+    "updatedAt": "2026-11-02T10:00:00.000Z",
+    "createdBy": "Dr. Frederic Pokam (TEFA Board Member)",
     "proposal": {
-      "problemStatement": "",
-      "targetBeneficiaries": "",
-      "beneficiaryCountPlanned": 0,
-      "proposedSolution": "",
-      "objectives": [],
-      "expectedResults": [],
-      "activities": [],
-      "durationMonths": 6,
-      "estimatedBudgetEUR": 0,
-      "potentialPartners": [],
-      "sustainabilityPlan": "",
-      "inclusionAccessibilityNeeds": "",
-      "proposerName": "",
-      "proposerEmail": "",
-      "submissionDate": "2026-10-26"
+      "problemStatement": "Mangel an verlässlicher Stromversorgung und digitaler Ausbildungsinfrastruktur in Ausbildungszentren in Kamerun.",
+      "targetBeneficiaries": "Jugendliche, Auszubildende und Lehrkräfte (min. 50% weiblich)",
+      "beneficiaryCountPlanned": 120,
+      "proposedSolution": "Aufbau von 2 solargestützten IT-Ausbildungslaboren mit 25 Rechnerarbeitsplätzen und zertifizierten Trainern vor Ort.",
+      "objectives": [
+        "Inbetriebnahme von 2 Solar-Inselanlagen mit 10 kWp und Batteriespeichern.",
+        "Ausbildung von 120 Teilnehmenden in digitalen Basiskompetenzen und Bürosoftware.",
+        "Aufbau langfristiger Wartungsverträge mit lokalen Handwerksbetrieben."
+      ],
+      "expectedResults": [
+        "100% autarke Stromversorgung während der Unterrichtszeiten.",
+        "Zertifizierung von 120 Jugendlichen innerhalb von 12 Monaten."
+      ],
+      "activities": [
+        "Standortbegutachtung und Partnervereinbarung (MoU).",
+        "Beschaffung, Transport und zollfreie Einfuhr der Solarkomponenten.",
+        "Installation und Sicherheitsprüfung.",
+        "Curriculum-Entwicklung und Trainerausbildung."
+      ],
+      "durationMonths": 12,
+      "estimatedBudgetEUR": 50000,
+      "potentialPartners": [
+        "Lokale Berufsbildungszentren Douala",
+        "GIZ / Deutsche Botschaft"
+      ],
+      "sustainabilityPlan": "Eigenfinanzierung von Wartung und Betrieb über lokale Solardienstleistungen.",
+      "inclusionAccessibilityNeeds": "Barrierefreie Zugangsrampen und barrierearme Schulungsunterlagen.",
+      "proposerName": "Dr. Frederic Pokam",
+      "proposerEmail": "frederic.pokam@techenergyforafrica.org",
+      "submissionDate": "2026-03-01"
     },
     "feasibilityChecks": [],
     "decisions": [],
-    "milestones": [],
+    "milestones": [
+      {
+        "id": "m1",
+        "title": "Offizieller Projektstart & Partnervereinbarungen",
+        "description": "Abschluss der Kooperationsverträge mit lokalen Partnern in Douala.",
+        "targetDate": "2026-03-31",
+        "isCompleted": true,
+        "completionDate": "2026-03-25",
+        "deliverable": "Unterzeichnetes MoU",
+        "responsibleRole": "project_manager"
+      },
+      {
+        "id": "m2",
+        "title": "Beschaffung & Verschiffung Solaranlagen",
+        "description": "Solarmodule, Wechselrichter und Lithium-Batteriespeicher.",
+        "targetDate": "2026-06-30",
+        "isCompleted": false,
+        "deliverable": "Zolldokumente & Lieferscheine",
+        "responsibleRole": "project_manager"
+      }
+    ],
     "tasks": [],
-    "risks": [],
-    "budgetItems": [],
-    "fundingSources": [],
+    "risks": [
+      {
+        "id": "r1",
+        "category": "Logistik",
+        "description": "Verzögerungen bei Zollabfertigung im Hafen von Douala.",
+        "impact": "medium",
+        "probability": "medium",
+        "mitigationStrategy": "Frühzeitige Beantragung der Zollbefreiung über Ministerium.",
+        "status": "active",
+        "owner": "Marc Tagne"
+      }
+    ],
+    "budgetItems": [
+      {
+        "id": "b1",
+        "category": "hardware_equipment",
+        "description": "Solar-PV-Anlagen, Inverter & 25 Schulungsrechner",
+        "plannedCost": 35000,
+        "approvedBudget": 35000,
+        "actualExpenditure": 0,
+        "committedCost": 0,
+        "currency": "EUR"
+      },
+      {
+        "id": "b2",
+        "category": "personnel_trainers",
+        "description": "Ausbildungsleitung, Dozenten & Solartechniker",
+        "plannedCost": 15000,
+        "approvedBudget": 15000,
+        "actualExpenditure": 0,
+        "committedCost": 0,
+        "currency": "EUR"
+      }
+    ],
+    "fundingSources": [
+      {
+        "id": "f1",
+        "name": "TechEnergy For Africa e.V. Projektfond & Kofinanzierung",
+        "type": "grant",
+        "amount": 50000,
+        "currency": "EUR",
+        "status": "confirmed",
+        "probabilityPct": 100
+      }
+    ],
     "transactions": [],
-    "impactIndicators": [],
+    "impactIndicators": [
+      {
+        "id": "ind1",
+        "name": "Anzahl ausgebildeter Jugendlicher",
+        "target": 120,
+        "actual": 0,
+        "unit": "Personen",
+        "evidenceStatus": "pending_audit"
+      }
+    ],
     "closure": {
       "deliverablesAccepted": false,
       "financialReconciliationDone": false,
@@ -52,19 +140,19 @@
       "archiveRetentionConfigured": false
     },
     "simulationParams": {
-      "beneficiariesCount": 50,
-      "trainersCount": 2,
-      "trainingDurationMonths": 6,
-      "usableWorkstations": 15,
-      "studentsPerWorkstation": 3,
-      "donatedHardwareCount": 0,
-      "hardwareUnitPurchaseCostEUR": 200,
-      "logisticsCustomsCostEUR": 1500,
-      "infrastructureSolarCostEUR": 5000,
-      "monthlyOperatingCostEUR": 300,
-      "accessibilityInterpreterCostEUR": 1000,
+      "beneficiariesCount": 120,
+      "trainersCount": 4,
+      "trainingDurationMonths": 12,
+      "usableWorkstations": 25,
+      "studentsPerWorkstation": 2,
+      "donatedHardwareCount": 10,
+      "hardwareUnitPurchaseCostEUR": 250,
+      "logisticsCustomsCostEUR": 2000,
+      "infrastructureSolarCostEUR": 12000,
+      "monthlyOperatingCostEUR": 500,
+      "accessibilityInterpreterCostEUR": 1500,
       "maintenanceReservePct": 10,
-      "confirmedGrantsEUR": 0,
+      "confirmedGrantsEUR": 50000,
       "pendingGrantsEUR": 0
     }
   },

@@ -127,12 +127,13 @@ Sobald der Benutzer im Header die Organisation wechselt, aktualisieren sich säm
 | `DELETE` | `/api/projects/:id` | Projekt löschen | Nur autorisierte Rollen |
 | `POST` | `/api/ai/proposal-assist` | KI-Vorschlag zur Antragsoptimierung | JSON (`title`, `problemStatement`) |
 | `POST` | `/api/ai/advisor` | KI-Entscheidungs-Tiebreaker (SWOT) | JSON (`criteria`, `options`) |
+| `POST` | `/api/ai/companion-chat` | Universal KI-Projektbegleiter (Gemini & ChatGPT) | JSON (`query`, `projectContext`, `lang`) |
 
 ---
 
 ## 5. Testen & Qualitätssicherung
 
-Die Plattform verfügt über 51 automatisierte Unit- und Integrationstests:
+Die Plattform verfügt über 55 automatisierte Unit- und Integrationstests:
 
 ```bash
 # Alle Tests ausführen

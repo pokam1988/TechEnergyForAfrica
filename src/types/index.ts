@@ -331,19 +331,21 @@ export interface SimulationParameters {
   pendingGrantsEUR: number;
 }
 
+export type ProjectCategory =
+  | 'digital_inclusion'
+  | 'inclusive_education'
+  | 'renewable_energy'
+  | 'environmental_education'
+  | 'international_exchange'
+  | 'community_development'
+  | 'youth_empowerment';
+
 export interface Project {
   id: string;
   referenceId: string; // e.g. TEFA-2026-CMR-001
   title: string;
   shortDescription: string;
-  category:
-    | 'digital_inclusion'
-    | 'inclusive_education'
-    | 'renewable_energy'
-    | 'environmental_education'
-    | 'international_exchange'
-    | 'community_development'
-    | 'youth_empowerment';
+  category: ProjectCategory;
   country: 'Cameroon' | 'Germany' | 'Ghana' | 'Senegal' | 'Kenya' | 'Other';
   locationDetails: string;
   lifecyclePhase: ProjectLifecyclePhase;

@@ -30,7 +30,7 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
   project,
   onNavigateTab,
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { setActiveProjectId } = useProjects();
 
   // Find relevant launch milestone (M3: Start Schulungsbetrieb or first implementation milestone)
@@ -255,16 +255,16 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
-            title={isExpanded ? 'Kompaktansicht' : 'Detailansicht'}
+            title={isExpanded ? (t.countdown?.hideDetails || 'Details verbergen') : (t.countdown?.viewDetails || 'Details anzeigen')}
           >
-            <span>{isExpanded ? 'Details verbergen' : 'Details anzeigen'}</span>
+            <span>{isExpanded ? (t.countdown?.hideDetails || 'Details verbergen') : (t.countdown?.viewDetails || 'Details anzeigen')}</span>
             {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={() => onNavigateTab('planning')}
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-colors"
           >
-            <span>Meilensteinplan</span>
+            <span>{language === 'fr' ? 'Jalons' : language === 'en' ? 'Milestones' : 'Meilensteinplan'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -278,7 +278,7 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-emerald-400" />
-                Geplanter Projektstart
+                {language === 'fr' ? 'Lancement prévisionnel' : language === 'en' ? 'Target Launch Date' : 'Geplanter Projektstart'}
               </span>
               {/* Unit Toggle */}
               <div className="inline-flex rounded-lg bg-slate-900/80 p-0.5 border border-slate-700 text-[10px]">
@@ -288,7 +288,7 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     viewMode === 'days' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Tage
+                  {t.countdown?.days || 'Tage'}
                 </button>
                 <button
                   onClick={() => setViewMode('weeks')}
@@ -296,16 +296,16 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     viewMode === 'weeks' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
                 >
-                  Wochen
+                  {t.countdown?.remainingWeeks || 'Wochen'}
                 </button>
                 <button
                   onClick={() => setViewMode('workdays')}
                   className={`px-2 py-0.5 rounded font-medium transition-colors ${
                     viewMode === 'workdays' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
-                  title="Werktage ohne Wochenenden"
+                  title={language === 'fr' ? 'Jours ouvrés' : language === 'en' ? 'Workdays (Mon-Fri)' : 'Werktage ohne Wochenenden'}
                 >
-                  Werktage
+                  {t.countdown?.remainingWorkdays || 'Werktage'}
                 </button>
               </div>
             </div>
@@ -353,25 +353,25 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono tracking-tight">
                       {timeLeft.totalDays}
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Tage</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.days || 'Tage'}</div>
                   </div>
                   <div className="bg-slate-900/90 rounded-lg p-2.5 border border-slate-700/60 shadow-inner">
                     <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
                       {String(timeLeft.hours).padStart(2, '0')}
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Stunden</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.hours || 'Stunden'}</div>
                   </div>
                   <div className="bg-slate-900/90 rounded-lg p-2.5 border border-slate-700/60 shadow-inner">
                     <div className="text-2xl sm:text-3xl font-black text-white font-mono tracking-tight">
                       {String(timeLeft.minutes).padStart(2, '0')}
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Minuten</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.minutes || 'Minuten'}</div>
                   </div>
                   <div className="bg-slate-900/90 rounded-lg p-2.5 border border-slate-700/60 shadow-inner">
                     <div className="text-2xl sm:text-3xl font-black text-emerald-300 font-mono tracking-tight">
                       {String(timeLeft.seconds).padStart(2, '0')}
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">Sekunden</div>
+                    <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.seconds || 'Sekunden'}</div>
                   </div>
                 </>
               )}
@@ -382,13 +382,13 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     <div className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono tracking-tight">
                       {timeLeft.weeks}
                     </div>
-                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">Wochen</div>
+                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.remainingWeeks || 'Wochen'}</div>
                   </div>
                   <div className="col-span-2 bg-slate-900/90 rounded-lg p-2.5 border border-slate-700/60 shadow-inner">
                     <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
                       {timeLeft.remainingDays}
                     </div>
-                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">Rest-Tage</div>
+                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.remainingDays || 'Rest-Tage'}</div>
                   </div>
                 </>
               )}
@@ -399,13 +399,13 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     <div className="text-3xl sm:text-4xl font-black text-amber-400 font-mono tracking-tight">
                       {timeLeft.workDays}
                     </div>
-                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">Werktage (Mo–Fr)</div>
+                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">{t.countdown?.remainingWorkdays || 'Werktage'} (Mo–Fr)</div>
                   </div>
                   <div className="col-span-2 bg-slate-900/90 rounded-lg p-2.5 border border-slate-700/60 shadow-inner">
                     <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
                       {timeLeft.totalDays}
                     </div>
-                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">Kalendertage gesamt</div>
+                    <div className="text-[11px] uppercase font-bold text-slate-400 mt-0.5">{language === 'fr' ? 'Jours totaux' : language === 'en' ? 'Total Days' : 'Kalendertage gesamt'}</div>
                   </div>
                 </>
               )}
@@ -434,11 +434,11 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-emerald-400" />
                 <span className="text-xs font-bold text-white uppercase tracking-wider">
-                  Vorbereitungsgrad & Reifegrad
+                  {t.countdown?.readinessTitle || 'Vorbereitungsgrad & Reifegrad'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Gesamtreife:</span>
+                <span className="text-xs text-slate-400">{t.countdown?.overallScore || 'Gesamtreife'}:</span>
                 <span className="text-sm font-black text-emerald-400 font-mono">
                   {readinessPercentage}%
                 </span>
@@ -462,29 +462,35 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
             {/* Mini Metric Badges Grid */}
             <div className="grid grid-cols-3 gap-2 text-xs mb-4">
               <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/60">
-                <div className="text-[11px] text-slate-400">Antragsstatus</div>
+                <div className="text-[11px] text-slate-400">
+                  {language === 'fr' ? 'Statut du projet' : language === 'en' ? 'Proposal Status' : 'Antragsstatus'}
+                </div>
                 <div className="font-bold text-white flex items-center gap-1 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                  <span>{project.status}</span>
+                  <span>{t.status[project.status] || project.status}</span>
                 </div>
               </div>
 
               <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/60">
-                <div className="text-[11px] text-slate-400">Machbarkeit</div>
+                <div className="text-[11px] text-slate-400">
+                  {language === 'fr' ? 'Faisabilité' : language === 'en' ? 'Feasibility' : 'Machbarkeit'}
+                </div>
                 <div className="font-bold text-white flex items-center gap-1 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                   <span>
-                    {verifiedChecks} / {project.feasibilityChecks.length} Verifiziert
+                    {verifiedChecks} / {project.feasibilityChecks.length} {language === 'fr' ? 'Vérifié' : language === 'en' ? 'Verified' : 'Verifiziert'}
                   </span>
                 </div>
               </div>
 
               <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-700/60">
-                <div className="text-[11px] text-slate-400">Meilensteine</div>
+                <div className="text-[11px] text-slate-400">
+                  {language === 'fr' ? 'Jalons' : language === 'en' ? 'Milestones' : 'Meilensteine'}
+                </div>
                 <div className="font-bold text-white flex items-center gap-1 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-blue-400"></span>
                   <span>
-                    {completedMilestones} / {project.milestones.length} Erledigt
+                    {completedMilestones} / {project.milestones.length} {language === 'fr' ? 'Terminé' : language === 'en' ? 'Done' : 'Erledigt'}
                   </span>
                 </div>
               </div>
@@ -493,8 +499,12 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
             {/* Interactive Workflow Stages Pipeline */}
             <div className="space-y-2">
               <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-                <span>Vorbereitungsphasen bis zum Schulungsstart</span>
-                <span className="text-[10px] text-emerald-400 font-normal">Klicken zum Öffnen</span>
+                <span>
+                  {language === 'fr' ? 'Phases préparatoires avant le démarrage' : language === 'en' ? 'Preparation phases before launch' : 'Vorbereitungsphasen bis zum Schulungsstart'}
+                </span>
+                <span className="text-[10px] text-emerald-400 font-normal">
+                  {language === 'fr' ? 'Cliquer pour ouvrir' : language === 'en' ? 'Click to open' : 'Klicken zum Öffnen'}
+                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-5 gap-1.5">
@@ -551,7 +561,7 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     M{idx + 1}
                   </span>
                   <span className="text-[11px] font-semibold text-emerald-400">
-                    {new Date(m.targetDate).toLocaleDateString('de-DE')}
+                    {new Date(m.targetDate).toLocaleDateString(language === 'fr' ? 'fr-FR' : language === 'en' ? 'en-US' : 'de-DE')}
                   </span>
                 </div>
                 <div className="font-bold text-white text-xs mt-1 line-clamp-1">{m.title}</div>
@@ -559,10 +569,12 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
               </div>
 
               <div className="mt-3 pt-2 border-t border-slate-700/60 flex items-center justify-between text-[11px]">
-                <span className="text-slate-400 truncate">Verantw.: {m.responsiblePerson}</span>
+                <span className="text-slate-400 truncate">
+                  {language === 'fr' ? 'Resp. : ' : language === 'en' ? 'Owner: ' : 'Verantw.: '}{m.responsiblePerson}
+                </span>
                 {m.isCompleted ? (
                   <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Erledigt
+                    <CheckCircle2 className="w-3 h-3" /> {language === 'fr' ? 'Terminé' : language === 'en' ? 'Done' : 'Erledigt'}
                   </span>
                 ) : (
                   <button
@@ -572,7 +584,7 @@ export const ProjectLaunchCountdownWidget: React.FC<ProjectLaunchCountdownWidget
                     }}
                     className="text-emerald-400 hover:text-emerald-300 font-medium underline cursor-pointer"
                   >
-                    Als Countdown
+                    {language === 'fr' ? 'Comme cible' : language === 'en' ? 'Set countdown' : 'Als Countdown'}
                   </button>
                 )}
               </div>

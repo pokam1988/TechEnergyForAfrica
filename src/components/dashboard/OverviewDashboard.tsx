@@ -17,6 +17,9 @@ import {
   FileText,
   AlertCircle,
   Building,
+  Pencil,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react';
 
 const LIFECYCLE_STEPS: { phase: ProjectLifecyclePhase; labelKey: string }[] = [
@@ -37,21 +40,23 @@ const LIFECYCLE_STEPS: { phase: ProjectLifecyclePhase; labelKey: string }[] = [
 interface OverviewDashboardProps {
   onNavigateTab: (tab: string) => void;
   onOpenExport: () => void;
+  onOpenProjectSettings?: () => void;
 }
 
 export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   onNavigateTab,
   onOpenExport,
+  onOpenProjectSettings,
 }) => {
   const { t } = useLanguage();
   const { currentUser, canApproveProposals } = useAuthRole();
-  const { activeProject, updateLifecyclePhase, updateProject } = useProjects();
+  const { activeProject, updateLifecyclePhase, updateProject, deleteProject } = useProjects();
   const [transitionMsg, setTransitionMsg] = useState<string | null>(null);
 
   if (!activeProject) {
     return (
       <div className="p-8 text-center text-slate-500">
-        Kein aktives Projekt ausgewählt. Bitte wählen Sie ein Projekt aus oder legen Sie ein neues an.
+        {t.dashboard?.noProject || 'Kein aktives Projekt ausgewählt. Bitte wählen Sie ein Projekt aus oder legen Sie ein neues an.'}
       </div>
     );
   }
@@ -83,18 +88,18 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
     // Proposer cannot self-approve check
     if (newStatus === 'Approved') {
       if (activeProject.createdBy.toLowerCase().includes(currentUser.name.toLowerCase())) {
-        alert('Governance-Regel: Ein Antragsteller darf seinen eigenen Projektantrag nicht genehmigen!');
+        alert(t.dashboard?.governanceSelfApproveError || 'Governance-Regel: Ein Antragsteller darf seinen eigenen Projektantrag nicht genehmigen!');
         return;
       }
       if (!canApproveProposals()) {
-        alert('Unzureichende Berechtigung: Nur Vorstandsmitglieder oder Systemadministratoren können Anträge genehmigen.');
+        alert(t.dashboard?.governancePermissionError || 'Unzureichende Berechtigung: Nur Vorstandsmitglieder oder Systemadministratoren können Anträge genehmigen.');
         return;
       }
     }
 
     const targetPhase = newPhase || activeProject.lifecyclePhase;
     await updateLifecyclePhase(activeProject.id, targetPhase, newStatus);
-    setTransitionMsg(`Status erfolgreich auf "${newStatus}" geändert.`);
+    setTransitionMsg(`${t.dashboard?.statusChangeSuccess || 'Status erfolgreich geändert auf'} "${newStatus}".`);
     setTimeout(() => setTransitionMsg(null), 4000);
   };
 
@@ -121,30 +126,91 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           <p className="text-sm text-slate-600 mt-1 max-w-3xl">
             {activeProject.shortDescription}
           </p>
+
+          {/* Quick Demo-To-Official Activation Banner */}
+          {activeProject.isDemoOrHypothetical && (
+            <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-300 text-xs text-amber-900 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>
+                  <strong>Demo- / Planszenario aktiv:</strong> Alle Planungsdaten sind beispielhaft.
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await updateProject({
+                      ...activeProject,
+                      isDemoOrHypothetical: false,
+                      demoDisclaimer: undefined,
+                    });
+                  }}
+                  className="px-2.5 py-1 text-xs font-bold rounded bg-emerald-600 hover:bg-emerald-500 text-white transition-colors flex items-center gap-1 shadow-xs"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                  <span>Als offiziell aktivieren</span>
+                </button>
+                {onOpenProjectSettings && (
+                  <button
+                    type="button"
+                    onClick={onOpenProjectSettings}
+                    className="px-2.5 py-1 text-xs font-medium rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition-colors"
+                  >
+                    Bearbeiten
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Quick actions buttons */}
         <div className="flex flex-wrap items-center gap-2">
+          {onOpenProjectSettings && (
+            <button
+              onClick={onOpenProjectSettings}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
+              title="Projekt-Stammdaten & Modus bearbeiten"
+            >
+              <Pencil className="w-3.5 h-3.5 text-slate-600" />
+              <span>Projekt bearbeiten</span>
+            </button>
+          )}
+
+          <button
+            onClick={async () => {
+              if (window.confirm(`Möchten Sie das Projekt "${activeProject.title}" wirklich löschen?`)) {
+                await deleteProject(activeProject.id);
+              }
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 transition-colors"
+            title="Projekt löschen"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+            <span>Löschen</span>
+          </button>
+
           <button
             onClick={() => onNavigateTab('simulator')}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-300 transition-colors"
           >
             <Sliders className="w-4 h-4 text-emerald-600" />
-            <span>Finanzsimulator</span>
+            <span>{t.dashboard?.actionSimulator || 'Finanzsimulator'}</span>
           </button>
           <button
             onClick={() => onNavigateTab('advisor')}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-300 transition-colors"
           >
             <Sparkles className="w-4 h-4 text-blue-600" />
-            <span>KI Tiebreaker</span>
+            <span>{t.dashboard?.actionAdvisor || 'KI Tiebreaker'}</span>
           </button>
           <button
             onClick={onOpenExport}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors"
           >
             <FileText className="w-4 h-4 text-emerald-400" />
-            <span>Dossier Export</span>
+            <span>{t.dashboard?.actionExport || 'Dossier Export'}</span>
           </button>
         </div>
       </div>
@@ -167,14 +233,14 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider">
-              Projekt-Lebenszyklus (From Idea to Impact)
+              {t.dashboard?.lifecyclePipelineTitle || 'Projekt-Lebenszyklus (From Idea to Impact)'}
             </h2>
             <span className="text-[11px] sm:text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
-              Phase {activePhaseIndex + 1} von {LIFECYCLE_STEPS.length}: {t.phases[activeProject.lifecyclePhase]}
+              {t.dashboard?.phaseOf || 'Phase'} {activePhaseIndex + 1} {t.dashboard?.ofTotal || 'von'} {LIFECYCLE_STEPS.length}: {t.phases[activeProject.lifecyclePhase]}
             </span>
           </div>
           <span className="text-[11px] text-slate-500">
-            Klicken Sie auf eine Phase, um direkt zum Arbeitsmodul zu springen
+            {t.dashboard?.pipelineHint || 'Klicken Sie auf eine Phase, um direkt zum Arbeitsmodul zu springen'}
           </span>
         </div>
 
@@ -227,7 +293,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Gesamtbudget (Geplant)
+              {t.dashboard?.kpiPlannedBudget || 'Gesamtbudget (Geplant)'}
             </span>
             <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
               <DollarSign className="w-4 h-4" />
@@ -238,7 +304,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
               € {totalPlanned.toLocaleString()}
             </div>
             <div className="text-xs text-slate-500 mt-1 flex items-center justify-between">
-              <span>Freigegeben: € {totalApproved.toLocaleString()}</span>
+              <span>{t.dashboard?.kpiApproved || 'Freigegeben'}: € {totalApproved.toLocaleString()}</span>
               <span className="text-[11px] font-mono text-slate-400">
                 {(totalPlanned * 655.957).toLocaleString(undefined, { maximumFractionDigits: 0 })} XAF
               </span>
@@ -250,7 +316,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Bestätigte Finanzierung
+              {t.dashboard?.kpiConfirmedFunding || 'Bestätigte Finanzierung'}
             </span>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <TrendingUp className="w-4 h-4" />
@@ -261,9 +327,9 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
               € {confirmedFunding.toLocaleString()}
             </div>
             <div className="text-xs text-amber-700 mt-1 flex items-center justify-between font-medium">
-              <span>Lücke: € {fundingGap.toLocaleString()}</span>
+              <span>{t.dashboard?.kpiFundingGap || 'Lücke'}: € {fundingGap.toLocaleString()}</span>
               <span className="text-[11px] text-slate-400">
-                Beantragt: € {pendingFunding.toLocaleString()}
+                {t.dashboard?.kpiFundingPending || 'Beantragt'}: € {pendingFunding.toLocaleString()}
               </span>
             </div>
           </div>
@@ -273,7 +339,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Bisherige Ist-Ausgaben
+              {t.dashboard?.kpiActualExpenditure || 'Bisherige Ist-Ausgaben'}
             </span>
             <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
               <FileText className="w-4 h-4" />
@@ -284,7 +350,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
               € {totalActual.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div className="text-xs text-slate-500 mt-1">
-              Verbrauch: {totalPlanned > 0 ? Math.round((totalActual / totalPlanned) * 100) : 0}% des Planbudgets
+              {t.dashboard?.kpiBudgetConsumed || 'Verbrauch'}: {totalPlanned > 0 ? Math.round((totalActual / totalPlanned) * 100) : 0}% {t.dashboard?.kpiOfPlanned || 'des Planbudgets'}
             </div>
           </div>
         </div>
@@ -293,7 +359,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Zielgruppe & Meilensteine
+              {t.dashboard?.kpiBeneficiariesMilestones || 'Zielgruppe & Meilensteine'}
             </span>
             <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
               <Users className="w-4 h-4" />
@@ -301,10 +367,10 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           </div>
           <div className="mt-2">
             <div className="text-2xl font-black text-slate-900">
-              {activeProject.proposal.beneficiaryCountPlanned} <span className="text-sm font-normal text-slate-500">Teilnehmende</span>
+              {activeProject.proposal.beneficiaryCountPlanned} <span className="text-sm font-normal text-slate-500">{t.dashboard?.kpiBeneficiariesCount || 'Teilnehmende'}</span>
             </div>
             <div className="text-xs text-slate-600 mt-1 flex items-center justify-between">
-              <span>Meilenstein-Fortschritt:</span>
+              <span>{t.dashboard?.kpiMilestoneProgress || 'Meilenstein-Fortschritt'}:</span>
               <span className="font-bold text-emerald-600">{milestoneProgressPct}%</span>
             </div>
           </div>
@@ -318,14 +384,15 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
             <div className="flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-emerald-400" />
               <h2 className="text-sm font-bold uppercase tracking-wider text-emerald-400">
-                Governance & Status-Workflow (Rollen-Validierung)
+                {t.dashboard?.governanceTitle || 'Governance & Status-Workflow (Rollen-Validierung)'}
               </h2>
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Aktive Rolle: <strong className="text-white">{currentUser.name}</strong> ({currentUser.role}).
-              {currentUser.role === 'board_member' && ' Sie sind autorisiert, Anträge formell zu genehmigen oder abzulehnen.'}
-              {currentUser.role === 'project_manager' && ' Sie steuern die Planung, Machbarkeit und Umsetzung.'}
-              {currentUser.role === 'finance_officer' && ' Sie kontrollieren Budgets und prüfen Nachweise.'}
+              {t.dashboard?.activeRoleLabel || 'Aktive Rolle'}: <strong className="text-white">{currentUser.name}</strong> ({t.roles[currentUser.role] || currentUser.role}).{' '}
+              {currentUser.role === 'board_member' && (t.dashboard?.boardDesc || 'Sie sind autorisiert, Anträge formell zu genehmigen oder abzulehnen.')}
+              {currentUser.role === 'project_manager' && (t.dashboard?.pmDesc || 'Sie steuern die Planung, Machbarkeit und Umsetzung.')}
+              {currentUser.role === 'finance_officer' && (t.dashboard?.financeDesc || 'Sie kontrollieren Budgets und prüfen Nachweise.')}
+              {currentUser.role === 'visitor' && (t.dashboard?.visitorDesc || 'Sie können Projekte einsehen und neue Vorschläge einreichen.')}
             </p>
           </div>
 
@@ -335,7 +402,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                 onClick={() => handleStatusTransition('Submitted', 'proposal')}
                 className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors"
               >
-                Antrag einreichen (Zur Prüfung)
+                {t.dashboard?.btnSubmit || 'Antrag einreichen (Zur Prüfung)'}
               </button>
             )}
 
@@ -344,7 +411,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                 onClick={() => handleStatusTransition('Under Review', 'feasibility')}
                 className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
               >
-                In Begutachtung nehmen
+                {t.dashboard?.btnReview || 'In Begutachtung nehmen'}
               </button>
             )}
 
@@ -355,13 +422,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors flex items-center gap-1.5"
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Projekt formell genehmigen (Vorstand)</span>
+                  <span>{t.dashboard?.btnApprove || 'Projekt formell genehmigen (Vorstand)'}</span>
                 </button>
                 <button
                   onClick={() => handleStatusTransition('Rejected')}
                   className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-700 hover:bg-rose-600 text-white transition-colors"
                 >
-                  Antrag ablehnen
+                  {t.dashboard?.btnReject || 'Antrag ablehnen'}
                 </button>
               </>
             )}
@@ -372,7 +439,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                 className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors flex items-center gap-1.5"
               >
                 <ArrowRight className="w-3.5 h-3.5" />
-                <span>Freigabe zur Umsetzung</span>
+                <span>{t.dashboard?.btnReady || 'Freigabe zur Umsetzung'}</span>
               </button>
             )}
 
@@ -381,7 +448,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                 onClick={() => handleStatusTransition('In Progress', 'implementation')}
                 className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
               >
-                Durchführung starten (In Progress)
+                {t.dashboard?.btnStart || 'Durchführung starten (In Progress)'}
               </button>
             )}
 
@@ -390,7 +457,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                 onClick={() => handleStatusTransition('Completed', 'closure')}
                 className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-600 hover:bg-purple-500 text-white transition-colors"
               >
-                Umsetzung abgeschlossen (Zur Abnahme)
+                {t.dashboard?.btnComplete || 'Umsetzung abgeschlossen (Zur Abnahme)'}
               </button>
             )}
           </div>
@@ -404,13 +471,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Projektziele & Zielerreichung
+              {t.dashboard?.objectivesTitle || 'Projektziele & Zielerreichung'}
             </h2>
             <button
               onClick={() => onNavigateTab('proposal')}
               className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold"
             >
-              Im Antrag bearbeiten →
+              {t.dashboard?.editInProposal || 'Im Antrag bearbeiten →'}
             </button>
           </div>
 
@@ -431,13 +498,13 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-500" />
-              Machbarkeits- & Governance-Status
+              {t.dashboard?.feasibilityTitle || 'Machbarkeits- & Governance-Status'}
             </h2>
             <button
               onClick={() => onNavigateTab('feasibility')}
               className="text-xs text-emerald-600 hover:text-emerald-700 font-semibold"
             >
-              Vollständige Checkliste →
+              {t.dashboard?.viewChecklist || 'Vollständige Checkliste →'}
             </button>
           </div>
 

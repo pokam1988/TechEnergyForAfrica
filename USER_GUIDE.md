@@ -91,3 +91,27 @@ In ImpactFlow sind Standardprofile für die TEFA-Organisation und externe Partne
    - *Machbarkeits- und Risikobericht*
 3. Wählen Sie die Ausgabesprache (**Deutsch**, **Englisch** oder **Französisch**).
 4. Klicken Sie auf **Drucken / PDF speichern** für ein druckfertiges, professionelles Stiftungsdossier mit offiziellem Organisationsbriefkopf.
+
+---
+
+## 6. KI-Projektbegleiter & Mehrsprachigkeit
+
+### 6.1 Der interaktive KI-Begleiter (AI Companion)
+- **Öffnen:** Klicken Sie oben im Header auf die Schaltfläche **✨ KI-Begleiter** oder auf die schwebende Sprechblase unten rechts.
+- **Kontextsensitiv:** Der KI-Begleiter kennt stets Ihr aktuell aktives Projekt, die aktuelle Phase (z. B. Planung), das geplante Gesamtbudget sowie die verbleibende Finanzierungslücke.
+- **Dual-Model Support:** Sie können flexibel zwischen **Google Gemini 3.8 Flash** (aktiv) und **ChatGPT / OpenAI** (vorbereitet) umschalten.
+- **Schnellaktionen:**
+  - 💡 *Antrag optimieren:* Schärft Problemstellung und SMART-Ziele für Förderer.
+  - 📊 *Budget & Lücke prüfen:* Analysiert Kofinanzierungs- und Diversifizierungsstrategien.
+  - ⚠️ *Risiken & Machbarkeit:* Prüft logistische, rechtliche und Partner-Risiken.
+  - 📋 *Nächste Schritte:* Nennt die konkreten Meilensteine bis zum nächsten Phasenübergang.
+
+### 6.2 Vollständige Mehrsprachigkeit (DE | EN | FR)
+- Über die Sprachauswahl im Header (**DE**, **EN**, **FR**) schaltet die gesamte Webanwendung nahtlos um:
+  - Header & Statusleiste
+  - KPI-Karten, Budgetzähler und Fördermittellücken
+  - 12-Phasen-Lebenszyklus-Pipeline
+  - Governance-Workflow & Genehmigungsdialoge
+  - Launch-Countdown & Reifegrad-Radar
+  - KI-Begleiter-Antworten und Systemhinweise
+
