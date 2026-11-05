@@ -112,5 +112,43 @@
     "acceptanceDate": "2026-07-01",
     "technicianInCharge": "Marc Tagne",
     "environment": "live"
+  },
+  {
+    "id": "asset_ifop_spende_001",
+    "assetTag": "TEFA-CMR-LAP-2026-01",
+    "projectId": "proj_ifopsim_001",
+    "category": "Laptops",
+    "manufacturerModel": "Refurbished Business Laptops (Lenovo/Dell Spendenpool 2026)",
+    "serialNumber": "SN-TEFA-CMR-LAP-POOL",
+    "quantity": 25,
+    "technicalSpecs": "Intel Core i5, 16GB RAM, 256GB SSD, AZERTY/QWERTZ mit Gebärdensprach-Didaktik Ubuntu",
+    "location": "Sammelstelle Berlin / Vorbereitung Transport Douala",
+    "ownership": "TEFA e.V. Spendenaufruf 2026",
+    "donorName": "Spendenaufruf Laptops & Handys für Gehörlose",
+    "donationStatus": "offered",
+    "operationalCondition": "good",
+    "dataWipingEvidence": true,
+    "acceptanceDate": "2026-11-02",
+    "technicianInCharge": "Marc Tagne & Dr. Frederic Pokam",
+    "environment": "live"
+  },
+  {
+    "id": "asset_ifop_spende_002",
+    "assetTag": "TEFA-CMR-MOB-2026-02",
+    "projectId": "proj_ifopsim_001",
+    "category": "Assistive Tech",
+    "manufacturerModel": "Android Smartphones für Gebärdensprach-Videokommunikation",
+    "serialNumber": "SN-TEFA-CMR-MOB-POOL",
+    "quantity": 30,
+    "technicalSpecs": "Android 12+, HD-Frontkamera für Video-Gebärdensprache (Langue des Signes), Offline-Lern-Apps",
+    "location": "Sammelstelle Berlin / Vorbereitung Verschiffung",
+    "ownership": "TEFA e.V. Spendenaufruf 2026",
+    "donorName": "Spendenaufruf Hardware für IFOP-SIM",
+    "donationStatus": "offered",
+    "operationalCondition": "good",
+    "dataWipingEvidence": true,
+    "acceptanceDate": "2026-11-02",
+    "technicianInCharge": "Marc Tagne",
+    "environment": "live"
   }
 ]

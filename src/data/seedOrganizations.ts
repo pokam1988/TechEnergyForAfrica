@@ -17,8 +17,8 @@ export const SEED_ORGANIZATIONS: Organization[] = [
     status: 'active',
     createdAt: '2025-01-01T00:00:00Z',
     letterhead: {
-      addressStreet: 'Kottbusser Damm 79',
-      addressPostalCode: '10967',
+      addressStreet: 'Neuköllnische Allee 10',
+      addressPostalCode: '12057',
       addressCity: 'Berlin',
       addressCountry: 'Deutschland',
       phone: '+49 30 555 789 20',

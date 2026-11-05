@@ -33,7 +33,11 @@ import { UserProfileModal } from './components/profile/UserProfileModal';
 import { NewOrganizationModal } from './components/organization/NewOrganizationModal';
 import { ProjectSettingsModal } from './components/project/ProjectSettingsModal';
 import { OrganizationBrandingModal } from './components/organization/OrganizationBrandingModal';
+import { ThemeProvider } from './context/ThemeContext';
+import { ThemeSettingsModal } from './components/theme/ThemeSettingsModal';
+import { DeadlineAlertNotificationCenter } from './components/deadlines/DeadlineAlertNotificationCenter';
 import { AIChatCompanion } from './components/chat/AIChatCompanion';
+import { NewsletterManager } from './components/newsletter/NewsletterManager';
 import { X, Plus, Sparkles, Building } from 'lucide-react';
 
 const AppContent: React.FC = () => {
@@ -44,6 +48,8 @@ const AppContent: React.FC = () => {
   const [isNewOrgModalOpen, setIsNewOrgModalOpen] = useState(false);
   const [isOrgBrandingOpen, setIsOrgBrandingOpen] = useState(false);
   const [isProjectSettingsOpen, setIsProjectSettingsOpen] = useState(false);
+  const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
+  const [isDeadlinesOpen, setIsDeadlinesOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -92,6 +98,8 @@ const AppContent: React.FC = () => {
         onOpenNewOrg={() => setIsNewOrgModalOpen(true)}
         onOpenOrgBranding={() => setIsOrgBrandingOpen(true)}
         onOpenProjectSettings={() => setIsProjectSettingsOpen(true)}
+        onOpenThemeSettings={() => setIsThemeModalOpen(true)}
+        onOpenDeadlines={() => setIsDeadlinesOpen(true)}
         onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
         isMobileMenuOpen={isMobileMenuOpen}
         onOpenChat={() => setIsChatOpen(true)}
@@ -120,6 +128,7 @@ const AppContent: React.FC = () => {
                 onNavigateTab={(tab) => setActiveTab(tab as ActiveTab)}
                 onOpenExport={() => setIsExportOpen(true)}
                 onOpenProjectSettings={() => setIsProjectSettingsOpen(true)}
+                onOpenDeadlines={() => setIsDeadlinesOpen(true)}
               />
             )}
             {activeTab === 'intelligence' && <ProjectIntelligenceView />}
@@ -131,6 +140,9 @@ const AppContent: React.FC = () => {
             {activeTab === 'simulator' && <ProjectSimulator />}
             {activeTab === 'partners' && <PartnersFundraising />}
             {activeTab === 'creative_studio' && <CreativeStudioView />}
+            {activeTab === 'newsletter' && (
+              <NewsletterManager onNavigateTab={(tab) => setActiveTab(tab)} />
+            )}
             {activeTab === 'inventory' && <InventoryManager />}
             {activeTab === 'monitoring' && <ImplementationMonitoring />}
             {activeTab === 'finance' && <FinancialAccounting />}
@@ -171,6 +183,18 @@ const AppContent: React.FC = () => {
         isOpen={isProjectSettingsOpen}
         onClose={() => setIsProjectSettingsOpen(false)}
         project={activeProject}
+      />
+
+      {/* Designer Themes & Eye-Care Modal */}
+      <ThemeSettingsModal
+        isOpen={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+      />
+
+      {/* Deadline Alert & Email Notification Preparation Center */}
+      <DeadlineAlertNotificationCenter
+        isOpen={isDeadlinesOpen}
+        onClose={() => setIsDeadlinesOpen(false)}
       />
 
       {/* New Project Dialog */}
@@ -296,14 +320,16 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthRoleProvider>
-        <OrganizationProvider>
-          <ProjectProvider>
-            <AppContent />
-          </ProjectProvider>
-        </OrganizationProvider>
-      </AuthRoleProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthRoleProvider>
+          <OrganizationProvider>
+            <ProjectProvider>
+              <AppContent />
+            </ProjectProvider>
+          </OrganizationProvider>
+        </AuthRoleProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }

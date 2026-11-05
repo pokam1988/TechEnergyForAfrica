@@ -41,12 +41,14 @@ interface OverviewDashboardProps {
   onNavigateTab: (tab: string) => void;
   onOpenExport: () => void;
   onOpenProjectSettings?: () => void;
+  onOpenDeadlines?: () => void;
 }
 
 export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
   onNavigateTab,
   onOpenExport,
   onOpenProjectSettings,
+  onOpenDeadlines,
 }) => {
   const { t } = useLanguage();
   const { currentUser, canApproveProposals } = useAuthRole();
@@ -133,7 +135,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>
-                  <strong>Demo- / Planszenario aktiv:</strong> Alle Planungsdaten sind beispielhaft.
+                  <strong>{t.app.hypotheticalBadge}:</strong> {t.dashboard?.demoActiveNotice || 'Demo- / Planszenario aktiv: Alle Planungsdaten sind beispielhaft.'}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
@@ -149,7 +151,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                   className="px-2.5 py-1 text-xs font-bold rounded bg-emerald-600 hover:bg-emerald-500 text-white transition-colors flex items-center gap-1 shadow-xs"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-200" />
-                  <span>Als offiziell aktivieren</span>
+                  <span>{t.dashboard?.activateOfficial || 'Als offiziell aktivieren'}</span>
                 </button>
                 {onOpenProjectSettings && (
                   <button
@@ -157,7 +159,7 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
                     onClick={onOpenProjectSettings}
                     className="px-2.5 py-1 text-xs font-medium rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition-colors"
                   >
-                    Bearbeiten
+                    {t.common.edit}
                   </button>
                 )}
               </div>
@@ -171,24 +173,24 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
             <button
               onClick={onOpenProjectSettings}
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition-colors"
-              title="Projekt-Stammdaten & Modus bearbeiten"
+              title={t.dashboard?.actionEdit || 'Projekt-Stammdaten & Modus bearbeiten'}
             >
               <Pencil className="w-3.5 h-3.5 text-slate-600" />
-              <span>Projekt bearbeiten</span>
+              <span>{t.dashboard?.actionEdit || 'Projekt bearbeiten'}</span>
             </button>
           )}
 
           <button
             onClick={async () => {
-              if (window.confirm(`Möchten Sie das Projekt "${activeProject.title}" wirklich löschen?`)) {
+              if (window.confirm(t.dashboard?.confirmDelete || `Möchten Sie das Projekt "${activeProject.title}" wirklich löschen?`)) {
                 await deleteProject(activeProject.id);
               }
             }}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 transition-colors"
-            title="Projekt löschen"
+            title={t.dashboard?.actionDelete || 'Projekt löschen'}
           >
             <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-            <span>Löschen</span>
+            <span>{t.dashboard?.actionDelete || 'Löschen'}</span>
           </button>
 
           <button
@@ -205,13 +207,23 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = ({
             <Sparkles className="w-4 h-4 text-blue-600" />
             <span>{t.dashboard?.actionAdvisor || 'KI Tiebreaker'}</span>
           </button>
+          {onOpenDeadlines && (
+            <button
+              onClick={onOpenDeadlines}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300 transition-colors shadow-xs"
+              title="Fristen-Alarm & E-Mail-Vorbereitung für Meilensteine und Spendenaufrufe"
+            >
+              <Clock className="w-4 h-4 text-amber-600" />
+              <span>Fristen-Alarm &amp; E-Mail</span>
+            </button>
+          )}
           <button
             onClick={onOpenExport}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-xs"
             title="Offizielle Dokumente (Antrag, Verwendungsnachweis, MoU) mit Logo drucken & signieren"
           >
             <FileText className="w-4 h-4 text-emerald-400" />
-            <span>Dokument drucken &amp; signieren</span>
+            <span>{t.dashboard?.actionPrintSign || 'Dokument drucken & signieren'}</span>
           </button>
         </div>
       </div>

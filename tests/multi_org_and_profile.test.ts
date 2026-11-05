@@ -103,6 +103,8 @@ test('MULTI-ORG TEST 7: Organization Logo and Letterhead Configuration for Print
   const tefa = SEED_ORGANIZATIONS.find((o) => o.id === 'org_tefa');
   assert.ok(tefa?.logoUrl, 'TEFA has an official vector SVG logo configured');
   assert.ok(tefa?.letterhead, 'TEFA has letterhead structure configured');
+  assert.strictEqual(tefa?.letterhead?.addressStreet, 'Neuköllnische Allee 10');
+  assert.strictEqual(tefa?.letterhead?.addressPostalCode, '12057');
   assert.strictEqual(tefa?.letterhead?.addressCity, 'Berlin');
   assert.strictEqual(tefa?.letterhead?.email, 'info@techenergyforafrica.org');
   assert.ok(tefa?.letterhead?.registrationCourt?.includes('Charlottenburg'));

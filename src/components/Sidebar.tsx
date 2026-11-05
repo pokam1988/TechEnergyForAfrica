@@ -24,6 +24,7 @@ import {
   Sparkles,
   BarChart3,
   Building2,
+  Send,
 } from 'lucide-react';
 
 export type ActiveTab =
@@ -37,6 +38,7 @@ export type ActiveTab =
   | 'simulator'
   | 'partners'
   | 'creative_studio'
+  | 'newsletter'
   | 'inventory'
   | 'monitoring'
   | 'finance'
@@ -137,6 +139,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: t.nav.creativeStudio || 'Creative Studio',
       icon: Palette,
       badge: 'KI Kampagnen',
+      allowed: true,
+    },
+    {
+      id: 'newsletter' as ActiveTab,
+      label: (t.nav as any).newsletter || 'Newsletter & Updates',
+      icon: Send,
+      badge: 'Auto-Update',
       allowed: true,
     },
     {

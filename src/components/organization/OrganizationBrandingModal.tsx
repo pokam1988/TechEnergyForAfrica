@@ -41,8 +41,8 @@ export const OrganizationBrandingModal: React.FC<OrganizationBrandingModalProps>
 
   const [letterhead, setLetterhead] = useState<OrganizationLetterhead>(
     activeOrganization.letterhead || {
-      addressStreet: 'Kottbusser Damm 79',
-      addressPostalCode: '10967',
+      addressStreet: 'Neuköllnische Allee 10',
+      addressPostalCode: '12057',
       addressCity: 'Berlin',
       addressCountry: activeOrganization.country || 'Deutschland',
       phone: '+49 30 555 789 20',
@@ -392,7 +392,7 @@ export const OrganizationBrandingModal: React.FC<OrganizationBrandingModalProps>
                     onChange={(e) =>
                       setLetterhead({ ...letterhead, addressStreet: e.target.value })
                     }
-                    placeholder="Kottbusser Damm 79"
+                    placeholder="Neuköllnische Allee 10"
                     className="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-none"
                   />
                 </div>
@@ -411,7 +411,7 @@ export const OrganizationBrandingModal: React.FC<OrganizationBrandingModalProps>
                         addressCity: city,
                       });
                     }}
-                    placeholder="10967 Berlin"
+                    placeholder="12057 Berlin"
                     className="w-full p-2 border border-slate-300 rounded-lg text-xs focus:outline-none"
                   />
                 </div>

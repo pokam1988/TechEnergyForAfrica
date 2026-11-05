@@ -22,6 +22,7 @@ import {
   Pencil,
   Trash2,
   Palette,
+  Clock,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -31,6 +32,8 @@ interface HeaderProps {
   onOpenNewOrg?: () => void;
   onOpenOrgBranding?: () => void;
   onOpenProjectSettings?: () => void;
+  onOpenThemeSettings?: () => void;
+  onOpenDeadlines?: () => void;
   onToggleMobileMenu?: () => void;
   isMobileMenuOpen?: boolean;
   onOpenChat?: () => void;
@@ -43,6 +46,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenNewOrg,
   onOpenOrgBranding,
   onOpenProjectSettings,
+  onOpenThemeSettings,
+  onOpenDeadlines,
   onToggleMobileMenu,
   isMobileMenuOpen = false,
   onOpenChat,
@@ -159,15 +164,15 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Header Bar */}
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3">
+        <div className="flex items-center justify-between h-16 gap-2 sm:gap-3">
           {/* Left: Brand Identity & Mobile Hamburger */}
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
             {onToggleMobileMenu && (
               <button
                 type="button"
                 onClick={onToggleMobileMenu}
                 aria-label={isMobileMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
-                className="lg:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 min-h-[40px] min-w-[40px] flex items-center justify-center shrink-0 transition-colors"
+                className="md:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 min-h-[40px] min-w-[40px] flex items-center justify-center shrink-0 transition-colors"
               >
                 {isMobileMenuOpen ? (
                   <X className="w-5 h-5 text-emerald-400" />
@@ -178,17 +183,17 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* ImpactFlow Brand Badge */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-teal-800 flex items-center justify-center font-black text-lg tracking-wider text-white shadow-md shrink-0 border border-emerald-400/30">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-teal-800 flex items-center justify-center font-black text-base sm:text-lg tracking-wider text-white shadow-md shrink-0 border border-emerald-400/30">
               IF
             </div>
 
             {/* Product Title & Organization Link */}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-white truncate">
+            <div className="shrink-0 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="font-extrabold text-base sm:text-lg tracking-tight text-white">
                   ImpactFlow
                 </span>
-                <span className="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium hidden sm:inline-block shrink-0">
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium hidden 2xl:inline-block shrink-0">
                   From Idea to Impact
                 </span>
               </div>
@@ -196,22 +201,22 @@ export const Header: React.FC<HeaderProps> = ({
                 href={orgWebsite}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-slate-400 hover:text-emerald-300 flex items-center gap-1 transition-colors truncate"
+                className="text-xs text-slate-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
                 title={`Offizielle Webseite: ${orgWebsite}`}
               >
-                <span className="truncate max-w-[160px] sm:max-w-[240px] font-medium">{orgName}</span>
+                <span className="truncate max-w-[120px] sm:max-w-[160px] lg:max-w-[140px] xl:max-w-[200px] font-medium">{orgName}</span>
                 <ExternalLink className="w-3 h-3 text-slate-500 shrink-0" />
               </a>
             </div>
           </div>
 
-          {/* Desktop Center: Workspace & Project Switchers */}
-          <div className="hidden lg:flex items-center gap-3 flex-1 justify-center max-w-2xl px-4">
+          {/* Desktop Center: Workspace & Project Switchers (Cleanly isolated on xl+ displays to prevent collision) */}
+          <div className="hidden xl:flex items-center gap-2 2xl:gap-3 shrink-0 mx-2">
             {/* Workspace Selector */}
-            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 rounded-lg px-2.5 py-1.5 shadow-xs">
+            <div className="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 rounded-lg px-2.5 py-1.5 shadow-xs shrink-0">
               <Building2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <div className="flex flex-col min-w-0">
-                <label htmlFor="desktop-workspace-select" className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight">
+                <label htmlFor="desktop-workspace-select" className="text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">
                   Workspace
                 </label>
                 <select
@@ -227,7 +232,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }
                   }}
                   aria-label="Workspace auswählen"
-                  className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer max-w-[160px] truncate"
+                  className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer max-w-[120px] 2xl:max-w-[160px] truncate"
                 >
                   {organizations.map((org) => (
                     <option key={org.id} value={org.id} className="bg-slate-800 text-white">
@@ -248,7 +253,7 @@ export const Header: React.FC<HeaderProps> = ({
                   type="button"
                   onClick={onOpenOrgBranding}
                   title="Logo &amp; Briefkopf der Organisation anpassen"
-                  className="p-1 text-slate-400 hover:text-emerald-300 hover:bg-slate-700/60 rounded transition-colors"
+                  className="p-1 text-slate-400 hover:text-emerald-300 hover:bg-slate-700/60 rounded transition-colors shrink-0"
                 >
                   <Palette className="w-3.5 h-3.5" />
                 </button>
@@ -256,11 +261,11 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Project Selector & Actions */}
-            <div className="flex items-center gap-1.5 flex-1 min-w-0 max-w-lg">
-              <div className="flex items-center gap-2 bg-slate-800/90 border border-slate-700/80 rounded-lg px-3 py-1.5 shadow-xs flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-2 bg-slate-800/90 border border-slate-700/80 rounded-lg px-3 py-1.5 shadow-xs shrink-0">
                 <Layers className="w-4 h-4 text-emerald-400 shrink-0" />
-                <div className="flex flex-col min-w-0 w-full">
-                  <label htmlFor="desktop-project-select" className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight">
+                <div className="flex flex-col min-w-0">
+                  <label htmlFor="desktop-project-select" className="text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight">
                     {t.app.selectProject}
                   </label>
                   <select
@@ -268,7 +273,7 @@ export const Header: React.FC<HeaderProps> = ({
                     value={activeProject?.id || ''}
                     onChange={(e) => setActiveProjectId(e.target.value)}
                     aria-label={t.app.selectProject}
-                    className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer truncate w-full"
+                    className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer truncate max-w-[140px] 2xl:max-w-[220px]"
                   >
                     {projects.length === 0 ? (
                       <option value="">Keine Projekte in dieser Organisation</option>
@@ -290,7 +295,7 @@ export const Header: React.FC<HeaderProps> = ({
                       type="button"
                       onClick={onOpenProjectSettings}
                       title="Projekt bearbeiten & verwalten"
-                      className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+                      className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors shrink-0"
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
@@ -303,7 +308,7 @@ export const Header: React.FC<HeaderProps> = ({
                       }
                     }}
                     title="Aktives Projekt löschen"
-                    className="p-2 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-700/50 transition-colors"
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-rose-900/60 text-slate-300 hover:text-rose-300 border border-slate-700 hover:border-rose-700/50 transition-colors shrink-0"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -313,36 +318,37 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Action Controls */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* ✨ AI Companion Button (Desktop & Mobile) */}
             {onOpenChat && (
               <button
                 type="button"
                 onClick={onOpenChat}
-                className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-md border border-emerald-400/40 transition-all transform hover:scale-102 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white text-xs font-bold px-2.5 sm:px-3 py-2 rounded-lg shadow-md border border-emerald-400/40 transition-all transform hover:scale-102 focus:outline-none focus:ring-2 focus:ring-emerald-400 shrink-0"
                 title="ImpactFlow KI-Projektbegleiter öffnen (Gemini & ChatGPT)"
               >
                 <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-                <span className="hidden sm:inline">{t.chat?.badge || 'KI-Begleiter'}</span>
+                <span className="hidden xl:inline">{t.chat?.badge || 'KI-Begleiter'}</span>
               </button>
             )}
 
-            {/* Quick Export Dossier & Digital Signing Studio (Tablet/Desktop) */}
+            {/* Quick Export Dossier & Digital Signing Studio */}
             <button
               type="button"
               onClick={onOpenExport}
               title="Amtliche Dokumente drucken, exportieren & digital signieren"
-              className="hidden md:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition-colors shadow-xs"
+              className="hidden sm:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-lg transition-colors shadow-xs shrink-0"
             >
               <FileText className="w-4 h-4 text-emerald-400" />
-              <span>Dokumente &amp; Signieren</span>
+              <span className="hidden 2xl:inline">Dokumente &amp; Signieren</span>
+              <span className="hidden md:inline 2xl:hidden">Drucken</span>
             </button>
 
             {/* Role Switcher */}
-            <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5">
+            <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 rounded-lg px-2 sm:px-2.5 py-1.5 shrink-0">
               <Shield className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <div className="flex flex-col min-w-0">
-                <label htmlFor="header-role-select" className="text-[10px] uppercase tracking-wider text-slate-400 font-bold leading-tight hidden xl:block">
+                <label htmlFor="header-role-select" className="text-[9px] uppercase tracking-wider text-slate-400 font-bold leading-tight hidden 2xl:block">
                   {t.app.switchRole}
                 </label>
                 <select
@@ -350,7 +356,7 @@ export const Header: React.FC<HeaderProps> = ({
                   value={currentUser.role}
                   onChange={(e) => setRole(e.target.value as UserRole)}
                   aria-label={t.app.switchRole}
-                  className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer max-w-[110px] sm:max-w-[140px] truncate"
+                  className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer max-w-[95px] sm:max-w-[120px] 2xl:max-w-[140px] truncate"
                 >
                   <option value="board_member" className="bg-slate-800 text-white">
                     {t.roles.board_member}
@@ -381,14 +387,14 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Language Switcher Pill (DE | EN | FR) */}
-            <div className="flex items-center bg-slate-800 border border-slate-700 rounded-lg p-1 gap-0.5">
+            <div className="flex items-center bg-slate-800 border border-slate-700 rounded-lg p-0.5 sm:p-1 gap-0.5 shrink-0">
               <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-1 mr-0.5 hidden xs:inline" />
               {(['de', 'en', 'fr'] as const).map((lang) => (
                 <button
                   key={lang}
                   type="button"
                   onClick={() => setLanguage(lang)}
-                  className={`text-xs px-2 py-1 rounded font-bold transition-all ${
+                  className={`text-xs px-1.5 sm:px-2 py-1 rounded font-bold transition-all ${
                     language === lang
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'text-slate-400 hover:text-white'
@@ -399,18 +405,52 @@ export const Header: React.FC<HeaderProps> = ({
               ))}
             </div>
 
+            {/* Theme & Eye-Care Design Switcher */}
+            {onOpenThemeSettings && (
+              <button
+                type="button"
+                onClick={onOpenThemeSettings}
+                title={t.header?.themeLabel || 'Design-Themen, Augenschutz & Kontrast'}
+                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 border border-slate-700 p-2 rounded-lg transition-colors shrink-0 shadow-xs"
+              >
+                <Palette className="w-4 h-4 text-amber-300" />
+                <span className="hidden 2xl:inline text-xs font-semibold text-slate-200">
+                  {t.header?.themeLabel || 'Design'}
+                </span>
+              </button>
+            )}
+
+            {/* Deadline Alerts & Email Notification Preparation (PM & SysAdmin) */}
+            {onOpenDeadlines && (
+              <button
+                type="button"
+                onClick={onOpenDeadlines}
+                title="Fristen-Alarm & E-Mail-Vorbereitung (PM & SysAdmin)"
+                className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-amber-300 border border-slate-700 p-2 rounded-lg transition-colors shrink-0 shadow-xs relative"
+              >
+                <Clock className="w-4 h-4 text-amber-400" />
+                <span className="hidden 2xl:inline text-xs font-semibold text-slate-200">
+                  Fristen
+                </span>
+                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+              </button>
+            )}
+
             {/* User Profile Avatar */}
             {onOpenProfile && (
               <button
                 type="button"
                 onClick={onOpenProfile}
                 title={`Profil von ${currentUser.name} (${currentUser.email || 'Benutzer'})`}
-                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1.5 rounded-lg transition-colors shrink-0"
+                className="flex items-center gap-1.5 sm:gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2 py-1.5 rounded-lg transition-colors shrink-0"
               >
                 <div className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shrink-0 border border-emerald-400/50">
                   {currentUser.avatarInitials || 'U'}
                 </div>
-                <span className="hidden xl:inline text-xs font-semibold text-slate-200 truncate max-w-[90px]">
+                <span className="hidden 2xl:inline text-xs font-semibold text-slate-200 truncate max-w-[90px]">
                   {currentUser.name.split(' ')[0]}
                 </span>
               </button>
@@ -431,8 +471,8 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile & Tablet Secondary Toolbar: Workspace & Project Switcher */}
-      <div className="lg:hidden bg-slate-950/95 border-t border-slate-800 px-3 py-2">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div className="xl:hidden bg-slate-950/95 border-t border-slate-800 px-3 py-2">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Mobile Workspace Selector */}
           <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5">
             <Building2 className="w-4 h-4 text-emerald-400 shrink-0" />

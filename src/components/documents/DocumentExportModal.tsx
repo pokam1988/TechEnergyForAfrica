@@ -24,6 +24,13 @@ import {
   Calendar,
   Layers,
   Sparkles,
+  Mail,
+  Copy,
+  Check,
+  Share2,
+  FileCode,
+  ExternalLink,
+  ChevronDown,
 } from 'lucide-react';
 
 interface DocumentExportModalProps {
@@ -52,6 +59,20 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
   const { activeOrganization } = useOrganization();
   const [docType, setDocType] = useState<DocumentType>('proposal');
   const [isSignPadOpen, setIsSignPadOpen] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
+  const [downloadSuccessMsg, setDownloadSuccessMsg] = useState<string | null>(null);
+
+  const docTitles: Record<DocumentType, string> = {
+    proposal: '1. Projektantrag & Dossier',
+    executive_summary: '2. Vorstandsvorlage (2-Pager)',
+    verwendungsnachweis: '3. Verwendungsnachweis (BMZ/GIZ)',
+    budget: '4. Finanzierungsplan (EUR/XAF)',
+    feasibility: '5. Due Diligence & Machbarkeit',
+    mou: '6. Partnerschaft / MoU',
+    closure: '7. Abschluss- & Wirkungsbericht',
+    donation_receipt: '8. Zuwendungsbestätigung',
+  };
 
   // Digital Signature State
   const [signatureRecord, setSignatureRecord] = useState<DocumentSignatureRecord>(() => {
@@ -73,11 +94,9 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
     };
   });
 
-  if (!isOpen || !activeProject) return null;
-
   const letterhead = activeOrganization?.letterhead || {
-    addressStreet: 'Kottbusser Damm 79',
-    addressPostalCode: '10967',
+    addressStreet: 'Neuköllnische Allee 10',
+    addressPostalCode: '12057',
     addressCity: 'Berlin',
     addressCountry: 'Deutschland',
     phone: '+49 30 555 789 20',
@@ -92,14 +111,202 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
     digitalStampText: `${activeOrganization?.name || 'TechEnergy For Africa e.V.'} • Offizielles Dokument`,
   };
 
+  const [emailRecipient, setEmailRecipient] = useState(
+    letterhead.email || 'info@techenergyforafrica.org'
+  );
+
+  if (!isOpen || !activeProject) return null;
+
   const orgLogo = activeOrganization?.logoUrl || TEFA_OFFICIAL_SVG_LOGO;
   const orgWebsite = activeOrganization?.website || 'https://www.techenergyforafrica.org';
   const orgName = activeOrganization?.name || 'TechEnergy For Africa e.V.';
 
+  // 1. Native Print with Helpful Device Instructions
   const handlePrint = () => {
-    window.print();
+    try {
+      window.print();
+      setDownloadSuccessMsg(
+        "Druckdialog geöffnet: Wählen Sie 'Ziel: Als PDF speichern' um das Dokument auf Ihrem PC oder Smartphone abzuspeichern."
+      );
+      setTimeout(() => setDownloadSuccessMsg(null), 6000);
+    } catch {
+      handleDownloadHtml();
+    }
   };
 
+  // 2. High-Fidelity Standalone Offline Printable HTML Export (Ready to save on PC or mobile phone)
+  const handleDownloadHtml = () => {
+    const areaEl = document.getElementById('printable-dossier-area');
+    const contentHtml = areaEl
+      ? areaEl.innerHTML
+      : '<div>Dokumenteninhalt wird geladen...</div>';
+
+    const fullHtml = `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${activeProject.referenceId} - ${docTitles[docType]} - ${orgName}</title>
+  <style>
+    @page { size: A4 portrait; margin: 12mm 15mm 15mm 15mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #0f172a;
+      background: #f1f5f9;
+      margin: 0;
+      padding: 24px 16px;
+      line-height: 1.5;
+      font-size: 11pt;
+    }
+    .print-doc-container {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+    }
+    @media print {
+      body { background: #ffffff !important; padding: 0 !important; }
+      .print-doc-container { box-shadow: none !important; border: none !important; padding: 0 !important; max-width: 100% !important; border-radius: 0 !important; }
+      .screen-toolbar { display: none !important; }
+    }
+    .screen-toolbar {
+      max-width: 860px;
+      margin: 0 auto 16px auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #0f172a;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .btn-action {
+      background: #059669;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .btn-action:hover { background: #047857; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 10pt; }
+    th, td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; }
+    img { max-width: 100%; height: auto; }
+    a { color: #059669; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="screen-toolbar">
+    <div>
+      <strong>${orgName}</strong> • Ref: <code>${activeProject.referenceId}</code> (${docTitles[docType]})
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn-action" onclick="window.print()">🖨️ Drucken / Als PDF speichern</button>
+    </div>
+  </div>
+  <div class="print-doc-container">
+    ${contentHtml}
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeProject.referenceId}_${docType}_Amtlich.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccessMsg(
+      'HTML/PDF-Druckdatei erfolgreich heruntergeladen! Sie können die Datei auf Ihrem PC oder Smartphone öffnen, ausdrucken oder als PDF speichern.'
+    );
+    setTimeout(() => setDownloadSuccessMsg(null), 6000);
+  };
+
+  // 3. Plain Text Dossier Export (.txt / Word-friendly)
+  const handleDownloadTxt = () => {
+    const textContent = `================================================================================
+OFFIZIELLES PROJEKTDOSSIER: ${docTitles[docType].toUpperCase()}
+Trägerorganisation: ${orgName}
+Anschrift: ${letterhead.addressStreet}, ${letterhead.addressPostalCode} ${letterhead.addressCity}, ${letterhead.addressCountry}
+Webseite: ${orgWebsite} | E-Mail: ${letterhead.email}
+Register: ${letterhead.registrationCourt} | Steuernummer: ${letterhead.taxId}
+================================================================================
+
+PROJEKT-STAMMDATEN:
+• Referenznummer: ${activeProject.referenceId}
+• Projekttitel: ${activeProject.title}
+• Zielland & Ort: ${activeProject.country} (${activeProject.locationDetails})
+• Phase: ${activeProject.lifecyclePhase.toUpperCase()} | Status: ${activeProject.status}
+• Geplantes Gesamtbudget: € ${activeProject.proposal.estimatedBudgetEUR.toLocaleString()} (${(
+      activeProject.proposal.estimatedBudgetEUR * 655.957
+    ).toLocaleString(undefined, { maximumFractionDigits: 0 })} XAF)
+• Geplante Laufzeit: ${activeProject.proposal.durationMonths} Monate
+• Zielgruppe / Begünstigte: ${activeProject.proposal.beneficiaryCountPlanned} Personen (${activeProject.proposal.targetBeneficiaries})
+• Ausstellungsdatum: ${new Date().toLocaleDateString('de-DE')}
+
+1. PROBLEMSTELLUNG & KONTEXT:
+${activeProject.proposal.problemStatement}
+
+2. LÖSUNGSANSATZ & STRATEGISCHE ZIELE:
+${activeProject.proposal.proposedSolution}
+
+Kernziele:
+${activeProject.proposal.objectives.map((o, i) => `  ${i + 1}. ${o}`).join('\n')}
+
+Geplante Hauptaktivitäten:
+${activeProject.proposal.activities.map((a, i) => `  ${i + 1}. ${a}`).join('\n')}
+
+3. NACHHALTIGKEIT & PARTNERSCHAFTEN:
+${activeProject.proposal.sustainabilityPlan}
+Partner: ${activeProject.proposal.potentialPartners?.join(', ') || 'Lokale Bildungsträger'}
+
+4. GOVERNANCE & ZEICHNUNGSBERECHTIGTE:
+• 1. Zeichnungsberechtigter: ${signatureRecord.signer1Name} (${signatureRecord.signer1Role})
+  Ort & Datum: ${signatureRecord.signer1City}, ${signatureRecord.signer1Date}
+  Status: ${signatureRecord.signer1IsSigned ? 'Rechtsverbindlich signiert ✓' : 'Zur Prüfung vorgelegt'}
+
+• 2. Zeichnungsberechtigter: ${signatureRecord.signer2Name} (${signatureRecord.signer2Role})
+  Ort & Datum: ${signatureRecord.signer2City}, ${signatureRecord.signer2Date}
+  Status: ${signatureRecord.signer2IsSigned ? 'Rechtsverbindlich signiert ✓' : 'Zur Prüfung vorgelegt'}
+
+Audit-Integritäts-Hash: ${signatureRecord.auditHash}
+System: ImpactFlow NGO Lifecycle & Verification Engine
+================================================================================
+`;
+
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeProject.referenceId}_${docType}_Dossier.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccessMsg('Text-Dossier (.txt) erfolgreich heruntergeladen!');
+    setTimeout(() => setDownloadSuccessMsg(null), 5000);
+  };
+
+  // 4. JSON Raw Data Backup
   const handleDownloadJson = () => {
     const exportPayload = {
       project: activeProject,
@@ -108,18 +315,75 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
       signatures: signatureRecord,
       exportedAt: new Date().toISOString(),
     };
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
+    const dataStr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(exportPayload, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
-    downloadAnchor.setAttribute('download', `${activeProject.referenceId}_${docType}_Dossier.json`);
+    downloadAnchor.setAttribute(
+      'download',
+      `${activeProject.referenceId}_${docType}_Dossier.json`
+    );
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+
+    setDownloadSuccessMsg('JSON-Daten erfolgreich heruntergeladen!');
+    setTimeout(() => setDownloadSuccessMsg(null), 5000);
+  };
+
+  // Email Preparation Data
+  const emailSubject = `[${activeProject.referenceId}] Offizielles Dokument: ${docTitles[docType]} - ${orgName}`;
+  const emailBody = `Sehr geehrte Damen und Herren,
+
+anbei übersenden wir Ihnen das offizielle Projektdokument "${docTitles[docType]}" zum Vorhaben:
+
+📌 PROJEKT-INFORMATIONEN:
+• Projekt: ${activeProject.title} (Ref: ${activeProject.referenceId})
+• Trägerorganisation: ${orgName}
+• Anschrift: ${letterhead.addressStreet}, ${letterhead.addressPostalCode} ${letterhead.addressCity}, ${letterhead.addressCountry}
+• Einsatzort: ${activeProject.country} (${activeProject.locationDetails})
+• Phase: ${activeProject.lifecyclePhase.toUpperCase()} | Status: ${activeProject.status}
+• Gesamtbudget: € ${activeProject.proposal.estimatedBudgetEUR.toLocaleString()} (${activeProject.proposal.durationMonths} Monate Laufzeit)
+• Begünstigte: ${activeProject.proposal.beneficiaryCountPlanned} Personen
+
+📋 KURZFASSUNG:
+${activeProject.proposal.problemStatement}
+
+Lösungsansatz:
+${activeProject.proposal.proposedSolution}
+
+✍️ RECHTSVERBINDLICHE ZEICHNUNG & GOVERNANCE:
+• 1. Vorstand: ${signatureRecord.signer1Name} (${signatureRecord.signer1Role})
+• 2. Vorstand: ${signatureRecord.signer2Name} (${signatureRecord.signer2Role})
+• Integritäts-Hash: ${signatureRecord.auditHash}
+
+Mit freundlichen Grüßen,
+${signatureRecord.signer1Name} & ${signatureRecord.signer2Name}
+${orgName}
+${letterhead.addressStreet}, ${letterhead.addressPostalCode} ${letterhead.addressCity}
+Webseite: ${orgWebsite} | E-Mail: ${letterhead.email}`;
+
+  const handleCopyEmailText = async () => {
+    try {
+      await navigator.clipboard.writeText(emailBody);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 3000);
+    } catch {
+      // Fallback
+    }
+  };
+
+  const handleOpenMailClient = () => {
+    const mailtoUrl = `mailto:${encodeURIComponent(emailRecipient)}?subject=${encodeURIComponent(
+      emailSubject
+    )}&body=${encodeURIComponent(emailBody)}`;
+    window.location.href = mailtoUrl;
   };
 
   return (
     <div className="fixed inset-0 bg-slate-900/75 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto print:p-0 print:bg-white print:static print:z-auto">
-      <div className="bg-white rounded-2xl max-w-5xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 max-h-[94vh] flex flex-col space-y-4 print:max-h-none print:shadow-none print:border-none print:p-0 print:m-0 print:rounded-none">
+      <div className="bg-white rounded-2xl max-w-5xl w-full p-4 sm:p-6 shadow-2xl border border-slate-200 max-h-[94vh] flex flex-col space-y-4 print:max-h-none print:shadow-none print:border-none print:p-0 print:m-0 print:rounded-none my-auto">
         {/* Modal Header Toolbar (Hidden during Print) */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 shrink-0 gap-3 print:hidden">
           <div className="flex items-center justify-between">
@@ -146,17 +410,17 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
           </div>
 
           {/* Quick Actions in Header */}
-          <div className="flex items-center gap-2 flex-wrap justify-end">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
             {/* Customize Logo & Letterhead button */}
             {onOpenBranding && (
               <button
                 type="button"
                 onClick={onOpenBranding}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-100 font-semibold transition-colors"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-100 font-semibold transition-colors"
                 title="Organisations-Logo, Briefkopf und Bankdaten bearbeiten"
               >
                 <ImageIcon className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Logo &amp; Briefkopf</span>
+                <span className="hidden sm:inline">Logo &amp; Briefkopf</span>
               </button>
             )}
 
@@ -164,7 +428,7 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
             <button
               type="button"
               onClick={() => setIsSignPadOpen((prev) => !prev)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                 isSignPadOpen || signatureRecord.signer1IsSigned || signatureRecord.signer2IsSigned
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                   : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
@@ -175,19 +439,56 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
                 {signatureRecord.signer1IsSigned && signatureRecord.signer2IsSigned
                   ? 'Signiert (2/2) ✓'
                   : isSignPadOpen
-                  ? 'Signatur-Pad schließen'
-                  : 'Dokument unterschreiben'}
+                  ? 'Signatur schließen'
+                  : 'Unterschreiben'}
               </span>
             </button>
 
-            {/* JSON Export */}
+            {/* Direct Download as Offline Printable HTML / PDF */}
+            <button
+              type="button"
+              onClick={handleDownloadHtml}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 text-xs font-bold transition-colors shadow-xs"
+              title="Speichert die offizielle Druckdatei direkt auf Ihrem PC oder Smartphone ab. Kann sofort geöffnet, gedruckt oder als PDF gespeichert werden."
+            >
+              <Download className="w-3.5 h-3.5 text-teal-700" />
+              <span>Herunterladen (.html / PDF)</span>
+            </button>
+
+            {/* Download as TXT Dossier */}
+            <button
+              type="button"
+              onClick={handleDownloadTxt}
+              className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-100 font-medium"
+              title="Als formatiertes Text-Dossier (.txt) herunterladen"
+            >
+              <FileCode className="w-3.5 h-3.5 text-slate-500" />
+              <span>.txt</span>
+            </button>
+
+            {/* Download JSON */}
             <button
               type="button"
               onClick={handleDownloadJson}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-100 font-medium"
+              className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs text-slate-700 hover:bg-slate-100 font-medium"
+              title="JSON-Rohdaten exportieren"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">JSON</span>
+              <span>JSON</span>
+            </button>
+
+            {/* Send via Email Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsEmailModalOpen((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border shadow-xs ${
+                isEmailModalOpen
+                  ? 'bg-blue-600 text-white border-blue-700'
+                  : 'bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100'
+              }`}
+              title="Dokument per E-Mail versenden oder Text für Gmail/Outlook kopieren"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>Per E-Mail</span>
             </button>
 
             {/* Print / Save to PDF */}
@@ -210,6 +511,121 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Success / Status Toast Banner */}
+        {downloadSuccessMsg && (
+          <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs px-4 py-2.5 rounded-lg flex items-center justify-between gap-2 shadow-xs shrink-0 print:hidden animate-fade-in">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{downloadSuccessMsg}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDownloadSuccessMsg(null)}
+              className="text-emerald-700 hover:text-emerald-900 text-xs font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Email Dispatcher Accordion (Hidden during Print) */}
+        {isEmailModalOpen && (
+          <div className="bg-slate-50 border border-blue-200 rounded-xl p-4 space-y-3 shrink-0 print:hidden shadow-xs">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-600" />
+                <span className="font-bold text-xs text-slate-800">
+                  Dokument per E-Mail versenden &amp; teilen
+                </span>
+                <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-mono">
+                  {activeProject.referenceId}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEmailModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 text-xs"
+              >
+                ✕ Schließen
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">Empfänger-Adresse:</label>
+                <input
+                  type="email"
+                  value={emailRecipient}
+                  onChange={(e) => setEmailRecipient(e.target.value)}
+                  placeholder="partner@ngo.org, vorstand@techenergyforafrica.org"
+                  className="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Trägerorganisation: <strong>{orgName}</strong> ({letterhead.addressStreet}, {letterhead.addressPostalCode} {letterhead.addressCity})
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">Betreff:</label>
+                <input
+                  type="text"
+                  readOnly
+                  value={emailSubject}
+                  className="w-full p-2 border border-slate-200 rounded-lg text-xs bg-slate-100 text-slate-700 font-medium"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-slate-600 font-semibold text-xs mb-1">
+                E-Mail-Vorschau (Fertig formatiert mit Projekt- &amp; Signatur-Daten):
+              </label>
+              <textarea
+                readOnly
+                rows={4}
+                value={emailBody}
+                className="w-full p-2.5 border border-slate-200 rounded-lg font-mono text-[11px] bg-white text-slate-700 resize-none"
+              />
+            </div>
+
+            <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
+              <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Bereit zum direkten Versand oder Abspeichern auf PC &amp; Handy</span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyEmailText}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+                >
+                  {emailCopied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700">In Zwischenablage kopiert!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-slate-600" />
+                      <span>Text kopieren</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleOpenMailClient}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-xs transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>In E-Mail-Programm öffnen</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Digital Signature Pad Accordion (Hidden during Print) */}
         {isSignPadOpen && (
@@ -477,7 +893,7 @@ export const DocumentExportModal: React.FC<DocumentExportModalProps> = ({
                     <div key={m.id} className="p-2.5 flex items-center justify-between text-xs">
                       <div>
                         <div className="font-bold text-slate-900">{m.title}</div>
-                        <div className="text-slate-500 text-[10px]">{m.deliverable}</div>
+                        <div className="text-slate-500 text-[10px]">{m.deliverable || m.deliverables?.join(', ')}</div>
                       </div>
                       <span className="text-[10px] font-mono bg-slate-100 px-2 py-0.5 rounded border">
                         {m.targetDate}

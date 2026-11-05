@@ -67,6 +67,7 @@ export interface Milestone {
   isCompleted: boolean;
   responsiblePerson: string;
   deliverables: string[];
+  deliverable?: string;
 }
 
 export interface TaskItem {
@@ -618,5 +619,72 @@ export interface PlatformConfig {
   tagline: string; // 'From Idea to Impact'
   version: string;
   isMultiOrgEnabled: boolean;
+}
+
+// -------------------------------------------------------------
+// Multi-Organization Newsletter & Stakeholder-Update Engine
+// -------------------------------------------------------------
+
+export type SubscriberSegment =
+  | 'all'
+  | 'donors'
+  | 'partners'
+  | 'board'
+  | 'volunteers'
+  | 'media';
+
+export interface NewsletterSubscriber {
+  id: string;
+  organizationId: string;
+  name: string;
+  email: string;
+  roleOrAffiliation?: string;
+  segment: SubscriberSegment;
+  subscribedAt: string;
+  status: 'active' | 'unsubscribed';
+  preferredLanguage?: 'de' | 'en' | 'fr';
+  notes?: string;
+}
+
+export type NewsletterCadence =
+  | 'monthly'
+  | 'quarterly'
+  | 'milestone_alert'
+  | 'special_appeal';
+
+export interface NewsletterIssue {
+  id: string;
+  organizationId: string;
+  projectIds: string[];
+  title: string;
+  editionNumber: number;
+  publishDate: string;
+  cadence: NewsletterCadence;
+  status: 'draft' | 'scheduled' | 'sent';
+  headerBannerText?: string;
+  introMessage: string;
+  highlightStoryTitle: string;
+  highlightStoryContent: string;
+  projectHighlights: {
+    projectId: string;
+    projectTitle: string;
+    referenceId: string;
+    summary: string;
+    milestoneAchieved?: string;
+    progressPercent?: number;
+    fundingStatus?: string;
+  }[];
+  callToAction: {
+    label: string;
+    url: string;
+    description: string;
+  };
+  metricsSnapshot: {
+    label: string;
+    value: string;
+  }[];
+  recipientSegment: SubscriberSegment;
+  sentAt?: string;
+  sentRecipientsCount?: number;
 }
 

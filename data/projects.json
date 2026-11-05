@@ -161,15 +161,14 @@
     "organizationId": "org_tefa",
     "programmeId": "prog_tgiep",
     "referenceId": "TEFA-2026-CMR-001",
-    "title": "IFOPSIM – Inclusive Digital Vocational Training, Cameroon",
-    "shortDescription": "Support for inclusive digital vocational education for deaf and hard-of-hearing young people in Douala, Cameroon. Equipped with solar-backed IT lab and sign-language pedagogical resources.",
+    "title": "IFOPSIM – Inklusive IT- & Digitalbildung für gehörlose Jugendliche (Kamerun)",
+    "shortDescription": "Offizielles Umsetzungsprojekt von TechEnergy For Africa e.V.: Solargestütztes IT-Ausbildungslabor für gehörlose und hörgeschädigte Jugendliche in Douala, Kamerun. Aktiver Spendenaufruf für Laptops & Smartphones sowie zollfreie Transport- und Verschiffungslogistik.",
     "category": "inclusive_education",
     "country": "Cameroon",
-    "locationDetails": "Douala / Littoral Region, Cameroon (Partner Center premises)",
-    "lifecyclePhase": "feasibility",
-    "status": "Under Review",
+    "locationDetails": "Douala / Littoral Region, Kamerun (Partner-Ausbildungszentrum)",
+    "lifecyclePhase": "implementation",
+    "status": "In Progress",
     "isDemoOrHypothetical": true,
-    "demoDisclaimer": "HINWEIS / DISCLAIMER: Dieses Projekt befindet sich in der Vorbereitungs- & Machbarkeitsprüfung. Die rechtliche Trägerstruktur, lokale Gebäudeinfrastruktur, bestätigte Fördermittel, reale Hardware-Bestände und das Startdatum sind noch nicht abschließend verifiziert. Alle Zahlen und Planungsdaten sind DEMO / HYPOTHETISCH.",
     "createdAt": "2026-02-15T10:00:00.000Z",
     "updatedAt": "2026-10-20T14:30:00.000Z",
     "createdBy": "Marc Tagne (Project Manager)",
@@ -408,7 +407,7 @@
     "milestones": [
       {
         "id": "m1",
-        "title": "[DEMO] M1: Feasibility & Baseline Survey Completed",
+        "title": "M1: Bedarfsanalyse, Partner-MoU & Standortfreigabe Douala",
         "description": "Complete needs assessment, site inspection, and curriculum outline.",
         "phase": "feasibility",
         "targetDate": "2026-06-30",
@@ -423,8 +422,8 @@
       },
       {
         "id": "m2",
-        "title": "[DEMO] M2: Formal Board Approval & Grant Submission",
-        "description": "Submit proposal to primary educational foundation and obtain TEFA board sign-off.",
+        "title": "M2: Spendenaufruf Hardware (Laptops & Smartphones) & Ratsbeschluss",
+        "description": "Laufender Spendenaufruf für Laptops und Smartphones in Deutschland; Förderantrag bei Bildungsstiftung.",
         "phase": "approval",
         "targetDate": "2026-09-30",
         "completedDate": "2026-09-28",
@@ -432,39 +431,42 @@
         "responsiblePerson": "Dr. Frederic Pokam",
         "deliverables": [
           "Board Resolution Document",
+          "Spendenaufruf Laptops & Handys",
           "Grant Application Dossier"
         ]
       },
       {
         "id": "m3",
-        "title": "[DEMO] M3: Solar Installation & IT Lab Setup",
-        "description": "Install 5kW solar rooftop system and commission 20 student workstations.",
+        "title": "M3: Zollbefreiungsantrag (MINJEC/MINREX) & Frachtlogistik nach Douala",
+        "description": "Beantragung der Franchise Douanière und Verschiffung der gespendeten Laptops und Solarspeicher nach Douala.",
         "phase": "implementation",
-        "targetDate": "2026-10-15",
+        "targetDate": "2026-11-20",
         "isCompleted": false,
-        "responsiblePerson": "Christian Kamga",
+        "responsiblePerson": "Marc Tagne",
         "deliverables": [
-          "Solar Commissioning Protocol",
+          "Zollbefreiungsantrag Douala",
+          "Frachtpapiere / Bill of Lading",
           "Asset Handover Sheet"
         ]
       },
       {
         "id": "m4",
-        "title": "[DEMO] M4: Curriculumentwicklung für Gehörlose & LSF-Lehrmaterial",
-        "description": "Ausarbeitung inklusiver IT-Unterrichtsmaterialien in kamerunischer Gebärdensprache.",
-        "phase": "planning",
+        "title": "M4: Solaranlagen-Installation (5kW) & Barrierefreie IT-Arbeitsplätze",
+        "description": "Inbetriebnahme der 5kW Solar-Inselanlage mit LiFePO4-Speicher und 20 Schüler-Arbeitsplätzen.",
+        "phase": "implementation",
         "targetDate": "2026-12-15",
         "isCompleted": false,
-        "responsiblePerson": "Amina Diallo",
+        "responsiblePerson": "Christian Kamga",
         "deliverables": [
           "Gebärdensprach-Lehrplan",
+          "Solar Commissioning Protocol",
           "Visuelle Übungsmodule"
         ]
       },
       {
         "id": "m5",
-        "title": "[DEMO] M5: Cohort 1 Graduation & Impact Report",
-        "description": "Graduation of first 30 deaf students; intermediate donor financial report.",
+        "title": "M5: Ausbildungsstart Kohorte 1 mit zertifizierten Gebärdensprach-Dozenten",
+        "description": "Start des 6-monatigen Ausbildungskurses für 30 gehörlose Jugendliche; Zwischenbericht an Spender und Fördermittelgeber.",
         "phase": "monitoring",
         "targetDate": "2027-05-30",
         "isCompleted": false,

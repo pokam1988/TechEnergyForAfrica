@@ -7,6 +7,7 @@ import { GoogleGenAI } from '@google/genai';
 import { SEED_PROJECTS, SEED_INVENTORY } from './src/data/seedProjects';
 import { SEED_ORGANIZATIONS, SEED_PROGRAMMES } from './src/data/seedOrganizations';
 import { SEED_CAMPAIGNS, generateConsistentSvgArtwork, CAMPAIGN_FORMAT_CONFIGS } from './src/data/seedCampaigns';
+import { SEED_SUBSCRIBERS, SEED_ISSUES } from './src/data/seedNewsletters';
 import {
   Project,
   InventoryAsset,
@@ -17,6 +18,8 @@ import {
   CampaignFormatType,
   Organization,
   Programme,
+  NewsletterSubscriber,
+  NewsletterIssue,
 } from './src/types';
 
 dotenv.config();
@@ -39,6 +42,7 @@ const AUDIT_FILE = path.join(DATA_DIR, 'audit_logs.json');
 const CAMPAIGNS_FILE = path.join(DATA_DIR, 'campaigns.json');
 const ORGANIZATIONS_FILE = path.join(DATA_DIR, 'organizations.json');
 const PROGRAMMES_FILE = path.join(DATA_DIR, 'programmes.json');
+const NEWSLETTERS_FILE = path.join(DATA_DIR, 'newsletters.json');
 
 // Ensure data folder and files exist
 if (!fs.existsSync(DATA_DIR)) {
@@ -56,8 +60,14 @@ function loadProjects(): Project[] {
         if (idx === -1) {
           loaded.push(sp);
           changed = true;
-        } else if (sp.isDemoOrHypothetical) {
-          loaded[idx] = sp;
+        }
+      }
+      // Guarantee IFOPSIM is preserved as an official, active project in execution phase
+      const ifop = loaded.find((p) => p.id === 'proj_ifopsim_001');
+      if (ifop) {
+        if (ifop.status === 'Under Review' || ifop.status === 'Draft') {
+          ifop.status = 'In Progress';
+          ifop.lifecyclePhase = 'implementation';
           changed = true;
         }
       }
@@ -608,8 +618,21 @@ app.post('/api/projects/clean-official', (req: Request, res: Response) => {
     return res.status(403).json({ error: 'Forbidden: Visitors cannot clean platform data.' });
   }
 
-  // Retain only non-demo and non-test projects
-  projects = projects.filter((p) => !p.isDemoOrHypothetical && p.title.toLowerCase() !== 'test');
+  // Retain non-demo projects, and explicitly preserve the official IFOPSIM project (proj_ifopsim_001)
+  projects = projects.filter(
+    (p) => (p.id === 'proj_ifopsim_001' || !p.isDemoOrHypothetical) && p.title.toLowerCase() !== 'test'
+  );
+
+  // Guarantee IFOPSIM is officially active, non-demo, and in implementation phase
+  const ifop = projects.find((p) => p.id === 'proj_ifopsim_001');
+  if (ifop) {
+    ifop.isDemoOrHypothetical = false;
+    delete ifop.demoDisclaimer;
+    if (ifop.status === 'Draft' || ifop.status === 'Under Review') {
+      ifop.status = 'In Progress';
+      ifop.lifecyclePhase = 'implementation';
+    }
+  }
 
   // If TEFA has no projects left, initialize an official flagship project
   const tefaHasProj = projects.some((p) => (p.organizationId || 'org_tefa') === 'org_tefa');
@@ -831,6 +854,139 @@ app.post('/api/audit-logs', (req: Request, res: Response) => {
   const entry = req.body as AuditLogEntry;
   appendAuditLog(entry);
   res.status(201).json({ success: true });
+});
+
+// -------------------------------------------------------------
+// MULTI-ORGANIZATION NEWSLETTER & STAKEHOLDER UPDATE APIS
+// -------------------------------------------------------------
+
+interface NewsletterStore {
+  subscribers: NewsletterSubscriber[];
+  issues: NewsletterIssue[];
+}
+
+function loadNewsletters(): NewsletterStore {
+  try {
+    if (fs.existsSync(NEWSLETTERS_FILE)) {
+      const data = fs.readFileSync(NEWSLETTERS_FILE, 'utf-8');
+      const parsed = JSON.parse(data);
+      return {
+        subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : SEED_SUBSCRIBERS,
+        issues: Array.isArray(parsed.issues) ? parsed.issues : SEED_ISSUES,
+      };
+    }
+  } catch (err) {
+    console.error('Error reading newsletters file:', err);
+  }
+  const initial = { subscribers: SEED_SUBSCRIBERS, issues: SEED_ISSUES };
+  saveNewsletters(initial);
+  return initial;
+}
+
+function saveNewsletters(store: NewsletterStore): void {
+  try {
+    fs.writeFileSync(NEWSLETTERS_FILE, JSON.stringify(store, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save newsletters:', err);
+  }
+}
+
+// Get subscribers for active organization
+app.get('/api/newsletters/subscribers', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || (req.query.orgId as string) || 'org_tefa';
+  const store = loadNewsletters();
+  const filtered = store.subscribers.filter((s) => s.organizationId === orgId);
+  res.json(filtered);
+});
+
+// Add new subscriber
+app.post('/api/newsletters/subscribers', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || req.body.organizationId || 'org_tefa';
+  const store = loadNewsletters();
+  const newSub: NewsletterSubscriber = {
+    id: req.body.id || `sub_${orgId}_${Date.now()}`,
+    organizationId: orgId,
+    name: req.body.name || 'Neuer Kontakt',
+    email: req.body.email || 'kontakt@organisation.org',
+    roleOrAffiliation: req.body.roleOrAffiliation || 'Förderer & Stakeholder',
+    segment: req.body.segment || 'donors',
+    subscribedAt: req.body.subscribedAt || new Date().toISOString(),
+    status: req.body.status || 'active',
+    preferredLanguage: req.body.preferredLanguage || 'de',
+    notes: req.body.notes,
+  };
+
+  store.subscribers.unshift(newSub);
+  saveNewsletters(store);
+  res.status(201).json(newSub);
+});
+
+// Delete subscriber
+app.delete('/api/newsletters/subscribers/:id', (req: Request, res: Response) => {
+  const store = loadNewsletters();
+  store.subscribers = store.subscribers.filter((s) => s.id !== req.params.id);
+  saveNewsletters(store);
+  res.json({ success: true });
+});
+
+// Get issues for active organization
+app.get('/api/newsletters/issues', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || (req.query.orgId as string) || 'org_tefa';
+  const store = loadNewsletters();
+  const filtered = store.issues.filter((i) => i.organizationId === orgId);
+  res.json(filtered);
+});
+
+// Create or update issue
+app.post('/api/newsletters/issues', (req: Request, res: Response) => {
+  const orgId = (req.headers['x-organization-id'] as string) || req.body.organizationId || 'org_tefa';
+  const store = loadNewsletters();
+  const issue = req.body as NewsletterIssue;
+  issue.organizationId = orgId;
+  issue.id = issue.id || `issue_${orgId}_${Date.now()}`;
+
+  const existingIdx = store.issues.findIndex((i) => i.id === issue.id);
+  if (existingIdx !== -1) {
+    store.issues[existingIdx] = issue;
+  } else {
+    store.issues.unshift(issue);
+  }
+
+  saveNewsletters(store);
+  res.status(201).json(issue);
+});
+
+// Mark issue as sent and log audit entry
+app.post('/api/newsletters/issues/:id/send', (req: Request, res: Response) => {
+  const store = loadNewsletters();
+  const issue = store.issues.find((i) => i.id === req.params.id);
+  if (!issue) {
+    return res.status(404).json({ error: 'Issue not found' });
+  }
+
+  const activeRecipients = store.subscribers.filter(
+    (s) => s.organizationId === issue.organizationId && s.status === 'active'
+  );
+
+  issue.status = 'sent';
+  issue.sentAt = new Date().toISOString();
+  issue.sentRecipientsCount = activeRecipients.length;
+
+  saveNewsletters(store);
+
+  appendAuditLog({
+    id: `log_nl_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    userId: (req.headers['x-user-id'] as string) || 'system',
+    userName: (req.headers['x-user-name'] as string) || 'Newsletter Dispatcher',
+    userRole: 'project_manager',
+    action: 'NEWSLETTER_SENT',
+    projectId: issue.projectIds[0],
+    projectTitle: issue.title,
+    details: `Newsletter "${issue.title}" an ${activeRecipients.length} Stakeholder versendet.`,
+  });
+
+  res.json({ success: true, sentRecipientsCount: activeRecipients.length });
 });
 
 // -------------------------------------------------------------

@@ -1,0 +1,165 @@
+{
+  "subscribers": [
+    {
+      "id": "sub_tefa_001",
+      "organizationId": "org_tefa",
+      "name": "Dr. Frederic Pokam",
+      "email": "fredericpokam26@gmail.com",
+      "roleOrAffiliation": "Vorstandsvorsitzender & Gründer (TEFA e.V.)",
+      "segment": "board",
+      "subscribedAt": "2026-01-10T09:00:00Z",
+      "status": "active",
+      "preferredLanguage": "de",
+      "notes": "Hauptansprechpartner für strategische Entwicklung"
+    },
+    {
+      "id": "sub_tefa_002",
+      "organizationId": "org_tefa",
+      "name": "Marc Tagne",
+      "email": "m.tagne@techenergyforafrica.org",
+      "roleOrAffiliation": "Finanzvorstand & Projektleiter IFOPSIM",
+      "segment": "board",
+      "subscribedAt": "2026-01-10T09:00:00Z",
+      "status": "active",
+      "preferredLanguage": "fr",
+      "notes": "Vor-Ort-Koordination Douala / Yaoundé"
+    },
+    {
+      "id": "sub_tefa_003",
+      "organizationId": "org_tefa",
+      "name": "Sophie Müller",
+      "email": "s.mueller@green-tech-berlin.de",
+      "roleOrAffiliation": "CSR Managerin, GreenTech Capital Berlin",
+      "segment": "donors",
+      "subscribedAt": "2026-02-01T14:20:00Z",
+      "status": "active",
+      "preferredLanguage": "de",
+      "notes": "Hauptförderer für das Solar-Backup-System IFOPSIM"
+    },
+    {
+      "id": "sub_tefa_004",
+      "organizationId": "org_tefa",
+      "name": "Jean-Paul Kamga",
+      "email": "jp.kamga@ansc-cameroon.org",
+      "roleOrAffiliation": "Präsident, Association Nationale des Sourds du Cameroun (ANSC)",
+      "segment": "partners",
+      "subscribedAt": "2026-02-15T11:00:00Z",
+      "status": "active",
+      "preferredLanguage": "fr",
+      "notes": "Lokaler Implementierungspartner Douala für Gehörlosen-Inklusion"
+    },
+    {
+      "id": "sub_tefa_005",
+      "organizationId": "org_tefa",
+      "name": "Laura Becker",
+      "email": "laura.becker@afrika-stiftung.de",
+      "roleOrAffiliation": "Referentin für Bildungspartnerschaften, Afrika-Stiftung NRW",
+      "segment": "donors",
+      "subscribedAt": "2026-03-01T08:30:00Z",
+      "status": "active",
+      "preferredLanguage": "de",
+      "notes": "Fördert IT-Workstations & Barrierefreiheit"
+    },
+    {
+      "id": "sub_tefa_006",
+      "organizationId": "org_tefa",
+      "name": "Cédric Nguemo",
+      "email": "cedric.nguemo@univ-douala.cm",
+      "roleOrAffiliation": "Dozent & IT-Ausbilder, IUT Douala",
+      "segment": "partners",
+      "subscribedAt": "2026-03-12T16:45:00Z",
+      "status": "active",
+      "preferredLanguage": "fr",
+      "notes": "Lehrplanentwicklung & Gebärdensprach-Module"
+    },
+    {
+      "id": "sub_tefa_007",
+      "organizationId": "org_tefa",
+      "name": "Alexander Schmidt",
+      "email": "a.schmidt@berlin-refurbished.de",
+      "roleOrAffiliation": "Geschäftsführer, IT-Refurbishment Berlin e.V.",
+      "segment": "volunteers",
+      "subscribedAt": "2026-04-05T10:15:00Z",
+      "status": "active",
+      "preferredLanguage": "de",
+      "notes": "Unterstützt die Prüfung gespendeter Laptops & Smartphones"
+    },
+    {
+      "id": "sub_tefa_008",
+      "organizationId": "org_tefa",
+      "name": "Martine Eboué",
+      "email": "redaktion@afrique-developpement-media.com",
+      "roleOrAffiliation": "Wirtschaftsjournalistin, Afrique Développement News",
+      "segment": "media",
+      "subscribedAt": "2026-05-18T13:00:00Z",
+      "status": "active",
+      "preferredLanguage": "fr",
+      "notes": "Presse-Verteiler für Inklusion & Grüne Energie in Zentralafrika"
+    },
+    {
+      "id": "sub_eco_001",
+      "organizationId": "org_global_eco",
+      "name": "Elena Rossi",
+      "email": "elena.rossi@swiss-impact.ch",
+      "roleOrAffiliation": "Foundation Director, Swiss Philanthropy Network",
+      "segment": "board",
+      "subscribedAt": "2025-10-01T10:00:00Z",
+      "status": "active",
+      "preferredLanguage": "en",
+      "notes": "Chairperson Global Eco Community"
+    },
+    {
+      "id": "sub_eco_002",
+      "organizationId": "org_global_eco",
+      "name": "David Van Houten",
+      "email": "d.vanhouten@water-resilience.eu",
+      "roleOrAffiliation": "Senior Advisor Clean Water Programs",
+      "segment": "donors",
+      "subscribedAt": "2025-11-15T09:30:00Z",
+      "status": "active",
+      "preferredLanguage": "en",
+      "notes": "Water security donor representative"
+    }
+  ],
+  "issues": [
+    {
+      "id": "issue_tefa_001",
+      "organizationId": "org_tefa",
+      "projectIds": ["proj_ifopsim_001"],
+      "editionNumber": 1,
+      "title": "Ausgabe #01: Spendenaufruf für Laptops & Smartphones für Kamerun – IFOPSIM Zwischenbericht",
+      "publishDate": "2026-11-01",
+      "cadence": "special_appeal",
+      "status": "sent",
+      "headerBannerText": "OFFIZIELLES PROJEKT-UPDATE & SPENDENAUFRUF • TEFA E.V. BERLIN",
+      "introMessage": "Liebe Freundinnen, Förderer und Partner von TechEnergy For Africa e.V.,\n\nwir freuen uns sehr, Ihnen heute unser erstes offizielles Stakeholder-Update zu unseren aktuellen Vorhaben im Jahr 2026 zu präsentieren. Unser Leuchtturm-Projekt IFOPSIM (Inklusive IT-Berufsbildung für Gehörlose in Douala, Kamerun) befindet sich in der aktiven Vorbereitungs- und Umsetzungsphase!",
+      "highlightStoryTitle": "Dringender Spendenaufruf: Hardware-Sammelaktion für 20 Gehörlose Auszubildende",
+      "highlightStoryContent": "Für die Einrichtung unseres inklusiven IT-Lernlabors in Douala sammeln wir ab sofort gut erhaltene Laptops und internetfähige Smartphones. Bereits 8 refurbished Laptops konnten an unserer Sammelstelle in Berlin entgegengenommen und aufbereitet werden. Ziel ist die Ausrüstung von 20 Arbeitsplätzen inklusive Gebärdensprach-Lernsoftware und ein 5-kW-Photovoltaik-Inselnetzwerk zur Überbrückung der lokalen Stromausfälle. Wir danken allen bisherigen Spendern und Partnern herzlich für ihr Vertrauen!",
+      "projectHighlights": [
+        {
+          "projectId": "proj_ifopsim_001",
+          "projectTitle": "IFOPSIM – Inclusive Digital Vocational Training, Cameroon",
+          "referenceId": "TEFA-2026-CMR-001",
+          "summary": "Inklusives IT-Ausbildungszentrum für 60 hörbehinderte Jugendliche in Douala mit Solarenergie.",
+          "milestoneAchieved": "Sammelstelle Berlin eingerichtet, erste 8 Laptops erfolgreich gesichert.",
+          "progressPercent": 35,
+          "fundingStatus": "48.500 € Gesamtbedarf (15.000 € bestätigt)"
+        }
+      ],
+      "callToAction": {
+        "label": "Hardware spenden oder Spendenaufruf teilen",
+        "url": "https://www.techenergyforafrica.org/spenden-hardware",
+        "description": "Unterstützen Sie die Verschiffung von Laptops und Mobiltelefonen nach Douala / Kamerun."
+      },
+      "metricsSnapshot": [
+        { "label": "Gesammelte Laptops (Ziel: 20)", "value": "8 Laptops" },
+        { "label": "Smartphones für barrierefreie Apps", "value": "6 Geräte" },
+        { "label": "Solar-Kapazität Lernlabor", "value": "5 kWp Photovoltaik" },
+        { "label": "Geförderte Jugendliche", "value": "60 Auszubildende" }
+      ],
+      "recipientSegment": "all",
+      "sentAt": "2026-11-01T14:30:00Z",
+      "sentRecipientsCount": 8
+    }
+  ]
+}
